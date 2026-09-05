@@ -271,43 +271,6 @@ main.plain{padding-left:var(--pad)}
  .toast{bottom:78px;font-size:12px;padding:9px 14px}
 }
 </style>
-<style>
-/* ── minimal variant: less ink, same bones ───────────────────────── */
-:root{--hair:color-mix(in srgb,var(--fg) 22%,transparent);--hair2:color-mix(in srgb,var(--fg) 55%,transparent)}
-.bar{border-bottom:1px solid var(--hair2);padding-top:14px;padding-bottom:14px}
-.search{border:0;border-bottom:1.5px solid var(--fg);border-radius:0;padding:0 6px;min-height:42px;max-width:560px}
-.icell{border-width:1.5px}
-.cap{box-shadow:none;border-width:1.5px}.cap .tg{border-bottom-width:1px}.cap a .ab{border-width:1px}
-/* tiles: photo first, no box */
-.card{border:0;background:transparent;overflow:visible;border-radius:0}
-.card:hover{box-shadow:none;transform:none}.card:active{transform:none}
-.card .img{border-radius:12px;border:1px solid var(--hair);transition:box-shadow .12s,transform .12s}
-.card:hover .img{box-shadow:4px 4px 0 0 var(--ink);transform:translate(-1px,-1px)}
-.card .in{padding:9px 2px 4px;gap:2px}
-.card .n{font-weight:500;font-size:13.5px}
-.card .craft{font:400 11px 'IBM Plex Mono';color:var(--muted)}
-.card .p{font-size:15px;margin-top:2px}
-.card .wl{border-width:1px}
-/* headings: sentence case, quieter */
-.sec{padding:26px 0 8px}
-.sec h1{text-transform:none;letter-spacing:-.02em;font-size:clamp(22px,2vw,30px)}
-.sec h2{text-transform:none;letter-spacing:-.01em;font-size:17px}
-.sortsel{border-width:1.5px;font-weight:500;text-transform:none;letter-spacing:0;font-size:12px}
-/* hairlines instead of 2px rules */
-.feat{border-width:1.5px}.feat .ph{border-right-width:1.5px}
-.modal{border-width:1.5px}.modal section{border-top:1px solid var(--hair2)}.modal .gal{border-right-width:1.5px}
-.line{border-bottom:1px solid var(--hair)}
-.box{border-width:1.5px}.crow{border-width:1.5px}.acc-item{border-width:1.5px}.acc-item .bd{border-top-width:1px}
-.panel{border-width:1.5px}.panel h4{border-bottom-width:1px}.panel li{border-bottom:1px solid var(--hair)}
-.rev{border-top:1px solid var(--hair)}
-.btn{border-width:1.5px}input,textarea,select{border-width:1.5px}
-.bnav{border-top:1px solid var(--hair2)}
-@media (max-width:600px){
- .card .in{padding:7px 2px 2px}.card .n{font-size:12px}.card .craft{font-size:9.5px}.card .p{font-size:13px}
- .sec{padding:16px 0 4px}.sec h1{font-size:20px}
- .card.wide{grid-column:span 1}.card.wide .img{aspect-ratio:1;min-height:0}.card.wide .img img{position:static}.card.wide .n{font-size:12px}
-}
-</style>
 </head>
 <body class="side-open">
 <header class="bar" id="bar"></header>
@@ -487,7 +450,7 @@ document.getElementById('support').innerHTML = `<h4>Sell &amp; support</h4>
 function search(v){ state.q=v; const g=document.getElementById('shopArea'); if(g) g.innerHTML = shopArea(); else location.hash='#shop/all'; }
 
 /* ── tiles ───────────────────────────────────────────────────────── */
-const card = (p, wide=false) => `<a class="card ${wide?'wide':''}" href="javascript:void(0)" onclick="openProduct(${p.id})"><div class="img">${pic(p)}<span class="wl ${wish.includes(p.id)?'on':''}" data-wl="${p.id}" onclick="toggleWish(${p.id},event)" title="Wishlist">♥</span></div><div class="in"><span class="n">${esc(p.n)}</span><span class="craft">${esc(p.craft)} · ${esc(maker(p).place.split(',')[0])}</span><span class="p">${fmt(p.price)}${p.was?`<s>${fmt(p.was)}</s>`:''}</span></div></a>`;
+const card = (p, wide=false) => `<a class="card ${wide?'wide':''}" href="javascript:void(0)" onclick="openProduct(${p.id})"><div class="img">${pic(p)}<span class="wl ${wish.includes(p.id)?'on':''}" data-wl="${p.id}" onclick="toggleWish(${p.id},event)" title="Wishlist">♥</span></div><div class="in"><span class="mk label muted"><img src="img/${maker(p).img}.jpg" alt=""><span>${esc(maker(p).n)} · ${esc(maker(p).place.split(',')[0])}</span></span><span class="n">${esc(p.n)}</span><span class="craft">${esc(p.craft)}</span><span class="p">${fmt(p.price)}${p.was?`<s>${fmt(p.was)}</s>`:''}</span></div></a>`;
 /* every 7th tile is double-width so the grid has a rhythm */
 const tiles = list => list.map((p,i)=>card(p, i%7===3)).join('');
 const SORTS = {newest:'Newest', 'price-asc':'Price: low to high', 'price-desc':'Price: high to low', sale:'Discounted first', name:'Name A–Z'};

@@ -14,7 +14,7 @@ KalaSutra lets a maker photograph a piece, describe it by voice in their own lan
 | `prototype/archive/` | Earlier prototype versions, kept for reference. |
 | `photo/` | Original product photos (`photo/files/`) and the source collages they came from. |
 | `design/` | Design-direction working files (the three directions explored; direction B "Karkhana — ink on paper" was chosen). |
-| `plan.md` | The build plan: scope, phases, architecture, AI pipeline. |
+| `plan.md` | The build plan (v2): FastAPI backend, frontend wiring, AI pipelines, hosting, phases. `plan-v1-nextjs.md` is the earlier Next.js plan. |
 | `decisions.md` | Append-only log of every decision and why. |
 | `findings.md` | Audit of the base storefront code the web app is built on. |
 | `api-notes.md` | Endpoint shapes for the artisan APIs. |
@@ -42,13 +42,28 @@ The web app itself (Next.js 16 + Prisma + PostgreSQL) currently lives in a separ
 
 ## Design system
 
-Direction **B — "Karkhana", ink on paper**: paper `#F6F5F0`, ink `#111`, one marigold accent `#E2A100` reserved for the next action; rounded corners; hard offset shadows that lift on hover and press flat on click. Type: Archivo (display + body), IBM Plex Mono (labels), Noto Sans Devanagari (Hindi).
+Direction **B — "Karkhana", ink on paper**, in its minimal form: paper `#F6F5F0`, ink `#111`, one marigold accent `#E2A100` reserved for the next action; rounded corners; hairline rules; tiles are photo-first with a quiet three-line caption (name · craft and place · price); hard offset shadows that lift on hover and press flat on click. Phones get a bottom navigation bar and a categories sheet. Type: Archivo (display + body), IBM Plex Mono (labels), Noto Sans Devanagari (Hindi).
 
-## Planned architecture (see `plan.md`)
+## The AI features (what the real build adds)
 
-- **Web**: Next.js 16, Prisma 5, PostgreSQL — buyer storefront + artisan portal (dashboard, products, orders, profile/KYC).
-- **AI**: Sarvam AI for Indian-language speech-to-text, translation and text-to-speech; Claude for structured listing JSON, photo quality checks and price reasoning. Fixtures mode during UI work, content-hash cache so nothing is billed twice.
-- **Mobile**: Expo (Android first) with phone-OTP login, after the web app and AI features are in place.
+The prototype's seller flow already shows the shape of the three AI features; the backend in `plan.md` makes them real. Every one of them works in a **fixture mode** with no API keys, and can **record** real responses as fixtures for a demo without wifi.
+
+| Feature | What the maker does | What happens behind it |
+|---|---|---|
+| **Image studio** | Uploads one phone photo | Background cutout (fal.ai), composite onto the paper backdrop with a contact shadow (Pillow), then a vision QC pass (Claude) that returns retake coaching **in Hindi** — "step back so the whole saree is visible" — instead of silently failing. |
+| **Voice cataloguer** | Speaks for ~20 s in their own language | Sarvam Saarika (native transcript) + Saaras (English), Claude turns it into a 14-field listing (name, description, bullets, materials, technique, size, care, category, tags, SEO, GI tag, HSN), Sarvam Mayura translates the copy to Hindi, Sarvam Bulbul **reads it back** so a low-literacy maker can confirm without reading. |
+| **Pricing assistant** | Enters material cost and hours | Voyage embeddings → 12 nearest comparable pieces (kNN in Python), a state-wise wage-floor cost model, then Claude reasons to a **floor / fair / premium** band with a spoken Hindi rationale. Comparables are shown, never a bare number. Synthetic catalogue rows used for comparables are flagged and disclosed. |
+
+Provider split: **Sarvam AI** owns language (speech, translation, speech synthesis, Indian model, 1,000 free credits with a content-hash cache so nothing is billed twice), **Claude** owns structure, vision and reasoning, hosted models for cutout and embeddings.
+
+## Architecture (see `plan.md`)
+
+- **Frontend**: this prototype, split into ES modules under `web/`, served by GitHub Pages on a custom domain; guest cart and wishlist stay local and merge on login.
+- **Backend**: Python **FastAPI + PostgreSQL** (SQLAlchemy 2, Alembic), JWT auth with buyer email login and artisan phone OTP, orders, reviews, comments, B2B enquiries, artisan portal, uploads stored in Postgres, background jobs for the AI pipelines.
+- **Hosting**: Heroku (dyno + Postgres) for the API, GitHub Pages for the site.
+- **Mobile**: Expo Android app later, on the same API.
+
+Build order: backend skeleton → frontend wiring → artisan side → deploy → AI in fixture mode → go live per key → rehearsal.
 
 ## Status
 
