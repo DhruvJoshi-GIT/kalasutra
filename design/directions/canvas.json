@@ -1,0 +1,25 @@
+{
+  "pages": [
+    { "id": "page-1", "name": "Storefront" },
+    { "id": "page-2", "name": "Artisan portal" },
+    { "id": "page-3", "name": "Earlier directions (A, C)" }
+  ],
+  "artboards": [
+    { "file": "Main.dc.html", "title": "Home", "x": 0, "y": 0, "w": 1200, "h": 1850, "page": "page-1" },
+    { "file": "Products.dc.html", "title": "Shop — listing", "x": 1320, "y": 0, "w": 1200, "h": 1500, "page": "page-1" },
+    { "file": "Product.dc.html", "title": "Product page", "x": 2640, "y": 0, "w": 1200, "h": 1600, "page": "page-1" },
+    { "file": "Sell.dc.html", "title": "/sell — for makers", "x": 3960, "y": 0, "w": 1200, "h": 1800, "page": "page-1" },
+    { "file": "Dashboard.dc.html", "title": "Portal — home", "x": 0, "y": 0, "w": 1200, "h": 1100, "page": "page-2" },
+    { "file": "AddProduct.dc.html", "title": "Portal — add product (3 AI tools)", "x": 1320, "y": 0, "w": 1200, "h": 1800, "page": "page-2" },
+    { "file": "Orders.dc.html", "title": "Portal — orders", "x": 2640, "y": 0, "w": 1200, "h": 1100, "page": "page-2" },
+    { "file": "Profile.dc.html", "title": "Portal — shop & KYC", "x": 3960, "y": 0, "w": 1200, "h": 1200, "page": "page-2" },
+    { "file": "DirectionA.dc.html", "title": "A · Haat — warm editorial", "x": 0, "y": 0, "w": 1200, "h": 1080, "page": "page-3" },
+    { "file": "DirectionC.dc.html", "title": "C · Rangoli — festive colour", "x": 1320, "y": 0, "w": 1200, "h": 1080, "page": "page-3" }
+  ],
+  "annotations": [
+    { "id": "note-system", "x": 0, "y": -200, "w": 640, "page": "page-1", "text": "Direction B · Karkhana — ink on paper.\nPaper #F6F5F0 · ink #111111 · marigold #E2A100 (one accent, used only for the thing to do next) · hairlines 1px, structure 2px, no radius, no shadows.\nType: Archivo 900 for display (uppercase, tight), Archivo 500/700 for body, IBM Plex Mono for labels/IDs/prices-in-tables, Noto Sans Devanagari for Hindi.\nEvery tap target ≥ 44px. Pattern blocks stand in for photos.\nStorefront: Home → Shop listing → Product page → /sell." },
+    { "id": "note-portal", "x": 0, "y": -200, "w": 640, "page": "page-2", "text": "Seller portal in the same grammar. Every screen has a read-aloud button (सुनें) and a language switch in the top bar; sidebar items carry Hindi under English.\nAdd product is the showpiece: the three AI tools run down the left in order — Studio (with retake coaching in Hindi), Describe by voice (transcript → generated listing → read back to confirm), Price (cost inputs → floor/fair/premium → the comparables it came from, explained in Hindi). The plain form sits on the right and is pre-filled by the tools." },
+    { "id": "note-earlier", "x": 0, "y": -160, "w": 640, "page": "page-3", "text": "Kept for reference: the two unchosen sketches. Anything here can still be folded into B (e.g. C's one-colour-per-job tiles)." }
+  ],
+  "launch": { "view": "canvas", "page": "page-1" }
+}

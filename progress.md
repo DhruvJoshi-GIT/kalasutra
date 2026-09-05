@@ -1,0 +1,161 @@
+# progress.md — handoff file for the Swadesh / KalaSutra hackathon build
+
+> ## RESUME HERE — read this block first, then act as if you had done all of it yourself
+>
+> You are the engineer-designer on **Dhruv's hackathon entry**: an AI-driven marketplace + seller app for marginalised Indian artisans (problem statement in `plan.md`). You work in **`D:/swadesh/`** on Windows 11; the app is the user's private repo cloned at `D:/swadesh/pickindian` (Next.js 16, Prisma 5, PostgreSQL 17 portable at `D:/swadesh/tools/pgsql`, Node 24 at `C:/Program Files/nodejs` — add it to `PATH` in Git Bash: `export PATH="/c/Program Files/nodejs:$PATH"`). Start Postgres and `npm run dev` with the two commands under **How to run** if http://localhost:3000 does not answer.
+>
+> **Standing rules from the user (never break these):**
+> 1. **Never write to agent memory.** This folder is the only knowledge base; log every significant step here.
+> 2. **Never publish Artifacts.** Show every design or page as a local HTML file or on localhost.
+> 3. **Commit and push only when asked.** The public repo is `https://github.com/DhruvJoshi-GIT/kalasutra` (root = `D:/swadesh`, branch `main`); commit as the user only (`git config` is set locally, no co-author trailer). Never push to the `pickindian` remote.
+> 4. Build order the user chose: **website → AI features → Android app.** Sarvam AI is the language provider (1,000 free credits, fixtures mode during UI work); Claude does structured JSON, vision QC and pricing reasoning.
+> 5. Design: direction **B "Karkhana" — ink on paper** (user: "absolutely love the design"), with button/hover/press animations and the light↔dark circle-reveal transition taken from the user's own repo `DhruvJoshi-GIT/PrithviNet` (behaviour only, not its visuals). No radius, no soft shadows, one marigold accent.
+>
+> **Where you are right now (2026-09-05):** the user approved the prototype; round 1 (3 per row + spacing) and round 2 (translucent hero over a photo slider, fully fluid/responsive layout, real product photos from `D:/swadesh/photo/` cropped into `prototype/img/`) are done and screenshot-verified at phone / 1080p / ultrawide. **Then (v2 rebuild, 2026-09-05):** the user specified the full site flow and the prototype was rewritten around it — one-way hero, floating collapsible category capsule (4/5 tiles per row), product modal with details/returns/reviews/comments, functional cart + inline checkout, account with address/payment/orders and no demo data, wishlist, rounded corners everywhere, no bottom screen map. See the changelog entry. v2.1 added the high-res photos from `photo/files/`, the width-adaptive grid and the Top/Hero button; v2.2 fixed the seller login on ultrawide and made wishlist rows open the product popup. v2.3 added the five review-driven improvements (featured story tile, rhythm tiles, richer captions with maker portraits and craft word, single grid + sort, ultrawide sizing). v2.4 removed the hero page: the site opens on the shop, the featured tile is an 8-product slider, and the logo shows "KalaSutra" at the top and collapses to "K" on scroll. **Next: the user approves the prototype, then we restructure the live Next.js site to it (see "Exact next action").** Previously: the whole live site already renders in direction B; the user then hand-drew their own site vision in Excalidraw and you turned it into a clickable prototype at **`D:/swadesh/prototype/kalasutra-prototype.html`** (ten screens, hash-routed, working upload checklist). **You are waiting for the user to open that file and react.** Two guesses in it need confirming: the **S** icon = "Sell / support", the **↑** diamond = back to top.
+>
+> **Your very next move, in order:** (1) take the user's feedback on the prototype; (2) on go-ahead, restructure the live site to the prototype's layout (persistent left category sidebar, P/C/W/S icon cluster with wishlist panel + support box, hero→home scroll, breadcrumb bar, product page with Related + right column, seller upload gated by a checklist, artist portfolio, seller login with illustration, order-confirmed, profile); (3) second pass on pages still on the old layout; (4) phase 2 AI — needs `ANTHROPIC_API_KEY` and `SARVAM_API_KEY` in `D:/swadesh/pickindian/.env`.
+>
+> Read the rest of this file, then `decisions.md` (why things are the way they are) and `findings.md` (repo audit) before touching code. Talk to the user plainly and briefly; they review by clicking through, not by reading reports.
+
+> **If you are a fresh agent: read this file top to bottom, then `findings.md` and `decisions.md`. Do not write anything to agent memory — this folder is the only knowledge base. Do not publish Artifacts — everything is reviewed as local HTML or on localhost. Update this file after every significant execution.**
+
+## What this is
+
+Hackathon build: *AI-Driven Market Linkage and Smart Cataloging Mobile Application for Marginalized Artisans*. Base code is the user's private repo `InfinitelyAsymptotic/pickindian` (Next.js 16 + Prisma/Postgres marketplace), cloned at `D:/swadesh/pickindian` on branch `develop`. Full plan in `plan.md`; repo audit in `findings.md`; rationale for every decision in `decisions.md`; endpoint shapes in `api-notes.md`.
+
+**Build order (user's call): 1. website → 2. key AI features → 3. Android app.**
+
+## Current phase
+
+**Phase 1c — website design, awaiting the user's review of the hand-drawn-vision prototype.** (2026-09-04 ~19:45)
+
+State of play:
+- The live site (http://localhost:3000) runs in design direction B ("Karkhana", ink on paper) with PrithviNet's interaction language. Every page returns 200; `tsc` and lint are clean.
+- The user then hand-drew their own site vision (Excalidraw). It has been turned into a clickable local prototype: `D:/swadesh/prototype/kalasutra-prototype.html`. **The user has not reviewed it yet.**
+- Nothing has been committed to git (user has never asked for a commit).
+
+## Status board
+
+| Item | State |
+|---|---|
+| Knowledge base (`D:/swadesh/*.md`) | ✅ |
+| Repo cloned to `D:/swadesh/pickindian` | ✅ |
+| Node.js LTS | ✅ v24.19.0 via winget (`C:/Program Files/nodejs`) |
+| PostgreSQL 17.11 (portable, `D:/swadesh/tools/pgsql`, data `D:/swadesh/pgdata`) | ✅ running on :5432, user `postgres` / `postgres` |
+| `npm install`, `.env`, `db:push`, `db:seed` | ✅ |
+| Buyer storefront | ✅ home, listing, product page, cart, checkout (checkout is simulated — pre-existing) |
+| `next.config.ts` image hosts (pre-existing bug) | ✅ fixed |
+| Schema extended (ARTISAN/BUYER roles, ArtisanProfile, AI fields on Product/ProductImage, VoiceNote, PriceSuggestion, Enquiry, OtpChallenge, AiCache) | ✅ pushed |
+| Role in NextAuth JWT/session + `/artisan/*` middleware guard | ✅ |
+| Local file storage + `POST /api/upload` + `GET /api/files/<key>` | ✅ |
+| Artisan APIs: profile (GET/POST/PUT), products (list/create/get/patch/delete), orders (list/patch status) | ✅ smoke-tested via curl as `priya@kalasetu.in` |
+| `/sell` onboarding page | ✅ renders in the new design |
+| `/artisan` portal: dashboard, products, new/edit product form, orders, profile + KYC, enquiries placeholder | ✅ renders in the new design |
+| Seed: 3 artisans (Priya/Bagru VERIFIED, Meera/Madhubani SUBMITTED, Ramesh/Moradabad PENDING) × 3 products each + 4 demo orders | ✅ |
+| Design system in code (`globals.css` tokens light + dark, `.neo` interactions, fonts) | ✅ |
+| Design direction B applied to: home, header, footer, product card, listing, `/sell`, portal shell, dashboard, product form | ✅ |
+| Pages wearing new tokens but still old layout: product detail, cart, checkout, account/*, login/signup, `ProductFilters`, portal products/orders/profile lists | ⬜ second pass pending |
+| Hand-drawn vision prototype (`D:/swadesh/prototype/kalasutra-prototype.html`) | ✅ built · ⬜ **user review pending** |
+| Restructure live site to the hand-drawn IA (sidebar-first, P/C/W/S, upload checklist) | ⬜ after review |
+| AI: image studio / voice cataloguer / pricing | ⬜ phase 2 — three disabled tool cells on the product form (`data-ai-hook`) |
+| Dataset bootstrap (~500 flagged-synthetic SKUs) | ⬜ phase 2 |
+| B2B enquiry + GeM CSV export | ⬜ later (enquiries page is an empty state) |
+| Buyer checkout actually creating orders (pre-existing gap) | ⬜ later |
+| Android app (Expo) | ⬜ phase 3 |
+| Git: public repo `DhruvJoshi-GIT/kalasutra` (prototype + docs + photos) | ✅ pushed 2026-09-05 · the Next.js app is not in it yet |
+
+## What works end-to-end today
+
+1. Start Postgres + `npm run dev`, open http://localhost:3000 — storefront with 19 seeded products, new design, theme toggle bottom-right.
+2. Log in as an artisan (`priya@kalasetu.in` / `password123`) → header shows **My shop** → `/artisan` dashboard: three tiles, numbers, "needs your action" with a working **Accept**.
+3. `/artisan/products/new` — upload photos (stored under `D:/swadesh/pickindian/storage`), fill the numbered sections, publish → product appears in the shop under her brand and origin.
+4. `/artisan/orders` — change status, add tracking. `/artisan/profile` — shop details, languages, payout, KYC uploads.
+5. `/sell` — a new visitor creates an artisan account in one form.
+6. `D:/swadesh/prototype/kalasutra-prototype.html` — the hand-drawn vision as ten clickable screens (see below).
+
+## Exact next action
+
+1. **Wait for the user's review of the prototype.** Two interpretations to confirm with them: the **S** icon = "Sell / support" (their arrow pointed it at "Contact"); the diamond **↑** at top-right = back-to-top.
+2. On their go-ahead, restructure the live site to the prototype's information architecture: persistent left category sidebar, P/C/W/S icon cluster with wishlist panel + support box, hero → home scroll, breadcrumb bar on listing, product page with Related + right column, seller upload with the gated checklist, artist portfolio page, seller login with the illustration, order-confirmed page, profile page.
+3. Then the second pass on the pages still on the old layout (list above).
+4. Then **phase 2 (AI)**: `src/lib/ai/sarvam.ts` wrapper with fixtures mode → voice cataloguer → studio → pricing. Needs `ANTHROPIC_API_KEY` and `SARVAM_API_KEY` in `.env`.
+
+## How to run
+
+```powershell
+# 1. Postgres (portable) — once per boot
+D:\swadesh\tools\pgsql\bin\pg_ctl -D D:\swadesh\pgdata -l D:\swadesh\pg.log start
+# 2. App
+cd D:\swadesh\pickindian; npm run dev        # http://localhost:3000
+# Useful
+npm run db:seed                              # wipes + reseeds everything
+npx prisma studio                            # DB browser
+npx tsc --noEmit; npx eslint src             # checks (pre-existing lint errors in product-filters.tsx / cart-drawer.tsx are out of scope)
+```
+
+Logins (all `password123`): buyer `demo@pickindian.com` · artisans `priya@kalasetu.in`, `meera@kalasetu.in`, `ramesh@kalasetu.in`.
+
+**Memory note:** on 2026-09-04 Windows killed the dev server and Postgres for low memory. If localhost stops answering, run the two start commands above.
+
+## Design system (in code)
+
+- Direction **B — "Karkhana", ink on paper** (user's pick, "absolutely love the design"). Paper `#F6F5F0`, ink `#111111`, one accent marigold `#E2A100` (only for the next action), hairlines 1px / structure 2px, no radius, no soft shadows. Dark mode inverts ink/paper, marigold stays.
+- Type: Archivo 900 display (uppercase, tight), Archivo 500/700 body, IBM Plex Mono labels/IDs, Noto Sans Devanagari for Hindi — all via `next/font` in `src/app/layout.tsx`. Utilities `.display` `.label` `.mono` `.hi` in `src/app/globals.css`.
+- Interactions (from the user's repo `DhruvJoshi-GIT/PrithviNet`, behaviour only): `.neo` hard 3px offset shadow → 4px + `translate(-1,-1)` on hover → flat + `translate(3,3)` on press; `.neo-card` lifts to 5px; `.neo-press` nudges 2px; inputs grow a marigold offset shadow on focus; theme toggle (`src/components/ui/theme-toggle.tsx`, `src/components/providers/theme-provider.tsx`) uses `document.startViewTransition` with a circle reveal from bottom-right; `localStorage['ks-theme']`; anti-flash script in `<head>`.
+- Files rewritten for the system: `globals.css`, `layout.tsx`, `components/ui/{button,card,input,select,textarea,badge,avatar}.tsx`, `components/layout/{header,footer}.tsx`, `components/products/product-card.tsx`, `app/page.tsx`, `app/(shop)/products/page.tsx`, `app/(shop)/sell/page.tsx`, `app/(artisan)/artisan/{layout,page}.tsx`, `app/(artisan)/artisan/enquiries/page.tsx`, `components/artisan/product-form.tsx`. Every other file had `rounded-*`/`shadow-*` classes stripped and was reformatted with Prettier (`--no-semi --single-quote --trailing-comma es5 --print-width 100`).
+- Design working files (kept for reference; the Artifact canvases were deleted by the user and must not be republished): `D:/swadesh/design/directions/*.dc.html` + `canvas.json`.
+
+## Hand-drawn vision → prototype
+
+- Source: `C:/Users/Dhruv/Downloads/Untitled-2026-09-03-2216.excalidraw`; rasterised screens in `D:/swadesh/scratch/sketch/*.png` (re-render with the Pillow script if needed).
+- Screens in the sketch: hero (double frame, centred block, "Scroll"); home (On sale / Recommended, W → scrollable wishlist panel, S → Contact box); listing (breadcrumb x › y › z + sort box, 5-wide grid); product detail (Related 2×2, right column: image, price, details, buy → / cart); seller upload (photo → AI description + Edit → price approx → **submit only when the checklist is OK**; checklist Photo/Description/Price); artist portfolio (portrait, NAME, bio, work grid; story in English/Hindi translated by LLM + regional language given by seller, toggle); seller login (form + "motivational auraat" illustration promoting sellers); seller home (same chrome + breadcrumb + **+** add); cart (rows + "List of items" Name/Price → arrow); order confirmed (tick, "Order Confirmed", धन्यवाद); profile (Address / Payment / Your orders, avatar, details box).
+- Shared chrome: square logo top-left, search bar, icon cluster **P C W S**, ↑ button, left category sidebar with three filter dots.
+- Prototype: `D:/swadesh/prototype/kalasutra-prototype.html` (+ `prototype/img/*.jpg`, the cropped product photos; `photo/1.png`, `photo/2.png` are the user's source collages) — hash-routed, ink-on-paper system, PrithviNet interactions, working upload checklist (Upload → Describe → price → Submit unlocks), EN⇄हिन्दी story toggle, theme toggle, screen-map bar at the bottom. Verified: every screen template renders (node dry run), no syntax errors.
+
+## Env vars
+
+| Var | Where | Status |
+|---|---|---|
+| `DATABASE_URL` | `.env` | ✅ `postgresql://postgres:postgres@localhost:5432/pickindian` |
+| `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `AUTH_TRUST_HOST` | `.env` | ✅ |
+| `GOOGLE_CLIENT_ID/SECRET` | `.env` | empty — Google login only |
+| `ANTHROPIC_API_KEY` | `.env` | ⬜ user to provide before phase 2 |
+| `SARVAM_API_KEY` | `.env` | ⬜ user to provide before phase 2 (1,000 free credits) |
+| `SARVAM_FIXTURES` | `.env` | `1` — replay canned responses during UI work |
+| `VOYAGE_API_KEY`, `FAL_KEY` | `.env` | ⬜ optional (embeddings, background matting) |
+| `STORAGE_DIR` | `.env` | unset → defaults to `<repo>/storage` |
+
+## Sarvam credits remaining
+
+1,000 (none used yet).
+
+## Open questions for the user
+
+- Prototype review: does it match the drawing? Confirm **S** = Sell/support and **↑** = back to top.
+- Should the live site be restructured to the hand-drawn IA now (before the AI phase)?
+- App name — `KalaSutra` is a placeholder (used in seed emails `@kalasetu.in`).
+- API keys: Anthropic, Sarvam — needed before phase 2.
+- Git: commit on `develop` or a `feat/artisan-portal` branch? Nothing committed yet.
+- Buyer↔seller comms: the problem statement never mentions it (only "connect directly with larger B2B buyers"); recommendation logged — enquiry → quote as core, voice-reply thread and SMS/WhatsApp notifications as later differentiators.
+
+## Changelog (newest first)
+
+- **2026-09-05 (v2.5 — renamed to KalaSutra, public repo)** — User renamed the product **KalaSetu → KalaSutra** (prototype logo/title/footer/support email, docs, design files; the prototype file is now `prototype/kalasutra-prototype.html`; the live app's seed logins still use `@kalasetu.in` until the app is restructured). Created the **public GitHub repo `DhruvJoshi-GIT/kalasutra`** through the account's stored Git credential (scope `repo`), with `D:/swadesh` as the repo root: `.gitignore` excludes `tools/ pgdata/ pickindian/ scratch/ *.log`; `README.md` documents the project, the prototype flow and the design system. Commits are authored as the user only (`Dhruv Joshi <87961604+DhruvJoshi-GIT@users.noreply.github.com>`, no co-author trailer — user's explicit wish so their avatar shows on every commit). Standing rule 3 now reads: commit/push to this repo when the user asks; never touch `pickindian` remotes.
+- **2026-09-05 (v2.4 — hero removed)** — User: drop the hero page; the site opens straight on the shop. The featured tile is now a **slider of 8 products** (`FEATURED[]`, `.ftrack` translateX, ‹ › + dots on the photo, auto-advance 5s, pauses on hover, arrows/dots stop propagation so they don't open the product). The **logo** carries the name: at the top of the page the K tile stretches into a rounded "KalaSutra" tile; once scrolled (>40px) it shrinks back to the square K (`paintTop()` toggles `.logo.wide` on scroll). The ↑ button is plain "Top" again. All hero code, `?nohero`, and `sessionStorage['ks-hero']` are gone. Verified at 1920 / 3440 / 390 (slide 1 and slide 3, top and scrolled).
+- **2026-09-05 (v2.3 — the "five things")** — I reviewed the site as customer / artisan / developer and the user asked for the top five: (1) **Featured story tile** at the top of the home page instead of "On sale": one product per week (rotates through `FEATURED[]` by week number) with the maker's portrait, craft, place, a line of their story, price, "See the piece" (opens the popup) and "Meet the maker". (2) **Rhythm**: every 7th tile is double-width (`.card.wide`, `grid-auto-flow:dense`, photo absolutely filled so it never changes the row height). (3) **Tile caption**: tiny round maker portrait + name · place, product name, one **craft word** (`CRAFT{}` per product, e.g. "Kanjivaram silk", "Gota patti"), price bold and larger; discount is a quiet grey strikethrough only — the green "% off" badge is gone from the popup too. (4) **Each product shown once** (the "On sale" grid is removed) and a **sort control** (Newest · Price low→high · Price high→low · Discounted first · Name A–Z) in the section header; search also matches the craft word and Hindi name. (5) **Ultrawide**: above 2200px tiles have a 360px minimum and slightly larger type, so wide screens get bigger photos rather than more of them; the featured photo is capped at 62vh. Verified by screenshots at 390 / 1920 / 3440. **The user said they will approve before we move on to the live site.**
+- **2026-09-05 (v2.2)** — (1) **Seller login scales with the screen** (user: not adapting on the 3440 monitor): the two panels now stretch to the full viewport height (was `align-items:start` from `.split`), hatched panel fills, heading/inputs/button/illustration use `clamp()`/vw so they grow on ultrawide and the illustration shrinks (`flex:1;min-height:0;max-height:40vh`) so nothing falls below the fold. (2) **Wishlist rows open the product popup** on click (thumb + name are one link; panel closes); + Cart / ✕ remain. Verified with screenshots at 1920 and 3440.
+- **2026-09-05 (v2.1)** — (1) **High-res photos**: the user supplied the 25 original files in `D:/swadesh/photo/files/` (jpg/webp, up to 2000px). Converted to progressive JPEGs ≤1600px under the same names in `prototype/img/` (≈4 MB total); the jute-box shot had a shop logo cropped off the corner. The old collage crops are gone. Tiles/modal/hero use `object-position` so faces stay in frame on portrait shots. Hero slides now use the sharpest files (saree-green, bangles-rack, dolls, bead-earrings, drawers). (2) **Adaptive grid**: user reported one tile per row after expanding the capsule; fixed by dropping the fixed 4/5 columns — `.grid.shop` is now `repeat(auto-fill, minmax(260px,1fr))` (200px under 1100px, 2 columns under 600px), so the count follows the width and the capsule just removes a column (≈5 open / 6 closed at 1920, 3 at 1280). (3) **↑ button**: reads "Top" when scrolled down (scrolls to top); at the top it reads "Hero" and clicking brings the splash back (`buildHero(true)`), which can then be dismissed again as usual.
+- **2026-09-05 (v2 rebuild)** — User gave the full flow spec; `prototype/kalasutra-prototype.html` rewritten from scratch (old file archived at `prototype/archive/kalasutra-prototype-v1-2026-09-05.html`). What it now is: **one-way hero** (fixed splash with the photo slider; scroll/swipe/key/click dismisses it, `sessionStorage['ks-hero']` keeps it gone for the session, no way back); sticky header with **rounded-square K**, pill search that filters live, **P / C / W / S / ↑** rounded buttons, **C and W carry count badges**; **floating category capsule** on the left (rounded, collapsible ‹/›, state in `ks-side`; expanded = 4 tiles per row, collapsed = 5, 6/8 above 2200px, auto-fill below 1100px, 2 on phones, horizontal chip strip under 900px); the three filter dots are gone; **categories filter for real** (All · Sarees & textiles · Menswear · Jewellery · Footwear · Home & decor · Art & craft · Toys & games — taken from what is in the photos); 25 products, all photos used. **Product = modal popup** (no product page, no Related grid): gallery, title, Hindi name, maker link, stars, price/discount, qty, Add to cart / Buy now / Wishlist, then Details, Shipping & returns (policy text), Reviews (star picker + form), Comments & questions (form) — reviews/comments are stored locally, empty until someone writes one. **Cart is functional** (`ks-cart` in localStorage): qty ±, remove, subtotal, shipping rule (free ≥ ₹999 else ₹79), small horizontal "You may also like" strip, and **checkout inline**: choose/add address, choose/add UPI or card (validated), Place order → order stored → Order-confirmed page. **Account**: name/phone/email, Address / Payment / Your orders accordions — **no demo data**, empty states until the user adds something; orders appear only after a real checkout. **Wishlist** works (♥ on tiles, panel with add-to-cart/remove). Seller side kept (login → my products → add product with checklist; a submitted listing is stored in `ks-extra` and shows in the shop). Artist pages per maker (`#artist/<key>`). **All boxes/buttons/inputs/tiles are rounded** (`--r:14px`, tiles 12px, capsule 18px). The bottom screen-map bar is removed; navigation is the site's own. Testing switch: `?nohero` in the URL skips the splash. Verified via headless Edge screenshots: hero, shop (open/closed capsule), category filter, modal, cart (empty checkout + ready checkout), account (with and without data), 3440px, and 390px phone frames for shop/modal/cart.
+- **2026-09-05 (later)** — Second round of prototype feedback, all done in `prototype/kalasutra-prototype.html`: (1) **hero** — centre box is now translucent (74% paper + blur) over a photo/video **slider** behind it (5 slides, auto-advance 4.5s, ‹ › + dots, Ken Burns drift; list is `HERO[]` at the top of the script — `{type:'video',src:'img/x.mp4'}` works; current slides are crops from the collages so they look soft at full screen until real hero photos/videos are dropped in); (2) **responsive** — app is full-width (no 1280px cap), sidebar/paddings/aside columns are `clamp()`-fluid, product grids use `auto-fill` (≈3 columns at 1920, 5 at 3440, 1 on phones), all two-column screens stack under 900px, bar wraps the search under 700px, category sidebar becomes a horizontal strip on phones; (3) **real photos** — the two collages in `D:/swadesh/photo/` were cropped with Pillow into 25 JPGs in `prototype/img/` (552 KB); product data `P[]` rewritten to 20 real items matching the photos (sarees, Pattachitra plate, Warli planter, marble vases, cane baskets, jewellery, juttis, kolhapuris…), `Jewellery` category added, all SVG placeholder patterns removed. Verified with headless Edge screenshots at 390 / 1920 / 3440 px for every screen.
+- **2026-09-05** — User reviewed the prototype: "good", one change — product grids were cluttered (4–5 per row, touching). Fixed in `prototype/kalasutra-prototype.html`: every product grid (home On sale/Recommended, listing, seller products, artist Work) is now **3 per row** with 28px gaps + padding, each card has its own 1px border and a neo lift on hover; Related on the product page stays 2×2 but spaced; 2 per row under 1180px. No other feedback yet on S / ↑ icons.
+- **2026-09-04 19:45** — `progress.md` rewritten as a clean handoff at the user's request.
+- **2026-09-04 19:40** — Clickable prototype of the user's hand-drawn vision written to `D:/swadesh/prototype/kalasutra-prototype.html`; all screens dry-run rendered.
+- **2026-09-04 19:20** — Windows killed the dev server + Postgres (low memory); both restarted, site verified.
+- **2026-09-04 19:00** — Design direction B ported to the live site with PrithviNet interactions and dark mode. tsc + lint clean; all storefront + portal pages 200 as Priya. A strip script wrecked indentation in 55 files; fixed with Prettier.
+- **2026-09-04 18:30** — User: no more Artifacts; review via local HTML / localhost only. Design canvases deleted by the user.
+- **2026-09-04 18:10** — User picked direction B. Full website design canvas produced (8 boards + 2 reference sketches).
+- **2026-09-04 17:30** — First design canvas (three directions, then a folk-painted board after a reference image).
+- **2026-09-04 16:50** — Verified via curl as Priya: product create → visible in shop → PDP → PATCH → DELETE; order PENDING→CONFIRMED; ownership check (Meera → 404); upload round-trip. tsc + eslint clean.
+- **2026-09-04 16:40** — Phase 1 artisan portal built: schema extension, role-aware auth + middleware, local storage + upload, artisan APIs, `/sell`, `/artisan` dashboard/products/orders/profile+KYC. Seed extended with 3 artisans + 4 orders.
+- **2026-09-04 16:05** — Node 24.19 installed; Postgres 17.11 portable initialised; `.env`; `db:push` + `db:seed` green; storefront verified. Fixed pre-existing `next/image` host bug.
+- **2026-09-04 15:50** — Repo audited (`findings.md`). Plan agreed. Knowledge base created. Decided: portable Postgres instead of Docker; in-process kNN instead of pgvector.

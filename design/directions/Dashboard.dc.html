@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+Devanagari:wght@500;700&display=swap">
+  <style>
+    body { margin: 0; background: #F6F5F0; }
+    a { color: #111111; text-decoration: underline; } a:hover { color: #B07A00; }
+    .mono { font-family: 'IBM Plex Mono', 'Consolas', monospace; }
+    .hi { font-family: 'Noto Sans Devanagari', 'Nirmala UI', sans-serif; }
+  </style>
+</helmet>
+<div style="width: 1200px; min-height: 1100px; background: #F6F5F0; color: #111111; font-family: 'Archivo', 'Arial Narrow', system-ui, sans-serif; display: flex; flex-direction: column;">
+
+  <!-- Portal top bar -->
+  <div style="display: flex; align-items: stretch; background: #111111; color: #F6F5F0; border-bottom: 2px solid #111111;">
+    <div style="display: flex; align-items: center; gap: 12px; padding: 16px 32px; border-right: 1px solid #F6F5F0;"><span style="font-weight: 900; font-size: 22px; letter-spacing: -0.03em;">KALASUTRA</span><span class="mono" style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; background: #E2A100; color: #111111; padding: 2px 8px;">Seller portal</span></div>
+    <div style="display: flex; align-items: center; gap: 10px; padding: 0 24px; flex: 1;"><span style="font-size: 14px; font-weight: 700;">Priya Devi Block Prints</span><span class="mono" style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid #F6F5F0; padding: 1px 8px;">Verified</span></div>
+    <div style="display: flex; align-items: center; gap: 8px; padding: 0 20px; border-left: 1px solid #F6F5F0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F6F5F0" stroke-width="2" stroke-linecap="square"><path d="M4 10v4h4l5 4V6L8 10z"></path><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"></path></svg><span class="hi" style="font-size: 14px; font-weight: 700;">सुनें</span></div>
+    <div style="display: flex; align-items: center; padding: 0 20px; border-left: 1px solid #F6F5F0;" class="mono"><span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;">हिन्दी ▾</span></div>
+    <div style="display: flex; align-items: center; padding: 0 20px; border-left: 1px solid #F6F5F0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;">Sign out</div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 240px minmax(0, 1fr); flex: 1;">
+    <!-- Sidebar -->
+    <div style="display: flex; flex-direction: column; border-right: 2px solid #111111;">
+      <div style="display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #111111; background: #E2A100;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="square"><rect x="3" y="3" width="8" height="8"></rect><rect x="13" y="3" width="8" height="8"></rect><rect x="3" y="13" width="8" height="8"></rect><rect x="13" y="13" width="8" height="8"></rect></svg><div style="display: flex; flex-direction: column;"><span style="font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em;">Home</span><span class="hi" style="font-size: 12px; font-weight: 500;">होम</span></div></div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #111111;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="square"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"></path><path d="M3 7l9 4 9-4M12 11v10"></path></svg><div style="display: flex; flex-direction: column;"><span style="font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em;">My products</span><span class="hi" style="font-size: 12px; font-weight: 500;">मेरे प्रोडक्ट</span></div></div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #111111;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="square"><path d="M4 7h16v13H4z"></path><path d="M8 7V5h8v2"></path></svg><div style="display: flex; flex-direction: column;"><span style="font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em;">Orders <span class="mono" style="font-size: 11px; font-weight: 500; background: #111111; color: #F6F5F0; padding: 1px 6px; margin-left: 4px;">2</span></span><span class="hi" style="font-size: 12px; font-weight: 500;">ऑर्डर</span></div></div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #111111;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="square"><path d="M3 10l2-6h14l2 6"></path><path d="M3 10v11h18V10"></path><path d="M9 21v-7h6v7"></path></svg><div style="display: flex; flex-direction: column;"><span style="font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em;">Shop &amp; KYC</span><span class="hi" style="font-size: 12px; font-weight: 500;">मेरी दुकान</span></div></div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #111111;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="square"><path d="M4 4h16v12H8l-4 4z"></path></svg><div style="display: flex; flex-direction: column;"><span style="font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em;">Bulk enquiries <span class="mono" style="font-size: 11px; font-weight: 500; background: #E2A100; padding: 1px 6px; margin-left: 4px;">1</span></span><span class="hi" style="font-size: 12px; font-weight: 500;">थोक पूछताछ</span></div></div>
+      <div style="margin-top: auto; display: flex; flex-direction: column; gap: 6px; padding: 16px 20px; border-top: 2px solid #111111;" class="mono"><span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #555;">Help</span><span style="font-size: 13px;">Call 1800-[NUMBER]</span><span class="hi" style="font-size: 13px; font-family: 'Noto Sans Devanagari', sans-serif;">व्हाट्सऐप पर पूछें</span></div>
+    </div>
+
+    <!-- Content -->
+    <div style="display: flex; flex-direction: column;">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; padding: 28px 32px 20px; border-bottom: 2px solid #111111;">
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span class="hi" style="font-size: 16px; font-weight: 700;">नमस्ते, प्रिया जी</span>
+          <h1 style="margin: 0; font-size: 44px; line-height: 0.95; font-weight: 900; letter-spacing: -0.04em; text-transform: uppercase;">Namaste, Priya Devi</h1>
+          <span class="mono" style="font-size: 12px; color: #555;">Block printing · Bagru, Jaipur, Rajasthan</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border: 2px solid #111111;" class="mono"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2.5" stroke-linecap="square"><path d="M5 12l5 5 9-10"></path></svg><span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;">KYC verified · payouts on</span></div>
+      </div>
+
+      <!-- Three big tiles -->
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 2px solid #111111;">
+        <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 28px; background: #E2A100; border-right: 2px solid #111111; min-height: 180px;">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="square"><rect x="3" y="3" width="18" height="18"></rect><path d="M12 8v8M8 12h8"></path></svg>
+          <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em; line-height: 1;">Add product</span><span class="hi" style="font-size: 20px; font-weight: 700;">नया प्रोडक्ट</span></div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 28px; border-right: 2px solid #111111;">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="square"><path d="M4 7h16v13H4z"></path><path d="M8 7V5h8v2"></path><path d="M4 12h16"></path></svg>
+          <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em; line-height: 1;">Orders <span class="mono" style="font-size: 14px; font-weight: 500; background: #111111; color: #F6F5F0; padding: 2px 8px; vertical-align: middle;">2 new</span></span><span class="hi" style="font-size: 20px; font-weight: 700;">2 नए ऑर्डर</span></div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 28px;">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="square"><path d="M3 10l2-6h14l2 6"></path><path d="M3 10v11h18V10"></path><path d="M9 21v-7h6v7"></path></svg>
+          <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em; line-height: 1;">My shop</span><span class="hi" style="font-size: 20px; font-weight: 700;">मेरी दुकान</span></div>
+        </div>
+      </div>
+
+      <!-- Numbers -->
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-bottom: 2px solid #111111;">
+        <div style="display: flex; flex-direction: column; gap: 6px; padding: 20px 28px; border-right: 1px solid #111111;"><span class="mono" style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #555;">Products live</span><span style="font-size: 40px; font-weight: 900; letter-spacing: -0.04em; line-height: 1;">3</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; padding: 20px 28px; border-right: 1px solid #111111;"><span class="mono" style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #555;">Orders this month</span><span style="font-size: 40px; font-weight: 900; letter-spacing: -0.04em; line-height: 1;">4</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; padding: 20px 28px; border-right: 1px solid #111111;"><span class="mono" style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #555;">Paid sales</span><span style="font-size: 40px; font-weight: 900; letter-spacing: -0.04em; line-height: 1;">₹8,797</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; padding: 20px 28px; background: #E2A100;"><span class="mono" style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;">Next payout</span><span style="font-size: 40px; font-weight: 900; letter-spacing: -0.04em; line-height: 1;">₹3,798</span><span class="mono" style="font-size: 11px;">Fri · to UPI</span></div>
+      </div>
+
+      <!-- Orders needing action -->
+      <div style="display: flex; flex-direction: column; border-bottom: 2px solid #111111;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 28px; border-bottom: 1px solid #111111;"><span class="mono" style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;">Needs your action</span><span class="mono" style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: underline;">All orders</span></div>
+        <div style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 110px 120px 140px; align-items: center; padding: 14px 28px; border-bottom: 1px solid #111111;">
+          <span class="mono" style="font-size: 13px;">#PIRSTV9SR</span><span style="font-size: 15px; font-weight: 700;">Block Print Cotton Saree × 2</span><span class="mono" style="font-size: 13px;">₹3,798</span><span class="mono" style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; background: #E2A100; padding: 3px 8px; justify-self: start;">New</span><div style="display: inline-flex; align-items: center; justify-content: center; height: 40px; background: #111111; color: #F6F5F0; font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em;">Accept</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 110px 120px 140px; align-items: center; padding: 14px 28px;">
+          <span class="mono" style="font-size: 13px;">#ENQ-0007</span><span style="font-size: 15px; font-weight: 700;">Bulk: 50 × Madder Red Table Runner <span class="mono" style="font-size: 12px; font-weight: 400; color: #555;">— Hotel buyer, Udaipur</span></span><span class="mono" style="font-size: 13px;">target ₹700</span><span class="mono" style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid #111111; padding: 2px 8px; justify-self: start;">Enquiry</span><div style="display: inline-flex; align-items: center; justify-content: center; height: 40px; border: 2px solid #111111; font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em;">Send quote</div>
+        </div>
+      </div>
+
+      <!-- Products -->
+      <div style="display: flex; flex-direction: column;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 28px; border-bottom: 1px solid #111111;"><span class="mono" style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;">My products — 3</span><span class="mono" style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: underline;">Manage</span></div>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));">
+          <div style="display: flex; gap: 14px; padding: 16px 28px; border-right: 1px solid #111111;"><div style="width: 64px; height: 64px; background: #274B7A; border: 1px solid #111111;"></div><div style="display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 14px; font-weight: 700; line-height: 1.2;">Block Print Cotton Saree</span><span class="mono" style="font-size: 12px; color: #555;">₹1,899 · 25 in stock</span><span class="mono" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; background: #111111; color: #F6F5F0; padding: 2px 6px; align-self: flex-start;">Live · AI listing</span></div></div>
+          <div style="display: flex; gap: 14px; padding: 16px 28px; border-right: 1px solid #111111;"><div style="width: 64px; height: 64px; background: #DCE6EE; border: 1px solid #111111;"></div><div style="display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 14px; font-weight: 700; line-height: 1.2;">Blue Pottery Dinner Set (21)</span><span class="mono" style="font-size: 12px; color: #555;">₹4,999 · 12 in stock</span><span class="mono" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; background: #111111; color: #F6F5F0; padding: 2px 6px; align-self: flex-start;">Live</span></div></div>
+          <div style="display: flex; gap: 14px; padding: 16px 28px;"><div style="width: 64px; height: 64px; background: #C9B896; border: 1px solid #111111;"></div><div style="display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 14px; font-weight: 700; line-height: 1.2;">Handcrafted Wooden Chess Set</span><span class="mono" style="font-size: 12px; color: #555;">₹4,999 · 3 in stock</span><span class="mono" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid #111111; padding: 2px 6px; align-self: flex-start;">Low stock</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

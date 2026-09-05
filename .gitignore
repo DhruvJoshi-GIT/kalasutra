@@ -1,0 +1,12 @@
+# local machine only — never part of the repo
+tools/
+pgdata/
+pickindian/
+scratch/
+*.log
+.env
+.env.*
+node_modules/
+storage/
+Thumbs.db
+.DS_Store

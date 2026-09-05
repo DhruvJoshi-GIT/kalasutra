@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KalaSutra — prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+Devanagari:wght@500;700&display=swap">
+<script>(function(){try{if(localStorage.getItem('ks-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}})();</script>
+<style>
+/* ── KalaSutra system: ink on paper, rounded ─────────────────────── */
+:root{--bg:#F6F5F0;--fg:#111111;--muted:#555555;--acc:#E2A100;--acc2:#B07A00;--sec:#E7E4DA;--sec2:#DDD9CC;--ink:#111111;--ok:#1F6B3A;--err:#B3261E;
+ --r:14px;--rs:10px;--pad:clamp(14px,1.8vw,32px);--cap:224px;--capc:58px}
+.dark{--bg:#111111;--fg:#F6F5F0;--muted:#A8A49A;--acc:#E2A100;--acc2:#F2B92E;--sec:#1E1E1C;--sec2:#2A2A27;--ink:rgba(246,245,240,.55);--ok:#4CAF6E;--err:#E05A4C}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--fg);transition:background-color .3s ease,color .3s ease}
+body{font-family:'Archivo','Arial Narrow',system-ui,sans-serif;font-weight:500;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh}
+body.lock{overflow:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit}
+.mono{font-family:'IBM Plex Mono',Consolas,monospace}
+.hi{font-family:'Noto Sans Devanagari','Nirmala UI',sans-serif}
+.label{font-family:'IBM Plex Mono',Consolas,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.display{font-weight:900;text-transform:uppercase;letter-spacing:-.04em;line-height:.95}
+.muted{color:var(--muted)}
+.ok{color:var(--ok)}.err{color:var(--err)}
+/* view transition: circle reveal from the toggle */
+::view-transition-old(root){animation:none;z-index:1}
+::view-transition-new(root){animation:vt .9s cubic-bezier(.22,1,.36,1) forwards;z-index:2}
+@keyframes vt{from{clip-path:circle(0% at calc(100% - 2.9rem) calc(100% - 2.9rem))}to{clip-path:circle(160% at calc(100% - 2.9rem) calc(100% - 2.9rem))}}
+::view-transition-image-pair(root){isolation:isolate}
+/* tactile (PrithviNet behaviour) */
+.neo{box-shadow:3px 3px 0 0 var(--ink);transition:box-shadow .12s ease-in-out,transform .12s ease-in-out,background-color .15s,color .15s;will-change:transform;user-select:none;-webkit-tap-highlight-color:transparent}
+.neo:hover:not(:disabled){box-shadow:4px 4px 0 0 var(--ink);transform:translate(-1px,-1px)}
+.neo:active:not(:disabled){box-shadow:0 0 0 0 var(--ink);transform:translate3d(3px,3px,0)}
+.press{transition:transform .08s linear,background-color .1s linear,color .1s linear}
+.press:active{transform:translate(2px,2px)}
+@keyframes sun-spin{to{transform:rotate(360deg)}}
+@keyframes moon-glow{0%,100%{filter:drop-shadow(0 0 3px rgba(226,161,0,.5))}50%{filter:drop-shadow(0 0 9px rgba(226,161,0,.9))}}
+.sun{animation:sun-spin 12s linear infinite}.moon{animation:moon-glow 3s ease-in-out infinite}
+/* primitives */
+.box{border:2px solid var(--fg);border-radius:var(--r);background:var(--bg)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border:2px solid var(--fg);border-radius:var(--rs);background:var(--bg);color:var(--fg);font:900 12px/1 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;white-space:nowrap}
+.btn.lg{min-height:52px;padding:0 28px;font-size:14px}
+.btn.sm{min-height:36px;padding:0 14px;font-size:11px}
+.btn.ink{background:var(--fg);color:var(--bg)}
+.btn.acc{background:var(--acc);color:#111}
+.btn.ghost{border-color:transparent}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+input,textarea,select{width:100%;min-height:46px;background:var(--bg);color:var(--fg);border:2px solid var(--fg);border-radius:var(--rs);padding:10px 14px;font:500 15px 'Archivo',sans-serif;transition:box-shadow .08s linear}
+textarea{min-height:90px;resize:vertical}
+input::placeholder,textarea::placeholder{color:var(--muted)}
+input:focus,textarea:focus,select:focus{outline:none;box-shadow:3px 3px 0 0 var(--acc)}
+.field{display:flex;flex-direction:column;gap:4px}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.form .full{grid-column:1/-1}
+.empty{padding:26px 20px;border:2px dashed var(--fg);border-radius:var(--r);text-align:center;color:var(--muted);font-size:14px;display:flex;flex-direction:column;gap:10px;align-items:center}
+/* header */
+.bar{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:14px;padding:12px var(--pad);background:var(--bg);border-bottom:2px solid var(--fg)}
+.logo{width:48px;height:48px;flex:none;border:2px solid var(--fg);border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:24px;letter-spacing:-.04em;background:var(--fg);color:var(--bg);cursor:pointer}
+.search{flex:1;display:flex;align-items:center;gap:10px;padding:0 16px;border:2px solid var(--fg);border-radius:999px;min-height:46px;max-width:720px;color:var(--muted)}
+.search input{border:0;min-height:0;padding:0;background:transparent;box-shadow:none!important;font-size:14px;border-radius:0}
+.icons{display:flex;gap:8px;margin-left:auto}
+.icell{position:relative;width:54px;height:48px;border:2px solid var(--fg);border-radius:var(--rs);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;cursor:pointer;background:var(--bg)}
+.icell:hover{background:var(--sec)}
+.icell .k{font:900 15px 'Archivo';letter-spacing:-.02em}
+.icell .t{font:400 8px/1 'IBM Plex Mono';letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.icell.acc{background:var(--acc);color:#111}.icell.acc .t{color:#111}.icell.acc:hover{background:var(--acc2)}
+.badge{position:absolute;top:-9px;right:-9px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:var(--acc);color:#111;border:2px solid var(--fg);font:900 11px/1 'Archivo';display:flex;align-items:center;justify-content:center}
+.badge:empty{display:none}
+/* floating capsule */
+.cap{position:fixed;left:14px;top:86px;z-index:30;width:var(--cap);border:2px solid var(--fg);border-radius:18px;background:var(--bg);box-shadow:4px 4px 0 0 var(--ink);display:flex;flex-direction:column;overflow:hidden;transition:width .2s ease;max-height:calc(100vh - 110px);overflow-y:auto;scrollbar-width:none}
+body.side-closed .cap{width:var(--capc)}
+.cap .tg{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 14px;border-bottom:2px solid var(--fg);cursor:pointer;font:900 11px 'Archivo';text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+.cap .tg:hover{background:var(--sec)}
+body.side-closed .cap .tg{justify-content:center;padding:11px 0}
+body.side-closed .cap .tg .tx{display:none}
+.cap a{display:flex;align-items:center;gap:10px;min-height:42px;padding:0 12px;font:700 12px 'Archivo';text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+.cap a:hover{background:var(--sec)}
+.cap a .ab{width:28px;height:28px;border:1.5px solid var(--fg);border-radius:8px;font:900 10px 'Archivo';display:flex;align-items:center;justify-content:center;flex:none;letter-spacing:0}
+.cap a.on{background:var(--fg);color:var(--bg)}.cap a.on .ab{border-color:var(--bg)}
+body.side-closed .cap a{padding:0;justify-content:center}
+body.side-closed .cap a .tx,body.side-closed .cap .mk{display:none}
+.cap .mk{margin-top:auto;padding:12px 14px;border-top:2px solid var(--fg);font-size:12px}
+main{padding:0 var(--pad) 60px calc(var(--cap) + 28px + var(--pad) - 14px);transition:padding .2s;min-height:calc(100vh - 74px)}
+body.side-closed main{padding-left:calc(var(--capc) + 28px + var(--pad) - 14px)}
+main.plain{padding-left:var(--pad)}
+/* grids + tiles */
+.grid{display:grid;gap:clamp(12px,1.2vw,20px);padding:12px 0 20px}
+.grid.shop{grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));grid-auto-flow:dense}  /* as many ~260px tiles as fit; the capsule just takes one column away */
+.card{border:2px solid var(--fg);border-radius:12px;overflow:hidden;background:var(--bg);cursor:pointer;display:flex;flex-direction:column;transition:box-shadow .1s linear,transform .1s linear;text-align:left}
+.card:hover{box-shadow:4px 4px 0 0 var(--ink);transform:translate(-1px,-1px)}
+.card:active{box-shadow:none;transform:translate(2px,2px)}
+.card .img{aspect-ratio:4/3;border-bottom:1px solid var(--fg);position:relative;overflow:hidden;background:var(--sec)}
+.card .img img,.thumb img,.pimg img{width:100%;height:100%;object-fit:cover;object-position:center 18%;display:block}
+.card .wl{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:999px;background:var(--bg);border:1.5px solid var(--fg);display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1}
+.card .wl.on{background:var(--acc);color:#111}
+.card .in{padding:10px 12px 12px;display:flex;flex-direction:column;gap:3px}
+.card .mk{display:flex;align-items:center;gap:6px;font-size:10px;min-width:0}
+.card .mk img{width:20px;height:20px;border-radius:999px;object-fit:cover;border:1px solid var(--fg);flex:none}
+.card .mk span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card .n{font-weight:700;font-size:13px;line-height:1.25}
+.card .craft{font:400 11px 'IBM Plex Mono';color:var(--muted);letter-spacing:.02em}
+.card .p{font-weight:900;font-size:16px;margin-top:2px}
+.card .p s{font:400 11px 'IBM Plex Mono';color:var(--muted);margin-left:6px}
+.card.wide{grid-column:span 2}
+.card.wide .img{aspect-ratio:auto;flex:1;min-height:clamp(160px,12vw,260px)}
+.card.wide .img img{position:absolute;inset:0}
+.card.wide .n{font-size:15px}
+/* featured story tile */
+.feat{border:2px solid var(--fg);border-radius:var(--r);overflow:hidden;margin-top:18px;background:var(--bg)}
+.feat .ph{position:relative;border-right:2px solid var(--fg);min-height:clamp(300px,30vw,700px);max-height:min(62vh,760px);background:var(--sec);cursor:pointer;overflow:hidden}
+.feat .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 8%;display:block}
+.feat .ph .tag{position:absolute;left:14px;top:14px;background:var(--acc);color:#111;padding:5px 10px;border-radius:8px;font:900 11px 'Archivo';text-transform:uppercase;letter-spacing:.06em}
+.feat .tx{padding:clamp(20px,2.4vw,48px);display:flex;flex-direction:column;gap:14px;justify-content:center}
+.feat .who{display:flex;align-items:center;gap:10px}
+.feat .who img{width:46px;height:46px;border-radius:999px;border:2px solid var(--fg);object-fit:cover}
+.feat h2{font:900 clamp(24px,2.3vw,44px)/1 'Archivo';text-transform:uppercase;letter-spacing:-.04em}
+.feat q{font-size:clamp(14px,1vw,18px);line-height:1.6;quotes:'“' '”'}
+.feat .pr{font:900 clamp(20px,1.5vw,28px)/1 'Archivo'}
+.sortsel{width:auto;min-height:38px;padding:6px 32px 6px 12px;font:700 11px 'Archivo';text-transform:uppercase;letter-spacing:.06em;cursor:pointer}
+.sec{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:22px 0 4px}
+.sec h2{font:900 20px/1 'Archivo';text-transform:uppercase;letter-spacing:-.03em}
+.sec h1{font:900 clamp(26px,2.6vw,40px)/1 'Archivo';text-transform:uppercase;letter-spacing:-.04em}
+.strip{display:flex;gap:10px;overflow-x:auto;padding:8px 2px 14px;scroll-snap-type:x mandatory;scrollbar-width:thin}
+.strip .card{flex:0 0 150px;scroll-snap-align:start}
+.strip .card .in{padding:8px 10px}.strip .card .n{font-size:12px}.strip .card .p{font-size:12px}.strip .card .wl{display:none}
+/* featured slider (the opening tile) */
+.feat{position:relative}
+.ftrack{display:flex;transition:transform .65s cubic-bezier(.22,1,.36,1);will-change:transform}
+.fslide{flex:0 0 100%;min-width:0;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}
+.feat .ctrl{position:absolute;left:14px;bottom:14px;display:flex;align-items:center;gap:8px;z-index:2}
+.feat .ctrl .nav{width:36px;height:36px;border:2px solid var(--fg);border-radius:10px;background:var(--bg);color:var(--fg);display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:900;user-select:none;box-shadow:3px 3px 0 0 var(--ink)}
+.feat .ctrl .nav:hover{background:var(--fg);color:var(--bg)}
+.feat .ctrl .dots{display:flex;gap:5px;margin:0 6px}
+.feat .ctrl .d{width:22px;height:5px;border-radius:3px;background:rgba(246,245,240,.55);border:1px solid rgba(17,17,17,.4);cursor:pointer}
+.feat .ctrl .d.on{background:var(--acc)}
+/* logo: a name tile at the top of the page, a square K once scrolled */
+.logo{width:auto;min-width:48px;padding:0;transition:padding .28s cubic-bezier(.22,1,.36,1);overflow:hidden;white-space:nowrap;letter-spacing:-.03em}
+.logo .nm{display:inline-block;max-width:0;overflow:hidden;vertical-align:bottom;transition:max-width .28s cubic-bezier(.22,1,.36,1)}
+.logo.wide{padding:0 16px}
+.logo.wide .nm{max-width:200px}
+/* panels (wishlist / support) */
+.panel{position:fixed;top:78px;right:var(--pad);width:360px;max-width:calc(100vw - 28px);background:var(--bg);border:2px solid var(--fg);border-radius:var(--r);box-shadow:5px 5px 0 0 var(--ink);display:none;z-index:45;overflow:hidden}
+.panel.on{display:block}
+.panel h4{padding:12px 16px;border-bottom:2px solid var(--fg);font:900 13px 'Archivo';text-transform:uppercase;letter-spacing:.06em;display:flex;justify-content:space-between;align-items:center}
+.panel ul{list-style:none;max-height:320px;overflow:auto}
+.panel li{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--fg);font-size:13px}
+.panel li>a:hover{background:var(--sec);border-radius:8px}
+.panel li:last-child{border-bottom:0}
+.panel li .thumb{width:44px;height:44px;border-radius:8px;overflow:hidden;border:1px solid var(--fg);flex:none;cursor:pointer}
+/* product modal */
+.mbg{position:fixed;inset:0;z-index:80;background:rgba(17,17,17,.6);display:none;justify-content:center;padding:4vh 16px;overflow:auto}
+.mbg.on{display:flex}
+.modal{width:min(1040px,100%);height:max-content;background:var(--bg);border:2px solid var(--fg);border-radius:18px;box-shadow:8px 8px 0 0 var(--ink);position:relative;overflow:hidden;margin-bottom:4vh}
+.modal .x{position:absolute;top:12px;right:12px;width:40px;height:40px;border:2px solid var(--fg);border-radius:10px;background:var(--bg);color:var(--fg);display:flex;align-items:center;justify-content:center;font:900 16px 'Archivo';cursor:pointer;z-index:2}
+.modal .top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.modal .gal{border-right:2px solid var(--fg);overflow:hidden;aspect-ratio:1;background:var(--sec)}
+.modal .gal img{width:100%;height:100%;object-fit:cover;object-position:center 15%;display:block}
+.modal .info{padding:28px 60px 24px 28px;display:flex;flex-direction:column;gap:12px}
+.modal .info h2{font:900 clamp(22px,2vw,32px)/1 'Archivo';text-transform:uppercase;letter-spacing:-.04em}
+.modal .price{font:900 30px/1 'Archivo'}.modal .price s{font:400 14px 'IBM Plex Mono';color:var(--muted);margin-left:8px}
+.modal section{border-top:2px solid var(--fg);padding:20px 28px}
+.modal h3{font:900 14px 'Archivo';text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.kv{display:grid;grid-template-columns:160px 1fr;gap:8px 14px;font-size:14px}
+.qty{display:inline-flex;border:2px solid var(--fg);border-radius:var(--rs);overflow:hidden;background:var(--bg)}
+.qty button{width:38px;height:38px;border:0;background:transparent;color:var(--fg);font:900 16px 'Archivo';cursor:pointer}
+.qty button:hover{background:var(--sec)}
+.qty span{min-width:40px;display:flex;align-items:center;justify-content:center;font-weight:900;border-left:1px solid var(--fg);border-right:1px solid var(--fg)}
+.stars{color:var(--acc);letter-spacing:2px;font-size:15px}
+.stars.pick span{cursor:pointer;opacity:.35}.stars.pick span.on{opacity:1}
+.rev{border-top:1px solid var(--fg);padding:12px 0;font-size:14px}
+.rev .who{display:flex;justify-content:space-between;gap:10px;font-size:12px;margin-bottom:4px}
+/* cart / checkout */
+.split{display:grid;grid-template-columns:minmax(0,1fr) clamp(320px,28vw,440px);gap:24px;align-items:start}
+.sticky{position:sticky;top:92px}
+.crow{display:flex;gap:14px;align-items:center;padding:14px;border:2px solid var(--fg);border-radius:var(--r);flex-wrap:wrap;margin-bottom:12px}
+.crow .thumb{width:84px;height:84px;border-radius:10px;overflow:hidden;border:1px solid var(--fg);flex:none;cursor:pointer}
+.crow .nm{flex:1 1 200px;min-width:0}
+.line{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--fg);font-size:14px}
+.line:last-child{border-bottom:0}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:2px solid var(--fg);border-radius:var(--rs);cursor:pointer;font-size:13px;margin-bottom:8px}
+.opt.on{background:var(--sec)}
+.opt .rd{width:18px;height:18px;border:2px solid var(--fg);border-radius:999px;flex:none;margin-top:2px}
+.opt.on .rd{background:var(--acc)}
+/* account */
+.acc-item{border:2px solid var(--fg);border-radius:var(--r);overflow:hidden;margin-bottom:12px;background:var(--bg)}
+.acc-item .hd{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px;cursor:pointer}
+.acc-item .hd:hover{background:var(--sec)}
+.acc-item .bd{display:none;border-top:2px solid var(--fg);padding:16px 20px}
+.acc-item.on .bd{display:block}
+.avatar{width:96px;height:96px;border:3px solid var(--fg);border-radius:28px;display:flex;align-items:center;justify-content:center;font:900 34px 'Archivo';flex:none;background:var(--sec)}
+/* seller bits */
+.check{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--fg);font-weight:700}
+.check .m{width:22px;height:22px;border:2px solid var(--fg);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.check.ok .m{background:var(--fg);color:var(--bg)}
+.diamond{width:150px;height:150px;transform:rotate(45deg);border:2px solid var(--fg);border-radius:22px;display:flex;align-items:center;justify-content:center;margin:24px auto;background:var(--bg);box-shadow:4px 4px 0 0 var(--ink);cursor:pointer;transition:transform .12s,box-shadow .12s,opacity .2s}
+.diamond:hover:not(.off){transform:rotate(45deg) translate(-1px,-1px);box-shadow:6px 6px 0 0 var(--ink)}
+.diamond:active:not(.off){transform:rotate(45deg) translate(3px,3px);box-shadow:0 0 0 0 var(--ink)}
+.diamond.off{opacity:.35;cursor:not-allowed;box-shadow:none}
+.diamond span{transform:rotate(-45deg);font:900 13px 'Archivo';text-transform:uppercase;letter-spacing:.06em;text-align:center}
+.crumb{display:inline-flex;align-items:center;flex-wrap:wrap;border:2px solid var(--fg);border-radius:var(--rs);overflow:hidden;margin:20px 0 0}
+.crumb span{padding:9px 14px;font:700 12px 'Archivo';text-transform:uppercase;letter-spacing:.04em;border-right:1px solid var(--fg)}
+.crumb span:last-child{border-right:0}
+#theme{position:fixed;right:24px;bottom:24px;width:46px;height:46px;border:2px solid var(--fg);border-radius:12px;background:var(--bg);color:var(--fg);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:60}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:var(--fg);color:var(--bg);padding:12px 18px;border-radius:12px;font:700 13px 'Archivo';opacity:0;transition:opacity .2s,transform .2s;z-index:90;pointer-events:none;white-space:nowrap}
+.toast.on{opacity:1;transform:translateX(-50%)}
+/* login page scales with the viewport */
+.login .label{font-size:clamp(12px,.7vw,20px)}
+.login input{min-height:clamp(46px,3vw,80px);font-size:clamp(15px,1vw,26px);padding:clamp(10px,.8vw,20px) clamp(14px,1vw,26px)}
+.login .btn.lg{min-height:clamp(52px,3.2vw,86px);font-size:clamp(14px,.9vw,24px)}
+/* wide screens: bigger photos, not more of them */
+@media (min-width:2200px){.grid.shop{grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr))}.card .n{font-size:15px}.card .p{font-size:18px}.card .craft{font-size:12px}.card .mk{font-size:11px}.card .mk img{width:24px;height:24px}}
+/* responsive */
+@media (max-width:1100px){.grid.shop{grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr))}}
+@media (max-width:900px){
+ .cap{position:static;width:auto!important;max-height:none;flex-direction:row;overflow-x:auto;border-radius:999px;margin:12px var(--pad) 0;box-shadow:none}
+ .cap .tg,.cap .mk{display:none}.cap a{border-right:1px solid var(--fg);padding:0 12px!important}.cap a .tx{display:inline!important}
+ main,body.side-closed main{padding-left:var(--pad)}
+ .split{grid-template-columns:minmax(0,1fr)}.sticky{position:static}
+ .modal .top{grid-template-columns:minmax(0,1fr)}.modal .gal{border-right:0;border-bottom:2px solid var(--fg);aspect-ratio:4/3}.modal .info{padding:20px 20px 16px}.modal section{padding:16px 20px}
+ .kv{grid-template-columns:1fr}
+ .feat .ph{border-right:0;border-bottom:2px solid var(--fg)}
+ .panel{top:auto;bottom:80px;right:14px}
+ .fslide{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:600px){
+ .grid.shop{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .bar{flex-wrap:wrap;gap:8px}.search{order:9;flex-basis:100%;max-width:none;min-height:42px}
+ .icons{gap:6px}.icell{width:40px;height:40px;border-radius:8px}.icell .t{display:none}.icell .k{font-size:14px}.logo{min-width:40px;height:40px;font-size:18px;border-radius:10px}
+ .logo.wide{padding:0 10px}
+ .bar{gap:6px}
+ .mbg{padding:0}.modal{border-radius:0;border-left:0;border-right:0;width:100%;margin-bottom:0}
+}
+</style>
+</head>
+<body class="side-open">
+<header class="bar" id="bar"></header>
+<aside class="cap" id="cap"></aside>
+<main id="app"></main>
+<div class="panel" id="wish"></div>
+<div class="panel" id="support"></div>
+<div class="mbg" id="mbg" onclick="if(event.target===this)closeProduct()"><div class="modal" id="modal"></div></div>
+<button id="theme" class="neo" title="Switch theme"></button>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── data ────────────────────────────────────────────────────────── */
+const CATS = [
+  {k:'all',n:'All crafts',ab:'AL'},{k:'sarees',n:'Sarees & textiles',ab:'SA'},{k:'men',n:'Menswear',ab:'ME'},
+  {k:'jewel',n:'Jewellery',ab:'JE'},{k:'foot',n:'Footwear',ab:'FO'},{k:'home',n:'Home & decor',ab:'HO'},
+  {k:'art',n:'Art & craft',ab:'AR'},{k:'toys',n:'Toys & games',ab:'TO'},
+];
+const catName = k => (CATS.find(c=>c.k===k)||CATS[0]).n;
+const MAKERS = {
+  priya:{n:'Priya Devi',shop:'Priya Devi Block Prints',place:'Bagru, Rajasthan',craft:'Block printing · gota patti',since:1987,img:'bangles-wrist',
+    en:'Third-generation block printer from Bagru. We print with natural indigo and madder on hand-loomed cotton, the way my grandmother did.',
+    hi:'बगरू की तीसरी पीढ़ी की ब्लॉक प्रिंटर। हम हथकरघा सूती कपड़े पर प्राकृतिक नील और मजीठ से छपाई करते हैं, जैसे मेरी दादी करती थीं।'},
+  meera:{n:'Meera Kumari',shop:'Meera Kumari Arts',place:'Madhubani, Bihar',craft:'Madhubani & Pattachitra painting',since:2004,img:'necklace',
+    en:'I paint the stories my mother painted on our walls — on paper, plates, boxes and jewellery — so they travel further than our village.',
+    hi:'जो कहानियाँ मेरी माँ हमारी दीवारों पर बनाती थीं, उन्हें मैं कागज़, थाली, डिब्बों और गहनों पर बनाती हूँ, ताकि वे हमारे गाँव से आगे जाएँ।'},
+  ramesh:{n:'Ramesh Saifi',shop:'Saifi Handicrafts',place:'Moradabad, U.P.',craft:'Painted wood & terracotta',since:1995,img:'drawers',
+    en:'Our family workshop turns mango wood and clay into painted boxes, drawers and planters, each finished by hand.',
+    hi:'हमारी पारिवारिक कार्यशाला आम की लकड़ी और मिट्टी से रंगे हुए डिब्बे, दराज़ और गमले बनाती है, हर एक हाथ से पूरा किया हुआ।'},
+  banaras:{n:'Banaras Weaves',shop:'Banaras Weaves',place:'Varanasi, U.P.',craft:'Banarasi silk & handloom cotton',since:1978,img:'saree-blue',en:'A weavers\' collective of 40 looms in Varanasi.',hi:'वाराणसी में 40 करघों का बुनकर सामूहिक।'},
+  kanchi:{n:'Kanchi Looms',shop:'Kanchi Looms',place:'Kanchipuram, T.N.',craft:'Kanjivaram silk',since:1990,img:'saree-green',en:'Pure mulberry silk, zari borders, woven on pit looms.',hi:'शुद्ध शहतूत रेशम, ज़री किनारे, पिट करघों पर बुने हुए।'},
+  kuthampully:{n:'Kuthampully Weavers',shop:'Kuthampully Weavers',place:'Thrissur, Kerala',craft:'Kasavu handloom',since:1982,img:'dhoti',en:'Kerala kasavu cotton with real gold-thread borders.',hi:'असली सोने के धागे की किनारी वाला केरल कसवु सूती।'},
+  jaipur:{n:'Jaipur Marble Works',shop:'Jaipur Marble Works',place:'Jaipur, Rajasthan',craft:'Painted marble & meenakari',since:1999,img:'marble-vase',en:'Makrana marble, painted by hand with gold leaf.',hi:'मकराना संगमरमर, सोने की पत्ती से हाथ से रंगा हुआ।'},
+  assam:{n:'Assam Cane Collective',shop:'Assam Cane Collective',place:'Guwahati, Assam',craft:'Cane, bamboo & jute',since:2010,img:'baskets',en:'Twelve women weavers from villages around Guwahati.',hi:'गुवाहाटी के आसपास के गाँवों की बारह महिला बुनकर।'},
+  kutch:{n:'Kutch Silver',shop:'Kutch Silver',place:'Bhuj, Gujarat',craft:'Silver & beadwork jewellery',since:1993,img:'silver-earrings',en:'Oxidised silver and Rabari beadwork from Kutch.',hi:'कच्छ की ऑक्सिडाइज़्ड चाँदी और रबारी मोतियों का काम।'},
+  patiala:{n:'Patiala Jutti House',shop:'Patiala Jutti House',place:'Patiala, Punjab',craft:'Phulkari juttis',since:1985,img:'jutti',en:'Hand-embroidered leather juttis, made to last.',hi:'हाथ से कढ़ाई की गई चमड़े की जूतियाँ, टिकाऊ।'},
+  kolhapur:{n:'Kolhapuri Crafts',shop:'Kolhapuri Crafts',place:'Kolhapur, Maharashtra',craft:'Vegetable-tanned leather footwear',since:1975,img:'kolhapuri',en:'Genuine Kolhapuris, vegetable-tanned and hand-stitched.',hi:'असली कोल्हापुरी, वनस्पति-टैन्ड और हाथ से सिली हुई।'},
+};
+const DEF = {
+  sarees:{technique:'Handloom weaving',materials:'Cotton / mulberry silk, zari',size:'5.5 m × 1.1 m, with blouse piece',care:'Dry clean, or gentle cold hand wash'},
+  men:{technique:'Handloom weaving, hand finishing',materials:'Cotton',size:'S · M · L · XL (choose at checkout)',care:'Cold machine wash, dry in shade'},
+  jewel:{technique:'Hand-set, hand-painted',materials:'Brass, silver, glass beads, thread',size:'Adjustable / free size',care:'Keep dry, store in the pouch provided'},
+  foot:{technique:'Hand-stitched',materials:'Vegetable-tanned leather, jute',size:'UK 4 – 11 (choose at checkout)',care:'Wipe clean, keep away from water'},
+  home:{technique:'Hand-made and hand-painted',materials:'Cane, bamboo, terracotta, marble, wood',size:'See listing photo for scale',care:'Dust with a dry cloth'},
+  art:{technique:'Natural pigments, hand-painted',materials:'Paper, wood, cloth',size:'Approx. 25 cm',care:'Keep out of direct sunlight'},
+  toys:{technique:'Hand-carved, hand-painted',materials:'Wood, cloth, non-toxic paint',size:'Approx. 30 cm tall',care:'Wipe clean; not for children under 3'},
+};
+const P = [
+  {id:1,n:'Handloom Cotton Saree, Bagru print',mk:'priya',price:1899,was:2999,img:'saree-cream',cat:'sarees',hi:'बगरू ब्लॉक प्रिंट सूती साड़ी',d:{technique:'Hand block print, dabu resist',materials:'Mulmul cotton · indigo · madder'}},
+  {id:2,n:'Banarasi Silk Saree, Royal Blue',mk:'banaras',price:8499,img:'saree-blue',cat:'sarees',hi:'बनारसी रेशमी साड़ी, नीली'},
+  {id:3,n:'Kanjivaram Silk Saree, Sea Green',mk:'kanchi',price:9999,was:12500,img:'saree-green',cat:'sarees',hi:'कांजीवरम रेशमी साड़ी'},
+  {id:4,n:'Handloom Cotton Kurta, Grey',mk:'banaras',price:1799,img:'kurta',cat:'men',hi:'हथकरघा सूती कुर्ता'},
+  {id:5,n:'Kerala Kasavu Dhoti & Angavastram',mk:'kuthampully',price:2250,img:'dhoti',cat:'men',hi:'केरल कसवु धोती'},
+  {id:6,n:'Block-Printed Shirt, Indigo Floral',mk:'priya',price:1650,was:1999,img:'shirt',cat:'men',hi:'ब्लॉक प्रिंट शर्ट'},
+  {id:7,n:'Pattachitra Wall Plate',mk:'meera',price:1650,img:'pattachitra',cat:'art',hi:'पट्टचित्र दीवार थाली'},
+  {id:8,n:'Hand-painted Pen Stand',mk:'meera',price:349,img:'pen-stand',cat:'art',hi:'हाथ से रंगा पेन स्टैंड'},
+  {id:9,n:'Rajasthani Puppet Doll Pair',mk:'priya',price:899,img:'dolls',cat:'toys',hi:'राजस्थानी कठपुतली जोड़ी'},
+  {id:10,n:'Crochet Granny-Square Cushion',mk:'meera',price:1199,img:'cushion',cat:'home',hi:'क्रोशिया कुशन कवर'},
+  {id:11,n:'Hand-painted Mini Drawers',mk:'ramesh',price:1899,img:'drawers',cat:'home',hi:'रंगे हुए छोटे दराज़'},
+  {id:12,n:'Cane Basket Set (9 pieces)',mk:'assam',price:2450,img:'baskets',cat:'home',hi:'बेंत की टोकरी सेट'},
+  {id:13,n:'Warli Terracotta Planter',mk:'ramesh',price:749,was:899,img:'warli-planter',cat:'home',hi:'वारली टेराकोटा गमला'},
+  {id:14,n:'Meenakari Marble Vase',mk:'jaipur',price:2299,img:'marble-vase',cat:'home',hi:'मीनाकारी संगमरमर फूलदान'},
+  {id:15,n:'Painted Marble Vase Pair',mk:'jaipur',price:4199,was:4999,img:'vase-pair',cat:'home',hi:'रंगे संगमरमर फूलदान जोड़ी'},
+  {id:16,n:'Jute & Bamboo Jewellery Box',mk:'assam',price:1150,img:'jute-box',cat:'home',hi:'जूट और बाँस का गहनों का डिब्बा'},
+  {id:17,n:'Hand-painted Necklace Set',mk:'meera',price:1299,img:'necklace',cat:'jewel',hi:'हाथ से रंगा हार सेट'},
+  {id:18,n:'Oxidised Silver Jhumkas',mk:'kutch',price:1450,img:'silver-earrings',cat:'jewel',hi:'ऑक्सिडाइज़्ड चाँदी के झुमके'},
+  {id:19,n:'Kutch Beadwork Earrings',mk:'kutch',price:650,img:'bead-earrings',cat:'jewel',hi:'कच्छी मोतियों के झुमके'},
+  {id:20,n:'Gota Patti Bangle Set',mk:'priya',price:499,img:'bangles-rack',cat:'jewel',hi:'गोटा पट्टी चूड़ी सेट'},
+  {id:21,n:'Embroidered Thread Bangles (4)',mk:'priya',price:399,was:549,img:'bangle-stack',cat:'jewel',hi:'कढ़ाई वाली धागे की चूड़ियाँ'},
+  {id:22,n:'Mirror-work Cuff Bangles',mk:'priya',price:699,img:'bangles-wrist',cat:'jewel',hi:'शीशे के काम वाले कड़े'},
+  {id:23,n:'Phulkari Punjabi Jutti',mk:'patiala',price:1299,img:'jutti',cat:'foot',hi:'फुलकारी पंजाबी जूती'},
+  {id:24,n:'Kolhapuri Leather Chappals',mk:'kolhapur',price:1499,img:'kolhapuri',cat:'foot',hi:'कोल्हापुरी चप्पल'},
+  {id:25,n:'Braided Jute Sandals',mk:'kolhapur',price:1099,was:1399,img:'sandals',cat:'foot',hi:'जूट की सैंडल'},
+];
+const CRAFT = {1:'Hand block print',2:'Banarasi silk',3:'Kanjivaram silk',4:'Handloom cotton',5:'Kasavu handloom',6:'Hand block print',7:'Pattachitra',8:'Hand-painted',9:'Hand-carved wood',10:'Crochet',11:'Painted mango wood',12:'Cane weave',13:'Warli terracotta',14:'Meenakari marble',15:'Painted marble',16:'Jute & bamboo',17:'Hand-painted',18:'Oxidised silver',19:'Rabari beadwork',20:'Gota patti',21:'Thread work',22:'Mirror work',23:'Phulkari embroidery',24:'Vegetable-tanned leather',25:'Braided jute'};
+P.forEach(p=>{ p.craft = p.craft || CRAFT[p.id] || DEF[p.cat].technique; });
+const FEATURED = [3,12,7,15,23,1,17,11];   // one per week, rotating
+const fmt = n => '₹' + Math.round(n).toLocaleString('en-IN');
+const esc = s => String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pic = p => `<img src="img/${p.img}.jpg" alt="${esc(p.n)}" loading="lazy">`;
+const maker = p => MAKERS[p.mk];
+
+/* ── local "database" (what a real site would keep on the server) ── */
+const db = {
+  get(k,d){ try{ const v=JSON.parse(localStorage.getItem(k)); return v==null?d:v }catch(e){ return d } },
+  set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)) }catch(e){} },
+};
+let cart    = db.get('ks-cart', []);      // [{id, qty}]
+let wish    = db.get('ks-wish', []);      // [id]
+let addrs   = db.get('ks-addr', []);      // [{name,line,city,state,pin,phone}]
+let pays    = db.get('ks-pay', []);       // [{type:'upi'|'card', label}]
+let orders  = db.get('ks-orders', []);    // [{no,date,items,total,addr,pay,status}]
+let reviews = db.get('ks-reviews', {});   // {pid:[{name,stars,text,date}]}
+let comments= db.get('ks-comments', {});  // {pid:[{name,text,date}]}
+let user    = db.get('ks-user', {name:'',phone:'',email:''});
+let extra   = db.get('ks-extra', []);     // products added through the seller flow
+extra.forEach(x=>{ if(!P.find(p=>p.id===x.id)){ x.craft = x.craft || (x.d&&x.d.technique) || DEF[x.cat].technique; P.push(x); } });
+const allP = () => P;
+const byId = id => P.find(p=>p.id===Number(id));
+
+const cartCount = () => cart.reduce((a,c)=>a+c.qty,0);
+const cartSub = () => cart.reduce((a,c)=>a+(byId(c.id)?.price||0)*c.qty,0);
+const shipping = sub => sub===0?0:(sub>=999?0:79);
+function addToCart(id,qty=1){ const c=cart.find(x=>x.id===id); if(c) c.qty+=qty; else cart.push({id,qty}); db.set('ks-cart',cart); paintBar(); toast('Added to cart'); }
+function setQty(id,q){ const c=cart.find(x=>x.id===id); if(!c) return; c.qty=Math.max(0,q); if(c.qty===0) cart=cart.filter(x=>x.id!==id); db.set('ks-cart',cart); paintBar(); }
+function removeFromCart(id){ cart=cart.filter(x=>x.id!==id); db.set('ks-cart',cart); paintBar(); }
+function toggleWish(id, ev){ if(ev){ ev.stopPropagation(); ev.preventDefault(); } wish = wish.includes(id) ? wish.filter(x=>x!==id) : [...wish,id]; db.set('ks-wish',wish); paintBar(); paintWish(); document.querySelectorAll(`[data-wl="${id}"]`).forEach(el=>el.classList.toggle('on',wish.includes(id))); }
+let toastT; function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'),1600); }
+
+/* ── chrome: header, capsule, panels ─────────────────────────────── */
+const state = { cat:'all', q:'', sort:'newest', selAddr:0, selPay:0 };
+function paintBar(){
+  document.getElementById('bar').innerHTML = `
+  <a class="logo press" id="logo" href="#home" title="Home">K<span class="nm">alaSetu</span></a>
+  <div class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" placeholder="Search crafts, makers, places…" value="${esc(state.q)}" oninput="search(this.value)"></div>
+  <div class="icons">
+    <a class="icell press" href="#account" title="Your account"><span class="k">P</span><span class="t">Profile</span></a>
+    <a class="icell press" href="#cart" title="Cart"><span class="k">C</span><span class="t">Cart</span><span class="badge">${cartCount()||''}</span></a>
+    <a class="icell press" href="javascript:void(0)" onclick="togglePanel('wish')" title="Wishlist"><span class="k">W</span><span class="t">Wishlist</span><span class="badge">${wish.length||''}</span></a>
+    <a class="icell press acc" href="javascript:void(0)" onclick="togglePanel('support')" title="Sell / Support"><span class="k">S</span><span class="t">Sell</span></a>
+    <a class="icell press" href="javascript:void(0)" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top"><span class="k">↑</span><span class="t">Top</span></a>
+  </div>`;
+  paintTop();
+  const q=document.getElementById('q'); if(document.activeElement && document.activeElement.id==='q'){ q.focus(); q.setSelectionRange(q.value.length,q.value.length); }
+}
+/* logo: full name while at the top of the page, square K once scrolled */
+function paintTop(){ const l=document.getElementById('logo'); if(l) l.classList.toggle('wide', window.scrollY < 40); }
+window.addEventListener('scroll', paintTop, {passive:true});
+function paintCap(active){
+  const open = !document.body.classList.contains('side-closed');
+  document.getElementById('cap').innerHTML = `
+  <div class="tg" onclick="toggleSide()" title="${open?'Collapse':'Expand'} categories"><span class="tx">Categories</span><span>${open?'‹':'›'}</span></div>
+  ${CATS.map(c=>`<a href="#shop/${c.k}" class="press ${c.k===active?'on':''}" title="${c.n}"><span class="ab">${c.ab}</span><span class="tx">${c.n}</span></a>`).join('')}
+  <div class="mk"><div class="label muted">Makers</div><a href="#artist/priya" style="min-height:0;padding:4px 0;text-transform:none;font-size:12px">Priya Devi · Bagru →</a><a href="#artist/meera" style="min-height:0;padding:4px 0;text-transform:none;font-size:12px">Meera Kumari · Madhubani →</a></div>`;
+}
+function toggleSide(){ document.body.classList.toggle('side-closed'); db.set('ks-side', document.body.classList.contains('side-closed')?'closed':'open'); paintCap(currentCat()); }
+function currentCat(){ const h=(location.hash||'#home').slice(1).split('/'); return h[0]==='shop' ? (h[1]||'all') : (h[0]==='home'?'all':''); }
+function togglePanel(id){ ['wish','support'].forEach(k=>{ const el=document.getElementById(k); el.classList.toggle('on', k===id ? !el.classList.contains('on') : false); }); if(id==='wish') paintWish(); }
+document.addEventListener('click', e=>{ if(!e.target.closest('.panel') && !e.target.closest('.icell')) document.querySelectorAll('.panel.on').forEach(p=>p.classList.remove('on')); });
+function paintWish(){
+  const items = wish.map(byId).filter(Boolean);
+  document.getElementById('wish').innerHTML = `<h4>Wishlist <span class="mono" style="font-weight:400">${items.length}</span></h4>
+  ${items.length ? `<ul>${items.map(p=>`<li><a href="javascript:void(0)" onclick="togglePanel();openProduct(${p.id})" title="Open product" style="display:flex;align-items:center;gap:10px;flex:1;min-width:0"><div class="thumb">${pic(p)}</div><div style="flex:1;min-width:0"><div style="font-weight:700;line-height:1.2;text-decoration:underline">${esc(p.n)}</div><span class="mono muted" style="font-size:12px">${fmt(p.price)}</span></div></a><button class="btn sm neo" onclick="addToCart(${p.id})">+ Cart</button><button class="btn sm ghost" onclick="toggleWish(${p.id})" title="Remove">✕</button></li>`).join('')}</ul>
+  <div style="padding:10px 14px;border-top:2px solid var(--fg)"><button class="btn ink neo" style="width:100%" onclick="wish.forEach(id=>addToCart(id));">Move all to cart</button></div>`
+  : `<div style="padding:18px"><div class="empty">Nothing saved yet.<br>Tap ♥ on any product to keep it here.</div></div>`}`;
+}
+document.getElementById('support').innerHTML = `<h4>Sell &amp; support</h4>
+  <div style="padding:14px;display:flex;flex-direction:column;gap:10px">
+    <a class="btn acc neo" href="#login" onclick="togglePanel()">Open a shop → seller login</a>
+    <div class="box" style="padding:12px"><div class="label muted">Contact</div><div class="mono" style="font-size:13px;margin-top:6px">Call 1800-[NUMBER]<br>WhatsApp: [NUMBER]<br>help@kalasutra.in</div></div>
+    <div class="hi" style="font-size:13px">हिन्दी में मदद के लिए कॉल करें</div>
+  </div>`;
+function search(v){ state.q=v; const g=document.getElementById('shopArea'); if(g) g.innerHTML = shopArea(); else location.hash='#shop/all'; }
+
+/* ── tiles ───────────────────────────────────────────────────────── */
+const card = (p, wide=false) => `<a class="card ${wide?'wide':''}" href="javascript:void(0)" onclick="openProduct(${p.id})"><div class="img">${pic(p)}<span class="wl ${wish.includes(p.id)?'on':''}" data-wl="${p.id}" onclick="toggleWish(${p.id},event)" title="Wishlist">♥</span></div><div class="in"><span class="mk label muted"><img src="img/${maker(p).img}.jpg" alt=""><span>${esc(maker(p).n)} · ${esc(maker(p).place.split(',')[0])}</span></span><span class="n">${esc(p.n)}</span><span class="craft">${esc(p.craft)}</span><span class="p">${fmt(p.price)}${p.was?`<s>${fmt(p.was)}</s>`:''}</span></div></a>`;
+/* every 7th tile is double-width so the grid has a rhythm */
+const tiles = list => list.map((p,i)=>card(p, i%7===3)).join('');
+const SORTS = {newest:'Newest', 'price-asc':'Price: low to high', 'price-desc':'Price: high to low', sale:'Discounted first', name:'Name A–Z'};
+function sortList(l){ const a=[...l]; switch(state.sort){
+  case 'price-asc': return a.sort((x,y)=>x.price-y.price);
+  case 'price-desc': return a.sort((x,y)=>y.price-x.price);
+  case 'sale': return a.sort((x,y)=>((y.was?1:0)-(x.was?1:0)) || (y.id-x.id));
+  case 'name': return a.sort((x,y)=>x.n.localeCompare(y.n));
+  default: return a.sort((x,y)=>y.id-x.id); } }
+function setSort(v){ state.sort=v; const g=document.getElementById('shopArea'); if(g) g.innerHTML=shopArea(); }
+const sortSel = () => `<select class="sortsel" onchange="setSort(this.value)" title="Sort">${Object.entries(SORTS).map(([k,v])=>`<option value="${k}" ${state.sort===k?'selected':''}>${v}</option>`).join('')}</select>`;
+let featI = 0, featT = null;
+function featured(){
+  const items = FEATURED.map(byId).filter(Boolean);
+  const ctrl = `<div class="ctrl" onclick="event.stopPropagation()"><span class="nav press" onclick="featGo(-1)">‹</span><span class="dots">${items.map((_,k)=>`<span class="d ${k===featI?'on':''}" onclick="featGo(${k},true)"></span>`).join('')}</span><span class="nav press" onclick="featGo(1)">›</span></div>`;
+  const slide = p => { const m = maker(p); return `<div class="fslide">
+    <div class="ph" onclick="openProduct(${p.id})">${pic(p)}<span class="tag">From the workshop</span>${ctrl}</div>
+    <div class="tx">
+      <div class="who"><img src="img/${m.img}.jpg" alt=""><div><div style="font-weight:700">${esc(m.n)}</div><span class="label muted">${esc(m.craft)} · ${esc(m.place)}</span></div></div>
+      <h2>${esc(p.n)}</h2>
+      <q>${esc(m.en.split('. ').slice(0,2).join('. ').replace(/\.$/,''))}.</q>
+      <div class="pr">${fmt(p.price)}${p.was?` <s class="mono muted" style="font:400 14px 'IBM Plex Mono'">${fmt(p.was)}</s>`:''}</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn ink neo" onclick="openProduct(${p.id})">See the piece</button><a class="btn neo" href="#artist/${p.mk}">Meet the maker</a></div>
+    </div>
+  </div>`; };
+  return `<div class="feat" onmouseenter="clearInterval(featT)" onmouseleave="featArm()">
+    <div class="ftrack" id="ftrack" style="transform:translateX(-${featI*100}%)">${items.map(slide).join('')}</div>
+  </div>`;
+}
+function featGo(n, abs){
+  const t = document.getElementById('ftrack'); if(!t) return; const N = t.children.length;
+  featI = abs ? n : (featI + n + N) % N;
+  t.style.transform = `translateX(-${featI*100}%)`;
+  document.querySelectorAll('.feat .dots').forEach(g=>[...g.children].forEach((d,k)=>d.classList.toggle('on', k===featI)));
+  featArm();
+}
+function featArm(){ clearInterval(featT); featT = setInterval(()=>{ if(document.getElementById('ftrack') && !document.hidden) featGo(1); }, 5000); }
+const filtered = () => allP().filter(p => (state.cat==='all' || p.cat===state.cat) && (!state.q || (p.n+' '+(p.hi||'')+' '+p.craft+' '+maker(p).n+' '+maker(p).place+' '+catName(p.cat)).toLowerCase().includes(state.q.toLowerCase())));
+
+/* ── screens ─────────────────────────────────────────────────────── */
+const S = {};
+function shopArea(){
+  const list = sortList(filtered());
+  const home = state.cat==='all' && !state.q;
+  return `${home ? featured() : ''}
+  <div class="sec"><h1>${state.q ? `Results for “${esc(state.q)}”` : catName(state.cat)}</h1><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span class="label muted">${list.length} listing${list.length===1?'':'s'}</span>${sortSel()}</div></div>
+  ${list.length ? `<div class="grid shop">${tiles(list)}</div>` : `<div class="empty" style="margin:12px 0">Nothing matches. Try another word or category.</div>`}
+  <div class="sec" style="border-top:2px solid var(--fg);padding-top:14px"><span class="label muted">© KalaSutra · UPI · Cards · Ships across India</span><a class="label" href="#login" style="text-decoration:underline">Sell with us →</a></div>`;
+}
+S.home = () => `<div id="shopArea">${shopArea()}</div>`;
+S.shop = S.home;
+
+S.cart = () => {
+  const items = cart.map(c=>({...c,p:byId(c.id)})).filter(x=>x.p);
+  const sub = cartSub(), ship = shipping(sub), total = sub+ship;
+  const ids = new Set(cart.map(c=>c.id));
+  const rel = allP().filter(p=>!ids.has(p.id) && items.some(i=>i.p.cat===p.cat || i.p.mk===p.mk)).slice(0,10);
+  const canOrder = items.length && addrs.length && pays.length;
+  return `
+  <div class="sec"><h1>Your cart</h1><span class="label muted">${cartCount()} item${cartCount()===1?'':'s'}</span></div>
+  <div class="split">
+    <div>
+      ${items.length ? items.map(({p,qty})=>`<div class="crow"><div class="thumb" onclick="openProduct(${p.id})">${pic(p)}</div><div class="nm"><div style="font-weight:700;line-height:1.25">${esc(p.n)}</div><span class="label muted">${esc(maker(p).n)} · ${esc(maker(p).place)}</span><div class="mono muted" style="font-size:12px;margin-top:2px">${fmt(p.price)} each</div></div><div class="qty"><button onclick="setQty(${p.id},${qty-1});render()">−</button><span>${qty}</span><button onclick="setQty(${p.id},${qty+1});render()">+</button></div><span style="font-weight:900;min-width:90px;text-align:right">${fmt(p.price*qty)}</span><button class="btn sm ghost" title="Remove" onclick="removeFromCart(${p.id});render()">✕</button></div>`).join('')
+      : `<div class="empty">Your cart is empty.<a class="btn ink neo" href="#shop/all">Shop the crafts</a></div>`}
+      ${rel.length ? `<div class="sec" style="padding-top:26px"><h2 style="font-size:15px">You may also like</h2><span class="label muted">scroll →</span></div><div class="strip">${rel.map(card).join('')}</div>` : ''}
+    </div>
+    <div class="sticky">
+      <div class="box" style="padding:16px 18px">
+        <div class="label" style="margin-bottom:8px">Order summary</div>
+        <div class="line"><span class="muted">Subtotal</span><span>${fmt(sub)}</span></div>
+        <div class="line"><span class="muted">Shipping</span><span>${sub===0?'—':(ship?fmt(ship):'Free')}</span></div>
+        <div class="line" style="font:900 18px 'Archivo'"><span>Total</span><span>${fmt(total)}</span></div>
+        ${sub && sub<999 ? `<div class="mono muted" style="font-size:11px;margin-top:6px">Add ${fmt(999-sub)} more for free shipping.</div>`:''}
+      </div>
+      <div class="box" style="padding:16px 18px;margin-top:12px">
+        <div class="label" style="margin-bottom:10px">Deliver to</div>
+        ${addrs.length ? addrs.map((a,i)=>`<div class="opt ${i===state.selAddr?'on':''}" onclick="state.selAddr=${i};render()"><span class="rd"></span><div><b>${esc(a.name)}</b> · ${esc(a.phone)}<br><span class="muted">${esc(a.line)}, ${esc(a.city)}, ${esc(a.state)} ${esc(a.pin)}</span></div></div>`).join('') : `<div class="muted" style="font-size:13px;margin-bottom:8px">No address saved yet.</div>`}
+        <details ${addrs.length?'':'open'}><summary class="label" style="cursor:pointer;margin:4px 0 8px">+ Add an address</summary>${addrForm()}</details>
+      </div>
+      <div class="box" style="padding:16px 18px;margin-top:12px">
+        <div class="label" style="margin-bottom:10px">Pay with</div>
+        ${pays.length ? pays.map((a,i)=>`<div class="opt ${i===state.selPay?'on':''}" onclick="state.selPay=${i};render()"><span class="rd"></span><div><b>${a.type==='upi'?'UPI':'Card'}</b> · <span class="mono">${esc(a.label)}</span></div></div>`).join('') : `<div class="muted" style="font-size:13px;margin-bottom:8px">No payment method saved yet.</div>`}
+        <details ${pays.length?'':'open'}><summary class="label" style="cursor:pointer;margin:4px 0 8px">+ Add a payment method</summary>${payForm()}</details>
+      </div>
+      <button class="btn acc lg neo" style="width:100%;margin-top:12px" ${canOrder?'':'disabled'} onclick="placeOrder()">Place order · ${fmt(total)}</button>
+      ${!canOrder && items.length ? `<div class="mono muted" style="font-size:11px;margin-top:6px;text-align:center">Add an address and a payment method to place the order.</div>`:''}
+    </div>
+  </div>`;
+};
+function addrForm(){ return `<form class="form" onsubmit="return saveAddr(this)">
+  <input name="name" placeholder="Full name" required value="${esc(user.name)}"><input name="phone" placeholder="Mobile" required value="${esc(user.phone)}">
+  <input class="full" name="line" placeholder="House, street, area" required>
+  <input name="city" placeholder="City" required><input name="state" placeholder="State" required><input name="pin" placeholder="PIN code" required pattern="[0-9]{6}">
+  <button class="btn ink neo full" type="submit">Save address</button></form>`; }
+function saveAddr(f){ const d=Object.fromEntries(new FormData(f)); addrs.push(d); db.set('ks-addr',addrs); state.selAddr=addrs.length-1; if(!user.name){ user.name=d.name; user.phone=d.phone; db.set('ks-user',user);} toast('Address saved'); render(); return false; }
+function delAddr(i){ addrs.splice(i,1); db.set('ks-addr',addrs); state.selAddr=0; render(); }
+function payForm(){ return `<form class="form" onsubmit="return savePay(this)">
+  <select name="type" class="full" onchange="this.form.querySelector('[name=upi]').hidden=this.value!=='upi';this.form.querySelector('[name=card]').hidden=this.value!=='card';this.form.querySelector('[name=cname]').hidden=this.value!=='card'"><option value="upi">UPI</option><option value="card">Debit / credit card</option></select>
+  <input class="full" name="upi" placeholder="yourname@upi">
+  <input class="full" name="card" placeholder="Card number" hidden inputmode="numeric"><input class="full" name="cname" placeholder="Name on card" hidden>
+  <button class="btn ink neo full" type="submit">Save</button></form>`; }
+function savePay(f){ const d=Object.fromEntries(new FormData(f)); let label;
+  if(d.type==='upi'){ if(!/^[\w.\-]+@[\w]+$/.test(d.upi||'')){ toast('Enter a valid UPI id'); return false } label=d.upi; }
+  else { const num=(d.card||'').replace(/\s/g,''); if(!/^\d{12,19}$/.test(num)){ toast('Enter a valid card number'); return false } label='•••• '+num.slice(-4)+(d.cname?' · '+d.cname:''); }
+  pays.push({type:d.type,label}); db.set('ks-pay',pays); state.selPay=pays.length-1; toast('Payment method saved'); render(); return false; }
+function delPay(i){ pays.splice(i,1); db.set('ks-pay',pays); state.selPay=0; render(); }
+function placeOrder(){
+  const items = cart.map(c=>({...c,p:byId(c.id)})).filter(x=>x.p); if(!items.length||!addrs[state.selAddr]||!pays[state.selPay]) return;
+  const sub=cartSub(), ship=shipping(sub);
+  const o = { no:'KS'+Date.now().toString(36).toUpperCase(), date:new Date().toISOString(), items:items.map(i=>({id:i.id,qty:i.qty,price:i.p.price,n:i.p.n})), sub, ship, total:sub+ship, addr:addrs[state.selAddr], pay:pays[state.selPay], status:'Placed' };
+  orders.unshift(o); db.set('ks-orders',orders); cart=[]; db.set('ks-cart',cart); paintBar(); location.hash='#confirmed/'+o.no;
+}
+
+S.confirmed = (no) => { const o = orders.find(x=>x.no===no) || orders[0]; return `
+<div class="box" style="min-height:calc(100vh - 160px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:40px;margin-top:20px">
+  <div style="width:150px;height:150px;border:3px solid var(--fg);border-radius:48px;display:flex;align-items:center;justify-content:center;box-shadow:6px 6px 0 0 var(--ink)"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="3" stroke-linecap="round"><path d="M4 12l5 5 11-11"/></svg></div>
+  <h1 class="display" style="font-size:clamp(36px,5vw,72px)">Order confirmed</h1>
+  <div class="hi" style="font-size:34px;font-weight:700">धन्यवाद${user.name?', '+esc(user.name.split(' ')[0]):''}</div>
+  ${o ? `<span class="mono muted" style="font-size:13px">Order ${o.no} · ${o.items.length} item${o.items.length===1?'':'s'} · ${fmt(o.total)} · paid by ${o.pay.type==='upi'?'UPI':'card'}<br>Delivering to ${esc(o.addr.city)} · the makers will accept it within a day · updates by SMS</span>`:''}
+  <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><a class="btn ink neo" href="#account/orders">Your orders</a><a class="btn neo" href="#shop/all">Keep shopping</a></div>
+</div>`; };
+
+S.account = (open='') => {
+  const ini = (user.name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || '?';
+  const acc = (key,title,sub,body) => `<div class="acc-item ${open===key?'on':''}" id="acc-${key}"><div class="hd" onclick="this.parentElement.classList.toggle('on')"><div><div class="display" style="font-size:20px">${title}</div><div class="mono muted" style="font-size:12px;margin-top:4px">${sub}</div></div><span style="font-size:22px">›</span></div><div class="bd">${body}</div></div>`;
+  return `
+  <div class="sec"><h1>Your account</h1><span class="label muted">${user.name?esc(user.name):'not signed in'}</span></div>
+  <div class="split">
+    <div>
+      ${acc('addr','Address', addrs.length?`${addrs.length} saved`:'nothing saved yet',
+        (addrs.length?addrs.map((a,i)=>`<div class="opt" style="cursor:default"><div style="flex:1"><b>${esc(a.name)}</b> · ${esc(a.phone)}<br><span class="muted">${esc(a.line)}, ${esc(a.city)}, ${esc(a.state)} ${esc(a.pin)}</span></div><button class="btn sm ghost" onclick="delAddr(${i})">✕</button></div>`).join(''):`<div class="empty" style="margin-bottom:12px">No address yet. Add one below — it is used at checkout.</div>`) + addrForm())}
+      ${acc('pay','Payment', pays.length?`${pays.length} saved`:'nothing saved yet',
+        (pays.length?pays.map((a,i)=>`<div class="opt" style="cursor:default"><div style="flex:1"><b>${a.type==='upi'?'UPI':'Card'}</b> · <span class="mono">${esc(a.label)}</span></div><button class="btn sm ghost" onclick="delPay(${i})">✕</button></div>`).join(''):`<div class="empty" style="margin-bottom:12px">No payment method yet.</div>`) + payForm())}
+      ${acc('orders','Your orders', orders.length?`${orders.length} order${orders.length===1?'':'s'}`:'no orders yet',
+        orders.length?orders.map(o=>`<div class="box" style="padding:14px;margin-bottom:10px"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><span class="mono" style="font-size:12px">${o.no} · ${new Date(o.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</span><span class="label" style="color:var(--ok)">${o.status}</span></div>${o.items.map(i=>`<div class="line"><span><a href="javascript:void(0)" onclick="openProduct(${i.id})" style="text-decoration:underline">${esc(i.n)}</a> × ${i.qty}</span><span>${fmt(i.price*i.qty)}</span></div>`).join('')}<div class="line" style="font-weight:900"><span>Total (incl. shipping)</span><span>${fmt(o.total)}</span></div><div class="mono muted" style="font-size:11px;margin-top:6px">To ${esc(o.addr.name)}, ${esc(o.addr.city)} · ${o.pay.type==='upi'?'UPI':'Card'} ${esc(o.pay.label)}</div></div>`).join('')
+        :`<div class="empty">You haven't ordered anything yet.<a class="btn ink neo" href="#shop/all">Shop the crafts</a></div>`)}
+    </div>
+    <div class="sticky">
+      <div class="box" style="padding:20px;display:flex;flex-direction:column;gap:14px;align-items:center">
+        <div class="avatar">${ini}</div>
+        <form class="form" style="width:100%" onsubmit="return saveUser(this)">
+          <div class="label muted full">Details</div>
+          <input class="full" name="name" placeholder="Your name" value="${esc(user.name)}">
+          <input class="full" name="phone" placeholder="Mobile" value="${esc(user.phone)}">
+          <input class="full" name="email" type="email" placeholder="Email" value="${esc(user.email)}">
+          <button class="btn neo full" type="submit">Save</button>
+        </form>
+        <div class="line" style="width:100%"><span class="muted">Cart</span><span>${cartCount()} items</span></div>
+        <div class="line" style="width:100%"><span class="muted">Wishlist</span><span>${wish.length} saved</span></div>
+        <a class="label" href="#login" style="text-decoration:underline">Are you a maker? Seller login →</a>
+      </div>
+    </div>
+  </div>`;
+};
+function saveUser(f){ user={...user,...Object.fromEntries(new FormData(f))}; db.set('ks-user',user); toast('Saved'); render(); return false; }
+
+S.login = () => `
+<div class="box split login" style="grid-template-columns:clamp(320px,32vw,720px) minmax(0,1fr);gap:0;align-items:stretch;height:calc(100vh - 110px);min-height:560px;margin-top:20px;overflow:hidden">
+  <div style="border-right:2px solid var(--fg);padding:clamp(24px,3vw,80px);display:flex;flex-direction:column;justify-content:center;gap:clamp(14px,1.2vw,28px)">
+    <span class="label muted">Seller login · <span class="hi">विक्रेता लॉगिन</span></span>
+    <h1 class="display" style="font-size:clamp(30px,2.4vw,64px)">Welcome back, maker</h1>
+    <div class="field"><span class="label">User name / mobile</span><input placeholder="98111 00001"></div>
+    <div class="field"><span class="label">Password / OTP</span><input type="password" placeholder="••••••••"></div>
+    <a class="btn acc lg neo" href="#seller">Enter my shop</a>
+    <a class="label" href="#shop/all" style="text-decoration:underline">New here? Open a shop in five minutes</a>
+  </div>
+  <div style="position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;gap:clamp(16px,2vw,48px);padding:clamp(24px,3vw,80px);background:repeating-linear-gradient(135deg,transparent 0 18px,color-mix(in srgb,var(--fg) 6%,transparent) 18px 20px)">
+    <span class="label">Motivation · for the women who make</span>
+    <svg viewBox="0 0 600 320" style="width:100%;max-width:min(100%,1300px);margin:0 auto;flex:1 1 auto;min-height:0;max-height:min(40vh,640px)" fill="none" stroke="var(--fg)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M60 280h480"/><path d="M120 280V120h360v160"/><path d="M120 120l-20-40h400l-20 40"/>
+      <g stroke-width="2">${[150,180,210,240,270,300,330,360,390,420,450].map(x=>`<path d="M${x} 130v140"/>`).join('')}</g>
+      <path d="M120 200h360" stroke="var(--acc)" stroke-width="6"/>
+      <circle cx="90" cy="150" r="22"/><path d="M90 172c-30 0-42 30-42 60v48h84v-48c0-30-12-60-42-60z" fill="var(--bg)"/><path d="M110 200l40 10"/><path d="M76 132c6-14 24-16 30-2"/>
+      <circle cx="540" cy="160" r="20"/><path d="M540 180c-26 0-36 26-36 52v48h72v-48c0-26-10-52-36-52z" fill="var(--bg)"/><path d="M520 208l-40 6"/>
+    </svg>
+    <div><div class="display" style="font-size:clamp(26px,2.5vw,68px);max-width:15ch">Your hands made it. Let the whole country see it.</div><div class="hi" style="font-size:clamp(18px,1.1vw,32px);font-weight:700;margin-top:10px">आपके हाथ का हुनर, पूरे देश तक।</div></div>
+  </div>
+</div>`;
+
+S.seller = () => { const mine = allP().filter(p=>p.mk==='priya'); return `
+  <div class="box" style="margin-top:20px;padding:10px 18px;background:var(--fg);color:var(--bg);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><span class="label" style="color:var(--acc)">Seller account · Priya Devi Block Prints · verified</span><span class="mono" style="font-size:12px">${orders.filter(o=>o.items.some(i=>byId(i.id)?.mk==='priya')).length} orders</span></div>
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">${crumb(['My shop','Products','Live'])}<a class="btn acc neo" href="#upload" style="margin-top:20px;width:56px;height:56px;padding:0;font-size:26px" title="Add product">+</a></div>
+  <div class="sec"><h1>My products <span class="hi" style="font:700 18px 'Noto Sans Devanagari';letter-spacing:0;text-transform:none;color:var(--muted)">· मेरे प्रोडक्ट</span></h1><a class="label" href="#upload" style="text-decoration:underline">Add a product · नया प्रोडक्ट</a></div>
+  <div class="grid shop">${mine.map(card).join('')}</div>`; };
+const crumb = parts => `<div class="crumb">${parts.map(x=>`<span>${x}</span>`).join('')}</div>`;
+
+S.upload = () => `
+  <div class="sec"><h1>Add a product <span class="hi" style="font:700 18px 'Noto Sans Devanagari';letter-spacing:0;text-transform:none;color:var(--muted)">· नया प्रोडक्ट</span></h1><span class="label muted">Seller · Priya Devi</span></div>
+  <div class="split" style="grid-template-columns:minmax(0,1fr) clamp(300px,24vw,400px)">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px;align-content:start">
+      <div class="box" style="padding:16px;display:flex;flex-direction:column;gap:12px;min-height:300px">
+        <span class="label">1 · Photo upload</span>
+        <div id="photoZone" class="box" style="flex:1;border-style:dashed;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:170px;position:relative;overflow:hidden">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>
+          <button class="btn ink neo" onclick="doUpload()">Upload photo</button>
+          <span class="mono muted" style="font-size:11px">Studio: background cleaned automatically</span>
+        </div>
+      </div>
+      <div class="box" style="padding:16px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="label">2 · Product description</span><span class="label muted" id="descState">waiting for photo</span></div>
+        <div id="descBox" class="box" style="min-height:150px;padding:12px;font-size:14px;line-height:1.6;background:var(--sec)"><span class="muted">Describe it by voice, or let the app write it from the photo.</span></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn neo" id="voiceBtn" onclick="doDescribe()" disabled>🎙 Describe by voice</button><button class="btn neo" id="editBtn" onclick="editDesc()" disabled>Edit</button></div>
+      </div>
+      <div class="box" style="padding:16px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="label">3 · Price approx.</span><span class="label muted" id="priceState">waiting for description</span></div>
+        <div id="priceBox" class="box mono" style="display:grid;grid-template-columns:repeat(3,1fr);overflow:hidden"><div style="padding:12px;border-right:1px solid var(--fg)"><div class="label muted">Floor</div><div style="font-size:20px">—</div></div><div style="padding:12px;border-right:1px solid var(--fg)"><div class="label">Fair</div><div style="font-size:26px">—</div></div><div style="padding:12px"><div class="label muted">Premium</div><div style="font-size:20px">—</div></div></div>
+        <div class="field"><span class="label">Your price (₹)</span><input id="priceInput" placeholder="—" oninput="check()" disabled inputmode="numeric"></div>
+      </div>
+      <div class="box" style="padding:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+        <span class="label" style="align-self:flex-start">4 · Submit</span>
+        <div class="diamond off" id="submitBtn" onclick="submitListing()"><span>Submit<br>to market</span></div>
+        <span class="mono muted" style="font-size:11px;text-align:center" id="submitHint">Only works when the checklist is OK</span>
+      </div>
+    </div>
+    <div class="box sticky" style="overflow:hidden">
+      <div class="sec" style="padding:12px 16px"><span class="label">Checklist of requirements</span></div>
+      <div class="check" id="ck1"><span class="m">✕</span>Photo <span class="hi muted" style="font-weight:500;margin-left:auto">फ़ोटो</span></div>
+      <div class="check" id="ck2"><span class="m">✕</span>Description <span class="hi muted" style="font-weight:500;margin-left:auto">विवरण</span></div>
+      <div class="check" id="ck3"><span class="m">✕</span>Price <span class="hi muted" style="font-weight:500;margin-left:auto">दाम</span></div>
+      <div style="padding:14px 16px;font-weight:700;color:var(--err)" id="ckMsg">✕ It can't be submitted to the market yet.</div>
+      <div class="mono muted" style="font-size:12px;padding:12px 16px;border-top:1px solid var(--fg)">Prototype: click Upload → Describe → type a price → Submit. The listing then appears in your shop and in the store.</div>
+    </div>
+  </div>`;
+
+S.artist = (key='priya') => { const m = MAKERS[key]||MAKERS.priya; const work = allP().filter(p=>p.mk===key); return `
+  <div class="split" style="margin-top:20px;grid-template-columns:minmax(0,1fr) clamp(300px,26vw,440px)">
+    <div>
+      <div style="display:grid;grid-template-columns:clamp(160px,18vw,260px) minmax(0,1fr);gap:20px;align-items:start">
+        <div class="box pimg" style="aspect-ratio:1;overflow:hidden"><img src="img/${m.img}.jpg" alt="${esc(m.n)}"></div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <span class="label muted">Artist portfolio · verified maker</span>
+          <h1 class="display" style="font-size:clamp(28px,3vw,50px)">${esc(m.shop)}</h1>
+          <span class="mono" style="font-size:13px">${esc(m.craft)} · ${esc(m.place)} · since ${m.since} · ${work.length} listing${work.length===1?'':'s'}</span>
+          <div class="box" style="padding:14px;font-size:15px;line-height:1.6">“${esc(m.en)}”</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn acc neo" href="javascript:void(0)" onclick="toast('Quote request sent to ${esc(m.n)}')">Request a bulk quote</a></div>
+        </div>
+      </div>
+      <div class="sec"><h2>Work</h2><span class="label muted">${work.length} pieces</span></div>
+      <div class="grid shop">${work.map(card).join('')}</div>
+    </div>
+    <div class="box sticky" style="padding:20px;display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;justify-content:space-between"><span class="label">${key==='priya'||key==='meera'?'Her':'Their'} story</span><span class="label muted">3 languages</span></div>
+      <div><span class="label muted">English / हिन्दी · translated by the app</span><p style="font-size:14px;line-height:1.65;margin-top:6px" id="storyText" data-en="${esc(m.en)}" data-hi="${esc(m.hi)}">${esc(m.en)}</p></div>
+      <div><span class="label muted">Regional language · given by the seller</span><p class="hi" style="font-size:15px;line-height:1.8;margin-top:6px">${esc(m.hi)}</p></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn neo" onclick="toggleStory(this)">Read in हिन्दी</button><button class="btn neo" title="Read aloud" onclick="toast('Voice playback comes with the AI phase')">🔊 सुनें</button></div>
+    </div>
+  </div>`; };
+
+/* ── product modal ───────────────────────────────────────────────── */
+let mQty = 1, mPick = 0;
+function openProduct(id){ const p=byId(id); if(!p) return; mQty=1; mPick=0; document.getElementById('modal').innerHTML = productHtml(p); document.getElementById('mbg').classList.add('on'); document.getElementById('mbg').scrollTop=0; document.body.classList.add('lock'); }
+function closeProduct(){ document.getElementById('mbg').classList.remove('on'); document.body.classList.remove('lock'); }
+function productHtml(p){
+  const m=maker(p), d={...DEF[p.cat],...(p.d||{})}, rv=reviews[p.id]||[], cm=comments[p.id]||[];
+  const avg = rv.length ? rv.reduce((a,r)=>a+r.stars,0)/rv.length : 0;
+  const inCart = cart.find(c=>c.id===p.id);
+  return `<button class="x press" onclick="closeProduct()" title="Close">✕</button>
+  <div class="top">
+    <div class="gal">${pic(p)}</div>
+    <div class="info">
+      <span class="label muted"><a href="#shop/${p.cat}" onclick="closeProduct()">${catName(p.cat)}</a> › ${esc(m.n)}</span>
+      <h2>${esc(p.n)}</h2>
+      <span class="hi muted" style="font-size:14px">${esc(p.hi||'')}</span>
+      <a class="label" href="#artist/${p.mk}" onclick="closeProduct()" style="text-decoration:underline">${esc(m.shop)} · ${esc(m.place)} →</a>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="stars">${'★'.repeat(Math.round(avg))}${'☆'.repeat(5-Math.round(avg))}</span><span class="mono muted" style="font-size:12px">${rv.length?`${avg.toFixed(1)} · ${rv.length} review${rv.length===1?'':'s'}`:'no reviews yet'}</span></div>
+      <div class="price">${fmt(p.price)}${p.was?`<s>${fmt(p.was)}</s>`:''}</div>
+      <span class="mono muted" style="font-size:12px">In stock · made to order in 2–4 days · ${p.price>=999?'free shipping':'shipping ₹79, free above ₹999'}</span>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px">
+        <div class="qty"><button onclick="mQty=Math.max(1,mQty-1);document.getElementById('mq').textContent=mQty">−</button><span id="mq">${mQty}</span><button onclick="mQty=Math.min(20,mQty+1);document.getElementById('mq').textContent=mQty">+</button></div>
+        <button class="btn ink lg neo" id="mAdd" onclick="addToCart(${p.id},mQty);this.textContent='Added ✓ · view cart';this.onclick=()=>{closeProduct();location.hash='#cart'}">${inCart?`In cart (${inCart.qty}) · add more`:'Add to cart'}</button>
+        <button class="btn acc lg neo" onclick="addToCart(${p.id},mQty);closeProduct();location.hash='#cart'">Buy now →</button>
+        <button class="btn neo" data-wl="${p.id}" onclick="toggleWish(${p.id});this.textContent=wish.includes(${p.id})?'♥ Saved':'♡ Wishlist'">${wish.includes(p.id)?'♥ Saved':'♡ Wishlist'}</button>
+      </div>
+    </div>
+  </div>
+  <section><h3>Details</h3><div class="kv"><span class="label muted">Technique</span><span>${esc(d.technique)}</span><span class="label muted">Materials</span><span>${esc(d.materials)}</span><span class="label muted">Size</span><span>${esc(d.size)}</span><span class="label muted">Care</span><span>${esc(d.care)}</span><span class="label muted">Made in</span><span>${esc(m.place)} by ${esc(m.n)}</span></div></section>
+  <section><h3>Shipping &amp; returns</h3><div class="kv"><span class="label muted">Delivery</span><span>Ships from ${esc(m.place.split(',')[0])} in 2–4 days; delivered across India in 5–9 days. Tracking by SMS.</span><span class="label muted">Returns</span><span>7-day return for unused pieces in original packing. Refund to the same UPI / card within 5 working days.</span><span class="label muted">Not returnable</span><span>Custom sizes and personalised pieces.</span><span class="label muted">Makers' promise</span><span>Every piece is checked by the maker before it ships; slight variations are part of handwork.</span></div></section>
+  <section><h3>Reviews <span class="mono muted" style="font:400 12px 'IBM Plex Mono'">${rv.length}</span></h3>
+    ${rv.length ? rv.map(r=>`<div class="rev"><div class="who"><b>${esc(r.name)}</b><span class="muted mono">${new Date(r.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</span></div><span class="stars">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</span><div style="margin-top:4px">${esc(r.text)}</div></div>`).join('') : `<div class="empty" style="padding:16px">No reviews yet. Bought this? Be the first.</div>`}
+    <form class="form" style="margin-top:14px" onsubmit="return addReview(this,${p.id})">
+      <div class="full" style="display:flex;align-items:center;gap:10px"><span class="label muted">Your rating</span><span class="stars pick" id="pick">${[1,2,3,4,5].map(i=>`<span onclick="pickStar(${i})">★</span>`).join('')}</span></div>
+      <input name="name" placeholder="Your name" required value="${esc(user.name)}"><input name="text" placeholder="What did you think?" required>
+      <button class="btn ink neo" type="submit">Post review</button>
+    </form>
+  </section>
+  <section><h3>Comments &amp; questions <span class="mono muted" style="font:400 12px 'IBM Plex Mono'">${cm.length}</span></h3>
+    ${cm.length ? cm.map(c=>`<div class="rev"><div class="who"><b>${esc(c.name)}</b><span class="muted mono">${new Date(c.date).toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</span></div><div>${esc(c.text)}</div></div>`).join('') : `<div class="empty" style="padding:16px">No questions yet. Ask the maker anything about this piece.</div>`}
+    <form class="form" style="margin-top:14px" onsubmit="return addComment(this,${p.id})">
+      <input name="name" placeholder="Your name" required value="${esc(user.name)}"><input name="text" placeholder="Ask a question or leave a comment" required>
+      <button class="btn neo" type="submit">Post</button>
+    </form>
+  </section>`;
+}
+function pickStar(n){ mPick=n; document.querySelectorAll('#pick span').forEach((s,i)=>s.classList.toggle('on',i<n)); }
+function addReview(f,id){ if(!mPick){ toast('Pick a star rating'); return false } const d=Object.fromEntries(new FormData(f)); (reviews[id]=reviews[id]||[]).unshift({name:d.name,text:d.text,stars:mPick,date:new Date().toISOString()}); db.set('ks-reviews',reviews); if(!user.name){user.name=d.name;db.set('ks-user',user)} const y=document.getElementById('mbg').scrollTop; mPick=0; document.getElementById('modal').innerHTML=productHtml(byId(id)); document.getElementById('mbg').scrollTop=y; toast('Review posted'); return false; }
+function addComment(f,id){ const d=Object.fromEntries(new FormData(f)); (comments[id]=comments[id]||[]).unshift({name:d.name,text:d.text,date:new Date().toISOString()}); db.set('ks-comments',comments); if(!user.name){user.name=d.name;db.set('ks-user',user)} const y=document.getElementById('mbg').scrollTop; document.getElementById('modal').innerHTML=productHtml(byId(id)); document.getElementById('mbg').scrollTop=y; toast('Posted'); return false; }
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeProduct(); togglePanel(); } });
+
+/* ── router ──────────────────────────────────────────────────────── */
+function render(){
+  const parts = (location.hash||'#home').slice(1).split('/');
+  let key = S[parts[0]] ? parts[0] : 'home', arg = decodeURIComponent(parts[1]||'');
+  if(key==='shop'||key==='home'){ state.cat = CATS.some(c=>c.k===arg) ? arg : 'all'; }
+  const plain = ['login'].includes(key);
+  const app = document.getElementById('app'); app.className = plain ? 'plain' : '';
+  document.getElementById('cap').style.display = plain ? 'none' : '';
+  app.innerHTML = S[key](arg);
+  paintCap(key==='shop'||key==='home' ? state.cat : '');
+  if(key==='upload') upState = {photo:false,desc:false,price:false};
+  window.scrollTo(0,0); paintTop();
+  if(document.getElementById('ftrack')) featArm(); else clearInterval(featT);
+}
+window.addEventListener('hashchange', render);
+
+/* ── seller upload flow ──────────────────────────────────────────── */
+let upState = {photo:false,desc:false,price:false};
+function doUpload(){
+  const z=document.getElementById('photoZone'); z.style.borderStyle='solid'; z.innerHTML = `<img src="img/saree-cream.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><span class="label" style="position:absolute;left:8px;top:8px;background:var(--fg);color:var(--bg);padding:3px 8px;border-radius:6px">Studio · cleaned</span>`;
+  upState.photo=true; document.getElementById('voiceBtn').disabled=false; document.getElementById('descState').textContent='photo ready · speak or generate'; check();
+}
+function doDescribe(){
+  const b=document.getElementById('descBox'); b.style.background='var(--bg)';
+  b.innerHTML = `<div class="hi muted" style="font-size:13px;border-bottom:1px solid var(--fg);padding-bottom:8px;margin-bottom:8px">“ये बगरू की सूती साड़ी है, नील और मजीठ से हाथ से छापी हुई…” <span class="mono">0:22</span></div><b id="genTitle">Hand Block-Printed Mulmul Cotton Saree, Indigo &amp; Madder</b><br>Hand block-printed in Bagru on hand-loomed mulmul cotton with natural indigo and madder. 5.5 m with blouse piece. Gentle hand wash in cold water.`;
+  upState.desc=true; document.getElementById('editBtn').disabled=false; document.getElementById('descState').textContent='written from your voice · ✓';
+  const pb=document.getElementById('priceBox'); pb.innerHTML=`<div style="padding:12px;border-right:1px solid var(--fg)"><div class="label muted">Floor</div><div style="font-size:20px">₹1,450</div></div><div style="padding:12px;border-right:1px solid var(--fg);background:var(--acc);color:#111"><div class="label">Fair</div><div style="font-size:26px">₹1,899</div></div><div style="padding:12px"><div class="label muted">Premium</div><div style="font-size:20px">₹2,400</div></div>`;
+  const pi=document.getElementById('priceInput'); pi.disabled=false; pi.placeholder='1899 suggested'; document.getElementById('priceState').textContent='from 12 similar pieces'; pi.focus(); check();
+}
+function editDesc(){ const b=document.getElementById('descBox'); b.contentEditable = b.isContentEditable ? 'false' : 'true'; b.style.boxShadow = b.isContentEditable ? '3px 3px 0 0 var(--acc)' : 'none'; if(b.isContentEditable) b.focus(); }
+function check(){
+  const pi=document.getElementById('priceInput'); upState.price = !!(pi && Number(pi.value)>0);
+  [['ck1',upState.photo],['ck2',upState.desc],['ck3',upState.price]].forEach(([id,ok])=>{ const el=document.getElementById(id); el.classList.toggle('ok',ok); el.querySelector('.m').textContent = ok?'✓':'✕'; });
+  const all = upState.photo&&upState.desc&&upState.price; document.getElementById('submitBtn').classList.toggle('off',!all);
+  const m=document.getElementById('ckMsg'); m.textContent = all ? '✓ It can be submitted to the market.' : "✕ It can't be submitted to the market yet."; m.style.color = all ? 'var(--ok)' : 'var(--err)';
+}
+function submitListing(){
+  if(!(upState.photo&&upState.desc&&upState.price)) return;
+  const title = (document.getElementById('genTitle')?.textContent || 'New listing').trim();
+  const np = {id: 1000+extra.length+1, n:title, mk:'priya', price:Number(document.getElementById('priceInput').value), img:'saree-cream', cat:'sarees', hi:'नई सूची', d:{technique:'Hand block print',materials:'Mulmul cotton · indigo · madder'}};
+  extra.push(np); db.set('ks-extra',extra); P.push(np); toast('Listed in your shop'); location.hash='#seller';
+}
+function toggleStory(btn){ const t=document.getElementById('storyText'); const hi = btn.dataset.hi==='1'; t.textContent = hi ? t.dataset.en : t.dataset.hi; t.className = hi ? '' : 'hi'; btn.dataset.hi = hi ? '0':'1'; btn.textContent = hi ? 'Read in हिन्दी' : 'Read in English'; }
+
+/* ── theme ───────────────────────────────────────────────────────── */
+const sun=`<svg class="sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>`;
+const moon=`<svg class="moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+function paintTheme(){ document.getElementById('theme').innerHTML = document.documentElement.classList.contains('dark') ? moon : sun; }
+document.getElementById('theme').onclick = () => { const next = !document.documentElement.classList.contains('dark'); const apply=()=>{ document.documentElement.classList.toggle('dark',next); try{localStorage.setItem('ks-theme',next?'dark':'light')}catch(e){} paintTheme(); }; document.startViewTransition ? document.startViewTransition(apply) : apply(); };
+
+/* ── boot ────────────────────────────────────────────────────────── */
+if(db.get('ks-side','open')==='closed') document.body.classList.replace('side-open','side-closed');
+paintTheme(); paintBar(); paintWish(); render();
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Manrope:wght@400;500;600;700&family=Tiro+Devanagari+Hindi&display=swap">
+  <style>
+    body { margin: 0; background: #FAF7F2; }
+    a { color: #B45309; text-decoration: none; } a:hover { color: #92400E; }
+    .hi { font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', serif; }
+  </style>
+</helmet>
+<div style="width: 1200px; min-height: 1060px; background: #FAF7F2; color: #2D2A26; font-family: 'Manrope', 'Segoe UI', system-ui, sans-serif; display: flex; flex-direction: column;">
+
+  <!-- Nav -->
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 22px 56px; border-bottom: 1px solid #E5DDD3;">
+    <div style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 30px; font-weight: 700; letter-spacing: -0.01em; color: #7C2D12;">KalaSutra</div>
+    <div style="display: flex; gap: 32px; font-size: 15px; font-weight: 500; color: #6B6560;">
+      <span>Shop</span><span>Crafts</span><span>Artisans</span><span style="color: #B45309;">Sell with us</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 20px; color: #6B6560;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 8h-12z"></path><path d="M6 6L5 3H2"></path><circle cx="9" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle></svg>
+      <span style="font-size: 15px; font-weight: 600; color: #2D2A26;">Sign in</span>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 32px; padding: 64px 56px 56px; align-items: center;">
+    <div style="grid-column: span 6; display: flex; flex-direction: column; gap: 24px;">
+      <div style="font-size: 13px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #B45309;">Handmade in India · 20 craft clusters</div>
+      <h1 style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 68px; line-height: 1.02; font-weight: 600; letter-spacing: -0.02em; color: #2D2A26; text-wrap: pretty;">Every piece has a maker. <em style="color: #7C2D12;">Meet them.</em></h1>
+      <p style="margin: 0; font-size: 18px; line-height: 1.55; color: #6B6560; max-width: 480px; text-wrap: pretty;">Block prints from Bagru, Mithila paintings, hammered brass from Moradabad — bought straight from the workshop, open all year, not just at the mela.</p>
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <div style="display: inline-flex; align-items: center; justify-content: center; height: 48px; padding: 0 24px; background: #B45309; color: #FFFFFF; border-radius: 8px; font-size: 15px; font-weight: 600;">Shop the crafts</div>
+        <div style="display: inline-flex; align-items: center; justify-content: center; height: 48px; padding: 0 24px; background: transparent; color: #2D2A26; border: 1px solid #D4C9BC; border-radius: 8px; font-size: 15px; font-weight: 600;">Sell your craft</div>
+      </div>
+    </div>
+    <div style="grid-column: span 6; position: relative; height: 420px;">
+      <!-- photo placeholder: indigo block print -->
+      <div style="position: absolute; left: 40px; top: 0; width: 400px; height: 360px; border-radius: 20px; overflow: hidden; background: #1F3A5F;">
+        <svg width="400" height="360" viewBox="0 0 400 360"><defs><pattern id="bp" width="40" height="40" patternUnits="userSpaceOnUse"><rect width="40" height="40" fill="#1F3A5F"></rect><circle cx="20" cy="20" r="9" fill="none" stroke="#E7DCC8" stroke-width="2"></circle><circle cx="0" cy="0" r="4" fill="#E7DCC8"></circle><circle cx="40" cy="40" r="4" fill="#E7DCC8"></circle></pattern></defs><rect width="400" height="360" fill="url(#bp)"></rect></svg>
+      </div>
+      <!-- photo placeholder: brass -->
+      <div style="position: absolute; right: 0; top: 120px; width: 220px; height: 260px; border-radius: 20px; overflow: hidden; background: #C98A2A; box-shadow: 0 20px 40px rgba(45, 42, 38, 0.18);">
+        <svg width="220" height="260" viewBox="0 0 220 260"><defs><linearGradient id="br" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E2B15A"></stop><stop offset="1" stop-color="#9A6516"></stop></linearGradient></defs><rect width="220" height="260" fill="url(#br)"></rect><ellipse cx="110" cy="150" rx="70" ry="24" fill="#7A4E0E" opacity="0.5"></ellipse><ellipse cx="110" cy="140" rx="60" ry="20" fill="#F1D08A"></ellipse></svg>
+      </div>
+      <!-- maker caption -->
+      <div style="position: absolute; left: 0; bottom: 8px; display: flex; align-items: center; gap: 12px; background: #FFFFFF; border: 1px solid #E5DDD3; border-radius: 14px; padding: 12px 16px; box-shadow: 0 8px 24px rgba(45, 42, 38, 0.10);">
+        <div style="width: 40px; height: 40px; border-radius: 999px; background: #F5F0E8; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-weight: 700; color: #7C2D12; font-size: 18px;">PD</div>
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <div style="font-size: 14px; font-weight: 600;">Priya Devi · Bagru, Rajasthan</div>
+          <div style="font-size: 13px; color: #6B6560;">Third-generation block printer · verified seller</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Products -->
+  <div style="display: flex; flex-direction: column; gap: 20px; padding: 8px 56px 48px;">
+    <div style="display: flex; align-items: baseline; justify-content: space-between;">
+      <h2 style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 34px; font-weight: 600; letter-spacing: -0.01em;">New from the workshops</h2>
+      <span style="font-size: 14px; font-weight: 600; color: #B45309;">See all 19 →</span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px;">
+      <div style="display: flex; flex-direction: column; gap: 12px; background: #FFFFFF; border: 1px solid #E5DDD3; border-radius: 16px; padding: 12px;">
+        <div style="height: 180px; border-radius: 12px; background: #274B7A; overflow: hidden;"><svg width="100%" height="180" viewBox="0 0 260 180" preserveAspectRatio="none"><rect width="260" height="180" fill="#274B7A"></rect><g stroke="#E7DCC8" stroke-width="1.5" fill="none"><path d="M0 40h260M0 90h260M0 140h260"></path><path d="M20 20l20 20-20 20-20-20zM90 20l20 20-20 20-20-20zM160 20l20 20-20 20-20-20zM230 20l20 20-20 20-20-20z"></path></g></svg></div>
+        <div style="display: flex; flex-direction: column; gap: 4px; padding: 0 4px 4px;">
+          <div style="font-size: 15px; font-weight: 600; line-height: 1.3;">Block Print Cotton Saree</div>
+          <div style="font-size: 13px; color: #8B8680;">Bagru, Rajasthan</div>
+          <div style="font-size: 16px; font-weight: 700; margin-top: 4px;">₹1,899 <span style="font-size: 13px; font-weight: 500; color: #8B8680; text-decoration: line-through;">₹2,999</span></div>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 12px; background: #FFFFFF; border: 1px solid #E5DDD3; border-radius: 16px; padding: 12px;">
+        <div style="height: 180px; border-radius: 12px; background: #F1E4C8; overflow: hidden;"><svg width="100%" height="180" viewBox="0 0 260 180" preserveAspectRatio="none"><rect width="260" height="180" fill="#F1E4C8"></rect><g fill="none" stroke="#B3261E" stroke-width="2"><ellipse cx="130" cy="90" rx="70" ry="40"></ellipse><ellipse cx="130" cy="90" rx="50" ry="26"></ellipse><circle cx="130" cy="90" r="8" fill="#1F3A93" stroke="none"></circle></g></svg></div>
+        <div style="display: flex; flex-direction: column; gap: 4px; padding: 0 4px 4px;">
+          <div style="font-size: 15px; font-weight: 600; line-height: 1.3;">Madhubani Art Print Set</div>
+          <div style="font-size: 13px; color: #8B8680;">Madhubani, Bihar</div>
+          <div style="font-size: 16px; font-weight: 700; margin-top: 4px;">₹1,299</div>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 12px; background: #FFFFFF; border: 1px solid #E5DDD3; border-radius: 16px; padding: 12px;">
+        <div style="height: 180px; border-radius: 12px; background: #3B2A1A; overflow: hidden;"><svg width="100%" height="180" viewBox="0 0 260 180" preserveAspectRatio="none"><rect width="260" height="180" fill="#3B2A1A"></rect><g fill="#E2B15A"><ellipse cx="70" cy="110" rx="34" ry="12"></ellipse><ellipse cx="130" cy="80" rx="34" ry="12"></ellipse><ellipse cx="190" cy="110" rx="34" ry="12"></ellipse></g><g fill="#F7C948"><ellipse cx="70" cy="98" rx="6" ry="10"></ellipse><ellipse cx="130" cy="68" rx="6" ry="10"></ellipse><ellipse cx="190" cy="98" rx="6" ry="10"></ellipse></g></svg></div>
+        <div style="display: flex; flex-direction: column; gap: 4px; padding: 0 4px 4px;">
+          <div style="font-size: 15px; font-weight: 600; line-height: 1.3;">Brass Diya Set (5)</div>
+          <div style="font-size: 13px; color: #8B8680;">Moradabad, Uttar Pradesh</div>
+          <div style="font-size: 16px; font-weight: 700; margin-top: 4px;">₹1,249</div>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 12px; background: #FFFFFF; border: 1px solid #E5DDD3; border-radius: 16px; padding: 12px;">
+        <div style="height: 180px; border-radius: 12px; background: #DCE6EE; overflow: hidden;"><svg width="100%" height="180" viewBox="0 0 260 180" preserveAspectRatio="none"><rect width="260" height="180" fill="#DCE6EE"></rect><g fill="none" stroke="#1F3A93" stroke-width="2"><circle cx="130" cy="90" r="60"></circle><circle cx="130" cy="90" r="42"></circle><path d="M130 30v120M70 90h120"></path></g></svg></div>
+        <div style="display: flex; flex-direction: column; gap: 4px; padding: 0 4px 4px;">
+          <div style="font-size: 15px; font-weight: 600; line-height: 1.3;">Blue Pottery Dinner Set (21)</div>
+          <div style="font-size: 13px; color: #8B8680;">Jaipur, Rajasthan</div>
+          <div style="font-size: 16px; font-weight: 700; margin-top: 4px;">₹4,999</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Artisan portal strip -->
+  <div style="display: flex; flex-direction: column; gap: 20px; padding: 40px 56px 48px; background: #F5F0E8; border-top: 1px solid #E5DDD3;">
+    <div style="display: flex; align-items: baseline; justify-content: space-between;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <h2 style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 30px; font-weight: 600;">The seller portal, in this direction</h2>
+        <div style="font-size: 14px; color: #6B6560;">Three big tiles on the artisan's home. Same warmth, calmer chrome.</div>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 28px 20px; background: #B45309; color: #FFFFFF; border-radius: 16px;">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v8M8 12h8"></path></svg>
+        <div style="font-size: 18px; font-weight: 700;">Add a product</div>
+        <div class="hi" style="font-size: 16px; opacity: 0.9;">नया प्रोडक्ट जोड़ें</div>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 28px 20px; background: #FFFFFF; border: 1px solid #E5DDD3; border-radius: 16px;">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l1 12H5z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg>
+        <div style="font-size: 18px; font-weight: 700;">Orders</div>
+        <div class="hi" style="font-size: 16px; color: #6B6560;">2 नए ऑर्डर</div>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 28px 20px; background: #FFFFFF; border: 1px solid #E5DDD3; border-radius: 16px;">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l1.5-5h13L20 10"></path><path d="M4 10v10h16V10"></path><path d="M10 20v-6h4v6"></path></svg>
+        <div style="font-size: 18px; font-weight: 700;">My shop</div>
+        <div class="hi" style="font-size: 16px; color: #6B6560;">मेरी दुकान</div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

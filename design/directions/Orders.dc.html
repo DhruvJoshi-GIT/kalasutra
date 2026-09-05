@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+Devanagari:wght@500;700&display=swap">
+  <style>
+    body { margin: 0; background: #F6F5F0; }
+    a { color: #111111; text-decoration: underline; } a:hover { color: #B07A00; }
+    .mono { font-family: 'IBM Plex Mono', 'Consolas', monospace; }
+    .hi { font-family: 'Noto Sans Devanagari', 'Nirmala UI', sans-serif; }
+  </style>
+</helmet>
+<div style="width: 1200px; min-height: 1100px; background: #F6F5F0; color: #111111; font-family: 'Archivo', 'Arial Narrow', system-ui, sans-serif; display: flex; flex-direction: column;">
+
+  <div style="display: flex; align-items: stretch; background: #111111; color: #F6F5F0; border-bottom: 2px solid #111111;">
+    <div style="display: flex; align-items: center; gap: 12px; padding: 16px 32px; border-right: 1px solid #F6F5F0;"><span style="font-weight: 900; font-size: 22px; letter-spacing: -0.03em;">KALASUTRA</span><span class="mono" style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; background: #E2A100; color: #111111; padding: 2px 8px;">Seller portal</span></div>
+    <div style="display: flex; align-items: center; gap: 10px; padding: 0 24px; flex: 1;"><span style="font-size: 14px; font-weight: 700;">Priya Devi Block Prints</span><span class="mono" style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid #F6F5F0; padding: 1px 8px;">Verified</span></div>
+    <div style="display: flex; align-items: center; gap: 8px; padding: 0 20px; border-left: 1px solid #F6F5F0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F6F5F0" stroke-width="2" stroke-linecap="square"><path d="M4 10v4h4l5 4V6L8 10z"></path><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"></path></svg><span class="hi" style="font-size: 14px; font-weight: 700;">सुनें</span></div>
+    <div style="display: flex; align-items: center; padding: 0 20px; border-left: 1px solid #F6F5F0;" class="mono"><span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;">हिन्दी ▾</span></div>
+    <div style="display: flex; align-items: center; padding: 0 20px; border-left: 1px solid #F6F5F0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;">Sign out</div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 240px minmax(0, 1fr); flex: 1;">
+    <div style="display: flex; flex-direction: column; border-right: 2px solid #111111;">
+      <div style="display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #111111;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="square"><rect x="3" y="3" width="8" height="8"></rect><rect x="13" y="3" width="8" height="8"></rect><rect x="3" y="13" width="8" height="8"></rect><rect x="13" y="13" width="8" height="8"></rect></svg><div style="display: flex; flex-direction: column;"><span style="font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em;">Home</span><span class="hi" style="font-size: 12px; font-weight: 500;">होम</span></div></div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #111111;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="square"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"></path><path d="M3 7l9 4 9-4M12 11v10"></path></svg><div style="display: flex; flex-direction: column;"><span style="font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em;">My products</span><span class="hi" style="font-size: 12px; font-weight: 500;">मेरे प्रोडक्ट</span></div></div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #111111; background: #E2A100;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="square"><path d="M4 7h16v13H4z"></path><path d="M8 7V5h8v2"></path></svg><div style="display: flex; flex-direction: column;"><span style="font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em;">Orders</span><span class="hi" style="font-size: 12px; font-weight: 500;">ऑर्डर</span></div></div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #111111;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="square"><path d="M3 10l2-6h14l2 6"></path><path d="M3 10v11h18V10"></path><path d="M9 21v-7h6v7"></path></svg><div style="display: flex; flex-direction: column;"><span style="font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em;">Shop &amp; KYC</span><span class="hi" style="font-size: 12px; font-weight: 500;">मेरी दुकान</span></div></div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #111111;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="square"><path d="M4 4h16v12H8l-4 4z"></path></svg><div style="display: flex; flex-direction: column;"><span style="font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em;">Bulk enquiries</span><span class="hi" style="font-size: 12px; font-weight: 500;">थोक पूछताछ</span></div></div>
+    </div>
+
+    <div style="display: flex; flex-direction: column;">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; padding: 24px 32px 18px; border-bottom: 2px solid #111111;">
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <h1 style="margin: 0; font-size: 40px; line-height: 0.95; font-weight: 900; letter-spacing: -0.04em; text-transform: uppercase;">Orders <span class="hi" style="font-size: 22px; font-weight: 700; letter-spacing: 0; text-transform: none; color: #555;">· ऑर्डर</span></h1>
+          <span class="mono" style="font-size: 12px; color: #555;">Update the status so the buyer knows what is happening.</span>
+        </div>
+        <div style="display: inline-flex; align-items: center; height: 44px; padding: 0 18px; border: 2px solid #111111; font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em;">Export CSV</div>
+      </div>
+
+      <!-- Status tabs -->
+      <div style="display: flex; border-bottom: 2px solid #111111;" class="mono">
+        <span style="padding: 12px 20px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; background: #111111; color: #F6F5F0; border-right: 1px solid #111111;">All · 4</span>
+        <span style="padding: 12px 20px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; border-right: 1px solid #111111;">New · 1</span>
+        <span style="padding: 12px 20px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; border-right: 1px solid #111111;">Making · 1</span>
+        <span style="padding: 12px 20px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; border-right: 1px solid #111111;">Shipped · 1</span>
+        <span style="padding: 12px 20px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;">Delivered · 1</span>
+      </div>
+
+      <!-- Order 1: new -->
+      <div style="display: flex; flex-direction: column; border-bottom: 2px solid #111111;">
+        <div style="display: grid; grid-template-columns: 170px minmax(0, 1fr) 110px 120px; align-items: center; padding: 12px 28px; border-bottom: 1px solid #111111; background: #E2A100;" class="mono"><span style="font-size: 13px; font-weight: 500;">#PIRSTV9SR</span><span style="font-size: 12px;">Today, 09:40 · Paid via UPI</span><span style="font-size: 13px;">₹3,798</span><span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; background: #111111; color: #F6F5F0; padding: 3px 8px; justify-self: end;">New</span></div>
+        <div style="display: grid; grid-template-columns: minmax(0, 1fr) 320px;">
+          <div style="display: flex; flex-direction: column; border-right: 1px solid #111111;">
+            <div style="display: flex; align-items: center; gap: 14px; padding: 12px 28px; border-bottom: 1px solid #111111;"><div style="width: 48px; height: 48px; background: #274B7A; border: 1px solid #111111;"></div><div style="display: flex; flex-direction: column; flex: 1;"><span style="font-size: 15px; font-weight: 700;">Block Print Cotton Saree</span><span class="mono" style="font-size: 12px; color: #555;">Indigo · 2 × ₹1,899</span></div><span class="mono" style="font-size: 13px;">₹3,798</span></div>
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 12px 28px; gap: 12px;" class="mono"><div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #555;">Ship to</span><span style="font-size: 13px; line-height: 1.5;">Demo User · 123 ABC Apartments, MG Road, Bangalore 560001</span></div><div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #555;">Buyer phone</span><span style="font-size: 13px;">98765 43210</span></div></div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px; padding: 16px 20px;">
+            <div style="display: flex; flex-direction: column; gap: 4px;"><span class="mono" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;">Status</span><div style="display: flex; align-items: center; justify-content: space-between; height: 44px; border: 2px solid #111111; padding: 0 12px; font-size: 14px; font-weight: 700;"><span>New → Accept</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="square"><path d="M6 9l6 6 6-6"></path></svg></div></div>
+            <div style="display: inline-flex; align-items: center; justify-content: center; height: 44px; background: #111111; color: #F6F5F0; font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em;">Accept order</div>
+            <span class="hi" style="font-size: 13px; font-weight: 500; color: #555;">स्वीकार करें और बनाना शुरू करें</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order 2: making -->
+      <div style="display: flex; flex-direction: column; border-bottom: 2px solid #111111;">
+        <div style="display: grid; grid-template-columns: 170px minmax(0, 1fr) 110px 120px; align-items: center; padding: 12px 28px; border-bottom: 1px solid #111111;" class="mono"><span style="font-size: 13px; font-weight: 500;">#PIRT2M8KQ</span><span style="font-size: 12px; color: #555;">2 days ago · Paid via card</span><span style="font-size: 13px;">₹3,747</span><span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid #111111; padding: 2px 8px; justify-self: end;">Making</span></div>
+        <div style="display: grid; grid-template-columns: minmax(0, 1fr) 320px;">
+          <div style="display: flex; flex-direction: column; border-right: 1px solid #111111;">
+            <div style="display: flex; align-items: center; gap: 14px; padding: 12px 28px;"><div style="width: 48px; height: 48px; background: #3B2A1A; border: 1px solid #111111;"></div><div style="display: flex; flex-direction: column; flex: 1;"><span style="font-size: 15px; font-weight: 700;">Brass Diya Set (5)</span><span class="mono" style="font-size: 12px; color: #555;">3 × ₹1,249 · ships to Pune 411001</span></div><span class="mono" style="font-size: 13px;">₹3,747</span></div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px; padding: 16px 20px;">
+            <div style="display: flex; flex-direction: column; gap: 4px;"><span class="mono" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;">Status</span><div style="display: flex; align-items: center; justify-content: space-between; height: 44px; border: 2px solid #111111; padding: 0 12px; font-size: 14px; font-weight: 700;"><span>Making / packing</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="square"><path d="M6 9l6 6 6-6"></path></svg></div></div>
+            <div style="display: flex; flex-direction: column; gap: 4px;"><span class="mono" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;">Tracking no. (when shipped)</span><div style="display: flex; align-items: center; height: 44px; border: 2px solid #111111; padding: 0 12px;" class="mono"><span style="font-size: 12px; color: #555;">Courier AWB</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order 3: shipped -->
+      <div style="display: flex; flex-direction: column; border-bottom: 2px solid #111111;">
+        <div style="display: grid; grid-template-columns: 170px minmax(0, 1fr) 110px 120px; align-items: center; padding: 12px 28px; border-bottom: 1px solid #111111;" class="mono"><span style="font-size: 13px; font-weight: 500;">#PIRSV0X2A</span><span style="font-size: 12px; color: #555;">5 days ago · Paid via UPI · DTDC 7788990011</span><span style="font-size: 13px;">₹1,299</span><span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid #111111; padding: 2px 8px; justify-self: end;">Shipped</span></div>
+        <div style="display: flex; align-items: center; gap: 14px; padding: 12px 28px;"><div style="width: 48px; height: 48px; background: #F1E4C8; border: 1px solid #111111;"></div><div style="display: flex; flex-direction: column; flex: 1;"><span style="font-size: 15px; font-weight: 700;">Madhubani Art Print Set</span><span class="mono" style="font-size: 12px; color: #555;">1 × ₹1,299 · Bangalore 560001</span></div><div style="display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border: 2px solid #111111; font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em;">Mark delivered</div></div>
+      </div>
+
+      <!-- Order 4: delivered -->
+      <div style="display: flex; flex-direction: column;">
+        <div style="display: grid; grid-template-columns: 170px minmax(0, 1fr) 110px 120px; align-items: center; padding: 12px 28px; border-bottom: 1px solid #111111; color: #555;" class="mono"><span style="font-size: 13px; font-weight: 500;">#PIRRL7HC3</span><span style="font-size: 12px;">12 days ago · Paid via UPI · Delivered</span><span style="font-size: 13px;">₹4,999</span><span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid #555; padding: 2px 8px; justify-self: end;">Delivered</span></div>
+        <div style="display: flex; align-items: center; gap: 14px; padding: 12px 28px; color: #555;"><div style="width: 48px; height: 48px; background: #DCE6EE; border: 1px solid #111111;"></div><div style="display: flex; flex-direction: column; flex: 1;"><span style="font-size: 15px; font-weight: 700;">Blue Pottery Dinner Set (21)</span><span class="mono" style="font-size: 12px;">1 × ₹4,999 · paid out ₹4,749 on 28 Aug</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KalaSetu — prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+Devanagari:wght@500;700&display=swap">
+<script>(function(){try{if(localStorage.getItem('ks-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}})();</script>
+<style>
+/* ── KalaSetu system: ink on paper ──────────────────────────────── */
+:root{--bg:#F6F5F0;--fg:#111111;--muted:#555555;--acc:#E2A100;--acc2:#B07A00;--sec:#E7E4DA;--sec2:#DDD9CC;--ink:#111111;--ok:#1F6B3A;--err:#B3261E}
+.dark{--bg:#111111;--fg:#F6F5F0;--muted:#A8A49A;--acc:#E2A100;--acc2:#F2B92E;--sec:#1E1E1C;--sec2:#2A2A27;--ink:rgba(246,245,240,.55);--ok:#4CAF6E;--err:#E05A4C}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--fg);transition:background-color .3s ease,color .3s ease}
+body{font-family:'Archivo','Arial Narrow',system-ui,sans-serif;font-weight:500;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'IBM Plex Mono',Consolas,monospace}
+.hi{font-family:'Noto Sans Devanagari','Nirmala UI',sans-serif}
+.label{font-family:'IBM Plex Mono',Consolas,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.display{font-weight:900;text-transform:uppercase;letter-spacing:-.04em;line-height:.95}
+.muted{color:var(--muted)}
+/* view transition: circle reveal from the toggle */
+::view-transition-old(root){animation:none;z-index:1}
+::view-transition-new(root){animation:vt .9s cubic-bezier(.22,1,.36,1) forwards;z-index:2}
+@keyframes vt{from{clip-path:circle(0% at calc(100% - 2.9rem) calc(100% - 2.9rem))}to{clip-path:circle(160% at calc(100% - 2.9rem) calc(100% - 2.9rem))}}
+::view-transition-image-pair(root){isolation:isolate}
+/* tactile */
+.neo{box-shadow:3px 3px 0 0 var(--ink);transition:box-shadow .12s ease-in-out,transform .12s ease-in-out,background-color .15s,color .15s;will-change:transform;user-select:none;-webkit-tap-highlight-color:transparent}
+.neo:hover:not(:disabled){box-shadow:4px 4px 0 0 var(--ink);transform:translate(-1px,-1px)}
+.neo:active:not(:disabled){box-shadow:0 0 0 0 var(--ink);transform:translate3d(3px,3px,0)}
+.neo-card{box-shadow:3px 3px 0 0 var(--ink);transition:box-shadow .1s linear,transform .1s linear,background-color .15s}
+.neo-card:hover{box-shadow:5px 5px 0 0 var(--ink);transform:translate(-1px,-1px)}
+.press{transition:transform .08s linear,background-color .1s linear,color .1s linear}
+.press:active{transform:translate(2px,2px)}
+@keyframes sun-spin{to{transform:rotate(360deg)}}
+@keyframes moon-glow{0%,100%{filter:drop-shadow(0 0 3px rgba(226,161,0,.5))}50%{filter:drop-shadow(0 0 9px rgba(226,161,0,.9))}}
+.sun{animation:sun-spin 12s linear infinite}.moon{animation:moon-glow 3s ease-in-out infinite}
+/* primitives */
+.box{border:2px solid var(--fg)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border:2px solid var(--fg);background:var(--bg);color:var(--fg);font:900 12px/1 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:.06em;cursor:pointer}
+.btn.lg{min-height:52px;padding:0 28px;font-size:14px}
+.btn.ink{background:var(--fg);color:var(--bg)}
+.btn.acc{background:var(--acc);color:#111}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+input,textarea{width:100%;min-height:48px;background:var(--bg);color:var(--fg);border:2px solid var(--fg);padding:12px 14px;font:500 15px 'Archivo',sans-serif;transition:box-shadow .08s linear}
+input::placeholder{color:var(--muted)}
+input:focus,textarea:focus{outline:none;box-shadow:3px 3px 0 0 var(--acc)}
+/* app frame */
+#app{width:100%;margin:0 auto;min-height:100vh;--pad:clamp(14px,1.8vw,32px);--side:clamp(200px,13vw,300px);--aside:clamp(320px,26vw,520px)}
+.screen{display:none}.screen.on{display:block}
+/* chrome */
+.bar{display:flex;align-items:stretch;height:64px;border-bottom:2px solid var(--fg)}
+.logo{display:flex;align-items:center;justify-content:center;width:64px;border-right:2px solid var(--fg);font-weight:900;font-size:26px;letter-spacing:-.04em;cursor:pointer}
+.search{flex:1;display:flex;align-items:center;gap:10px;padding:0 16px;border-right:2px solid var(--fg);color:var(--muted)}
+.search input{border:0;min-height:0;padding:0;background:transparent;box-shadow:none!important;font-size:14px}
+.icons{display:flex}
+.icell{display:flex;flex-direction:column;align-items:center;justify-content:center;width:64px;border-right:1px solid var(--fg);cursor:pointer;gap:2px}
+.icell:hover{background:var(--sec)}
+.icell .k{font:900 16px 'Archivo';letter-spacing:-.02em}
+.icell .t{font:400 9px/1 'IBM Plex Mono';letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.icell.acc{background:var(--acc);color:#111}.icell.acc .t{color:#111}
+.up{display:flex;align-items:center;justify-content:center;width:64px;border-left:1px solid var(--fg);cursor:pointer}
+.body{display:grid;grid-template-columns:var(--side) minmax(0,1fr)}
+.body.narrow{grid-template-columns:64px minmax(0,1fr)}
+.side{border-right:2px solid var(--fg);display:flex;flex-direction:column;min-height:calc(100vh - 64px)}
+.side a{display:flex;align-items:center;min-height:48px;padding:0 18px;border-bottom:1px solid var(--fg);font:700 13px 'Archivo';text-transform:uppercase;letter-spacing:.04em}
+.side a:hover{background:var(--sec)}
+.side a.on{background:var(--fg);color:var(--bg)}
+.side .dots{display:flex;gap:10px;padding:16px 18px;border-bottom:1px solid var(--fg)}
+.dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--fg)}
+.side.narrow a{justify-content:center;padding:0;font-size:11px}
+.main{min-width:0}
+.sec{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px var(--pad);border-bottom:1px solid var(--fg)}
+.sec h2{font:900 22px/1 'Archivo';text-transform:uppercase;letter-spacing:-.03em}
+.grid{display:grid;gap:clamp(16px,1.8vw,32px);padding:clamp(16px,1.8vw,32px);background:var(--bg)}
+.g4,.g5{grid-template-columns:repeat(auto-fill,minmax(min(100%,clamp(280px,22vw,520px)),1fr))}.g2{grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr))}
+.card{background:var(--bg);display:flex;flex-direction:column;cursor:pointer;border:1px solid var(--fg);transition:box-shadow .1s linear,transform .1s linear}
+.card:hover{box-shadow:4px 4px 0 0 var(--ink);transform:translate(-1px,-1px)}
+.card:active{box-shadow:none;transform:translate(2px,2px)}
+.card .img{aspect-ratio:3/2;border-bottom:1px solid var(--fg);position:relative;overflow:hidden}
+.card .img img,.thumb img,.pimg img{width:100%;height:100%;object-fit:cover;display:block}
+.card .img .add{position:absolute;left:0;right:0;bottom:0;height:40px;background:var(--fg);color:var(--bg);display:flex;align-items:center;justify-content:center;font:900 11px 'Archivo';letter-spacing:.06em;text-transform:uppercase;transform:translateY(100%);transition:transform .15s}
+.card:hover .img .add{transform:none}
+.card .in{padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+.card .n{font-weight:700;font-size:15px;line-height:1.2}
+.card .p{font-weight:900;font-size:17px}
+.card .p s{font:400 12px 'IBM Plex Mono';color:var(--muted);margin-left:6px}
+.crumb{display:flex;align-items:center;flex-wrap:wrap;margin:20px var(--pad) 0;border:2px solid var(--fg)}
+.crumb span{padding:10px 14px;font:700 13px 'Archivo';text-transform:uppercase;letter-spacing:.04em;border-right:1px solid var(--fg)}
+.crumb .sort{margin-left:auto;border-right:0;border-left:1px solid var(--fg);display:flex;gap:8px;align-items:center}
+.pad{padding:20px var(--pad)}
+.split{display:grid;grid-template-columns:minmax(0,1fr) var(--aside)}
+.split.rev{grid-template-columns:var(--aside) minmax(0,1fr)}
+.row{flex-wrap:wrap}
+/* panels */
+.panel{position:absolute;top:66px;right:64px;width:340px;background:var(--bg);border:2px solid var(--fg);box-shadow:5px 5px 0 0 var(--ink);display:none;z-index:20}
+.panel.on{display:block}
+.panel h4{padding:10px 14px;border-bottom:1px solid var(--fg);font:900 13px 'Archivo';text-transform:uppercase;letter-spacing:.06em;display:flex;justify-content:space-between}
+.panel ul{list-style:none;max-height:260px;overflow:auto}
+.panel li{display:flex;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--fg);font-size:14px}
+.panel li:last-child{border-bottom:0}
+/* hero */
+.hero{height:100vh;height:100svh;padding:clamp(12px,1.6vw,22px);display:flex;position:relative;overflow:hidden;isolation:isolate}
+.hero-bg{position:absolute;inset:0;z-index:-1;background:#111;overflow:hidden}
+.hero-bg .slide{position:absolute;inset:0;width:100%;height:100%;transform:translateX(100%);transition:transform .85s cubic-bezier(.22,1,.36,1);will-change:transform}
+.hero-bg .slide.on{transform:none}.hero-bg .slide.out{transform:translateX(-100%)}
+.hero-bg .slide img,.hero-bg .slide video{width:100%;height:100%;object-fit:cover;display:block}
+.hero-bg .slide.on img,.hero-bg .slide.on video{animation:kb 7s linear forwards}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.07)}}
+.hero-bg::after{content:"";position:absolute;inset:0;background:rgba(17,17,17,.28)}
+.hero .frame{flex:1;border:2px solid #F6F5F0;padding:clamp(8px,1.2vw,14px);display:flex}
+.hero .frame2{flex:1;border:2px solid #F6F5F0;display:flex;align-items:center;justify-content:center;position:relative}
+.hero .center{background:color-mix(in srgb,var(--bg) 74%,transparent);-webkit-backdrop-filter:blur(10px) saturate(1.1);backdrop-filter:blur(10px) saturate(1.1);border:2px solid var(--fg);padding:clamp(24px,4vw,56px) clamp(20px,5vw,64px);margin:16px;max-width:min(92%,760px);text-align:center;display:flex;flex-direction:column;gap:18px;align-items:center;box-shadow:8px 8px 0 0 var(--ink)}
+.hero .center h1{font-size:clamp(44px,7vw,120px)}
+.hero .ctrl{position:absolute;left:24px;bottom:20px;display:flex;align-items:center;gap:10px;color:#F6F5F0}
+.hero .ctrl .label{white-space:nowrap}.hero .ctrl .dots{display:flex;gap:6px}.hero .ctrl .d{width:26px;height:4px;background:rgba(246,245,240,.45);cursor:pointer}.hero .ctrl .d.on{background:var(--acc)}
+.hero .ctrl .nav{width:36px;height:36px;border:2px solid #F6F5F0;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:900;user-select:none}
+.hero .ctrl .nav:hover{background:#F6F5F0;color:#111}
+.hero .scroll{color:#F6F5F0}.hero .scroll .ln{background:#F6F5F0!important}
+.hero .scroll{position:absolute;right:24px;bottom:20px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.hero .scroll .ln{width:2px;height:40px;background:var(--fg);animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:scaleY(.6);transform-origin:top}50%{transform:none}}
+/* misc */
+.check{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--fg);font-weight:700}
+.check .m{width:22px;height:22px;border:2px solid var(--fg);display:flex;align-items:center;justify-content:center;font-size:13px}
+.check.ok .m{background:var(--fg);color:var(--bg)}
+.row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid var(--fg)}
+.thumb{width:72px;height:72px;border:1px solid var(--fg);flex:none}
+.diamond{width:150px;height:150px;transform:rotate(45deg);border:2px solid var(--fg);display:flex;align-items:center;justify-content:center;margin:24px auto;background:var(--bg);box-shadow:4px 4px 0 0 var(--ink);cursor:pointer;transition:transform .12s,box-shadow .12s,opacity .2s}
+.diamond:hover:not(.off){transform:rotate(45deg) translate(-1px,-1px);box-shadow:6px 6px 0 0 var(--ink)}
+.diamond:active:not(.off){transform:rotate(45deg) translate(3px,3px);box-shadow:0 0 0 0 var(--ink)}
+.diamond.off{opacity:.35;cursor:not-allowed;box-shadow:none}
+.diamond span{transform:rotate(-45deg);font:900 13px 'Archivo';text-transform:uppercase;letter-spacing:.06em;text-align:center}
+.map{position:fixed;left:0;right:0;bottom:0;display:flex;gap:0;background:var(--fg);color:var(--bg);z-index:50;overflow-x:auto}
+.map a{padding:8px 12px;font:500 11px 'IBM Plex Mono';letter-spacing:.06em;text-transform:uppercase;border-right:1px solid var(--bg);white-space:nowrap}
+.map a.on{background:var(--acc);color:#111}
+#theme{position:fixed;right:24px;bottom:44px;width:44px;height:44px;border:2px solid var(--fg);background:var(--bg);color:var(--fg);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:60}
+.pat{width:100%;height:100%}
+@media (max-width:1100px){#app{--aside:clamp(280px,32vw,380px)}}
+@media (max-width:900px){
+ .body,.body.narrow{grid-template-columns:minmax(0,1fr)}
+ .side{flex-direction:row;overflow-x:auto;min-height:0;border-right:0;border-bottom:2px solid var(--fg);scrollbar-width:none}
+ .side .dots,.side>div{display:none}.side a{border-bottom:0;border-right:1px solid var(--fg);white-space:nowrap;min-height:44px}
+ .side.narrow{display:none}
+ .split,.split.rev{grid-template-columns:minmax(0,1fr)}
+ .split>*+*{border-left:0!important;border-top:2px solid var(--fg)}
+ .split.rev>*:first-child{border-right:0!important;border-bottom:2px solid var(--fg)}
+ .panel{right:8px;left:8px;width:auto}
+ .hero .scroll{display:none}
+}
+@media (max-width:700px){
+ .bar{flex-wrap:wrap;height:auto}.bar .logo,.bar .icell,.bar .up{height:56px}
+ .search{order:9;flex-basis:100%;border-right:0;border-top:1px solid var(--fg);min-height:44px}
+ .icons{margin-left:auto}.icell{width:56px}.logo,.up{width:56px}
+ .grid{gap:14px;padding:14px}
+ .hero{padding:10px}.hero .center{margin:8px;gap:12px}
+ .hero .ctrl{left:14px;bottom:12px}.hero .ctrl .label{display:none}
+ .row>div:nth-child(2){flex:1 1 calc(100% - 110px)!important}.row>.box{margin-left:86px}.row>span:last-child{margin-left:auto}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<nav class="map" id="map"></nav>
+<button id="theme" class="neo" title="Switch theme"></button>
+
+<script>
+/* ── data ────────────────────────────────────────────────────────── */
+const HERO = [
+  // drop more files into prototype/img/ and list them here; {type:'video', src:'img/x.mp4'} works too
+  {type:'img', src:'img/saree-blue.jpg', cap:'Banarasi silk · Varanasi'},
+  {type:'img', src:'img/baskets.jpg', cap:'Cane baskets · Assam'},
+  {type:'img', src:'img/vase-pair.jpg', cap:'Painted marble · Jaipur'},
+  {type:'img', src:'img/jute-box.jpg', cap:'Jute & bamboo · Guwahati'},
+  {type:'img', src:'img/pattachitra.jpg', cap:'Pattachitra · Raghurajpur'},
+];
+const P = [
+  {id:1,n:'Handloom Cotton Saree, Bagru print',maker:'Priya Devi',place:'Bagru, Rajasthan',price:1899,was:2999,img:'saree-cream',cat:'Textiles'},
+  {id:2,n:'Banarasi Silk Saree, Royal Blue',maker:'Banaras Weaves',place:'Varanasi, U.P.',price:8499,img:'saree-blue',cat:'Textiles'},
+  {id:3,n:'Kanjivaram Silk Saree, Sea Green',maker:'Kanchi Looms',place:'Kanchipuram, T.N.',price:9999,was:12500,img:'saree-green',cat:'Textiles'},
+  {id:4,n:'Pattachitra Wall Plate',maker:'Meera Kumari',place:'Raghurajpur, Odisha',price:1650,img:'pattachitra',cat:'Art & craft'},
+  {id:5,n:'Warli Terracotta Planter',maker:'Ramesh Saifi',place:'Palghar, Maharashtra',price:749,img:'warli-planter',cat:'Home & decor'},
+  {id:6,n:'Meenakari Marble Vase',maker:'Jaipur Marble Works',place:'Jaipur, Rajasthan',price:2299,img:'marble-vase',cat:'Home & decor'},
+  {id:7,n:'Painted Marble Vase Pair',maker:'Jaipur Marble Works',place:'Jaipur, Rajasthan',price:4199,was:4999,img:'vase-pair',cat:'Home & decor'},
+  {id:8,n:'Crochet Granny-Square Cushion',maker:'Meera Kumari',place:'Madhubani, Bihar',price:1199,img:'cushion',cat:'Home & decor'},
+  {id:9,n:'Hand-painted Mini Drawers',maker:'Ramesh Saifi',place:'Moradabad, U.P.',price:1899,img:'drawers',cat:'Home & decor'},
+  {id:10,n:'Cane Basket Set (9 pieces)',maker:'Assam Cane Collective',place:'Guwahati, Assam',price:2450,img:'baskets',cat:'Home & decor'},
+  {id:11,n:'Rajasthani Puppet Doll Pair',maker:'Priya Devi',place:'Bagru, Rajasthan',price:899,img:'dolls',cat:'Toys & games'},
+  {id:12,n:'Hand-painted Pen Stand',maker:'Meera Kumari',place:'Madhubani, Bihar',price:349,img:'pen-stand',cat:'Art & craft'},
+  {id:13,n:'Hand-painted Necklace Set',maker:'Meera Kumari',place:'Madhubani, Bihar',price:1299,img:'necklace',cat:'Jewellery'},
+  {id:14,n:'Oxidised Silver Jhumkas',maker:'Kutch Silver',place:'Bhuj, Gujarat',price:1450,img:'silver-earrings',cat:'Jewellery'},
+  {id:15,n:'Kutch Beadwork Earrings',maker:'Kutch Silver',place:'Bhuj, Gujarat',price:650,img:'bead-earrings',cat:'Jewellery'},
+  {id:16,n:'Jute & Bamboo Jewellery Box',maker:'Assam Cane Collective',place:'Guwahati, Assam',price:1150,img:'jute-box',cat:'Home & decor'},
+  {id:17,n:'Gota Patti Bangle Set',maker:'Priya Devi',place:'Bagru, Rajasthan',price:499,img:'bangles-rack',cat:'Jewellery'},
+  {id:18,n:'Phulkari Punjabi Jutti',maker:'Patiala Jutti House',place:'Patiala, Punjab',price:1299,img:'jutti',cat:'Footwear'},
+  {id:19,n:'Kolhapuri Leather Chappals',maker:'Kolhapuri Crafts',place:'Kolhapur, Maharashtra',price:1499,img:'kolhapuri',cat:'Footwear'},
+  {id:20,n:'Handloom Cotton Kurta',maker:'Banaras Weaves',place:'Varanasi, U.P.',price:1799,img:'kurta',cat:'Textiles'},
+];
+const pic = p => `<img src="img/${p.img}.jpg" alt="${p.n}" loading="lazy">`;
+const CATS = ['All crafts','Textiles','Art & craft','Home & decor','Jewellery','Footwear','Toys & games'];
+const fmt = n => '₹' + n.toLocaleString('en-IN');
+
+/* ── shell pieces ────────────────────────────────────────────────── */
+const bar = (opts={}) => `
+<div class="bar">
+  <a class="logo press" href="#home" title="Home">K</a>
+  <div class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="square"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input placeholder="Search crafts, makers, places…" onkeydown="if(event.key==='Enter')location.hash='#products'"></div>
+  <div class="icons">
+    <a class="icell press" href="#profile" title="Profile"><span class="k">P</span><span class="t">Profile</span></a>
+    <a class="icell press" href="#cart" title="Cart"><span class="k">C</span><span class="t">Cart · 3</span></a>
+    <a class="icell press" href="javascript:void(0)" onclick="togglePanel('wish')" title="Wishlist"><span class="k">W</span><span class="t">Wishlist</span></a>
+    <a class="icell press acc" href="javascript:void(0)" onclick="togglePanel('support')" title="Sell / Support"><span class="k">S</span><span class="t">Sell</span></a>
+  </div>
+  <a class="up press" href="javascript:void(0)" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Top"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M12 19V5M5 12l7-7 7 7"/></svg></a>
+</div>
+<div class="panel" id="wish"><h4>Wishlist <span class="mono" style="font-weight:400">4</span></h4><ul>${[P[2],P[13],P[9],P[17]].map(p=>`<li><span>${p.n}</span><span class="mono">${fmt(p.price)}</span></li>`).join('')}</ul><div style="padding:10px 14px;border-top:1px solid var(--fg)"><a class="btn ink neo" href="#cart" style="width:100%">Move all to cart</a></div></div>
+<div class="panel" id="support"><h4>Sell &amp; support</h4>
+  <div style="padding:14px;display:flex;flex-direction:column;gap:10px">
+    <a class="btn acc neo" href="#login">Open a shop → seller login</a>
+    <div class="box" style="padding:12px"><div class="label muted">Contact</div><div class="mono" style="font-size:13px;margin-top:6px">Call 1800-[NUMBER]<br>WhatsApp: [NUMBER]<br>help@kalasetu.in</div></div>
+    <div class="hi" style="font-size:13px">हिन्दी में मदद के लिए कॉल करें</div>
+  </div></div>`;
+
+const side = (active='All crafts', narrow=false) => `
+<aside class="side ${narrow?'narrow':''}">
+  ${narrow ? ['≡','P','C','W','S'].map(k=>`<a href="javascript:void(0)" class="press">${k}</a>`).join('') :
+    `<div class="dots" title="Filters: region"><span class="dot" style="background:#274B7A"></span><span class="dot" style="background:#E2A100"></span><span class="dot" style="background:#B3261E"></span><span class="label muted" style="align-self:center;margin-left:4px">Filters</span></div>` +
+    CATS.map(c=>`<a href="#products" class="press ${c===active?'on':''}">${c}</a>`).join('') +
+    `<div style="margin-top:auto;padding:14px 18px;border-top:2px solid var(--fg)"><div class="label muted">Makers</div><a href="#artist" style="border:0;padding:0;min-height:0;font-size:12px;text-transform:none">Priya Devi · Bagru →</a></div>`}
+</aside>`;
+
+const card = p => `<a class="card" href="#product"><div class="img">${pic(p)}<div class="add">Add to cart</div></div><div class="in"><span class="label muted">${p.maker} · ${p.place}</span><span class="n">${p.n}</span><span class="p">${fmt(p.price)}${p.was?`<s>${fmt(p.was)}</s>`:''}</span></div></a>`;
+
+const crumb = (parts, extra='') => `<div class="crumb">${parts.map(x=>`<span>${x}</span>`).join('')}${extra}<span class="sort mono" style="font:400 12px 'IBM Plex Mono';text-transform:uppercase">Sort: newest ▾</span></div>`;
+
+/* ── screens ─────────────────────────────────────────────────────── */
+const S = {};
+
+S.home = () => `
+<section class="hero" id="hero">
+  <div class="hero-bg" id="heroBg">${HERO.map((h,i)=>`<div class="slide ${i===0?'on':''}">${h.type==='video'?`<video src="${h.src}" autoplay muted loop playsinline></video>`:`<img src="${h.src}" alt="">`}</div>`).join('')}</div>
+  <div class="frame"><div class="frame2">
+    <div class="center">
+      <span class="label muted">Artisan marketplace · year-round · retail + B2B</span>
+      <h1 class="display">KalaSetu</h1>
+      <p style="max-width:460px;font-size:17px">Made by hand. Sold all year. A direct line from the workshop to your door — and to bulk buyers.</p>
+      <div style="display:flex;gap:10px"><a class="btn ink lg neo" href="#shop-anchor" onclick="document.getElementById('shop-anchor').scrollIntoView({behavior:'smooth'});return false">Shop the crafts</a><a class="btn lg neo" href="#login">I am a maker</a></div>
+    </div>
+    <div class="ctrl"><span class="nav press" onclick="heroGo(-1)">‹</span><span class="dots" id="heroDots">${HERO.map((h,i)=>`<span class="d ${i===0?'on':''}" onclick="heroGo(${i},true)"></span>`).join('')}</span><span class="nav press" onclick="heroGo(1)">›</span><span class="label" id="heroCap" style="margin-left:6px">${HERO[0].cap||''}</span></div>
+    <div class="scroll"><span class="label">Scroll</span><span class="ln"></span></div>
+  </div></div>
+</section>
+<div id="shop-anchor"></div>
+${bar()}
+<div class="body">${side('All crafts')}
+  <div class="main">
+    <div class="sec"><h2>On sale</h2><a class="label" href="#products">See all →</a></div>
+    <div class="grid g4">${[P[0],P[6],P[2],P[9],P[18],P[13]].map(card).join('')}</div>
+    <div class="sec" style="border-top:2px solid var(--fg)"><h2>Recommended</h2><span class="label muted">for you · based on Bagru</span></div>
+    <div class="grid g4">${[P[3],P[10],P[16],P[12],P[7],P[15]].map(card).join('')}</div>
+    <div class="sec" style="border-top:2px solid var(--fg);border-bottom:0"><span class="label muted">© KalaSetu · UPI · Cards · Ships across India</span><a class="label" href="#login">Sell with us →</a></div>
+  </div>
+</div>`;
+
+S.products = () => `${bar()}
+<div class="body">${side('Textiles')}
+  <div class="main">
+    ${crumb(['Shop','All crafts','Newest'])}
+    <div class="pad" style="padding-bottom:12px"><h1 class="display" style="font-size:clamp(28px,3vw,44px)">All crafts <span class="muted" style="font:500 18px 'Archivo';letter-spacing:0;text-transform:none">— ${P.length} listings</span></h1></div>
+    <div class="grid g5" style="border-top:2px solid var(--fg)">${P.map(card).join('')}</div>
+    <div class="sec" style="border-top:2px solid var(--fg);border-bottom:0"><span class="label muted">Page 1 of 1</span></div>
+  </div>
+</div>`;
+
+S.product = () => { const p=P[0]; return `${bar()}
+<div class="body">${side('Textiles')}
+  <div class="main split" style="--aside:clamp(340px,32vw,600px)">
+    <div style="border-right:2px solid var(--fg)">
+      <div class="sec"><h2>Related</h2><span class="label muted">more from Bagru</span></div>
+      <div class="grid g2">${[P[10],P[16],P[3],P[2]].map(card).join('')}</div>
+    </div>
+    <div style="display:flex;flex-direction:column">
+      <div class="box pimg" style="margin:16px;border-width:2px;aspect-ratio:4/3;position:relative;overflow:hidden">${pic(p)}<span class="label" style="position:absolute;left:10px;top:10px;background:var(--bg);padding:3px 8px;border:1px solid var(--fg)">Studio photo · 1 / 4</span><div style="position:absolute;left:0;right:0;bottom:0;display:flex;gap:4px;padding:8px;justify-content:center">${[1,2,3,4].map(i=>`<span style="width:28px;height:4px;background:${i===1?'var(--acc)':'rgba(246,245,240,.6)'}"></span>`).join('')}</div></div>
+      <div style="display:grid;grid-template-columns:minmax(120px,150px) minmax(0,1fr);gap:12px;margin:0 16px">
+        <div class="box" style="padding:12px;display:flex;flex-direction:column;justify-content:center"><span class="label muted">Price</span><span class="display" style="font-size:28px">${fmt(p.price)}</span><s class="mono muted" style="font-size:12px">${fmt(p.was)}</s></div>
+        <div class="box" style="padding:12px"><span class="label muted">${p.maker} · ${p.place}</span><h1 class="display" style="font-size:clamp(20px,1.6vw,28px);margin-top:4px">${p.n}</h1><span class="hi muted" style="font-size:14px">बगरू ब्लॉक प्रिंट सूती साड़ी</span><a href="#artist" class="label" style="display:block;margin-top:8px;text-decoration:underline">About the maker →</a></div>
+      </div>
+      <div class="box mono" style="margin:12px 16px;font-size:13px"><div style="display:flex;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--fg)"><span class="muted">Technique</span><span>Hand block print, dabu</span></div><div style="display:flex;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--fg)"><span class="muted">Materials</span><span>Mulmul cotton · indigo · madder</span></div><div style="display:flex;justify-content:space-between;padding:8px 12px"><span class="muted">Size</span><span>5.5 m × 1.1 m</span></div></div>
+      <div class="box" style="margin:4px 16px 16px;display:grid;grid-template-columns:1fr auto;gap:10px;padding:10px">
+        <a class="btn ink neo" href="#cart">Buy now →</a>
+        <a class="btn acc neo" href="#cart" title="Add to cart"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="square"><path d="M6 6h15l-1.5 8h-12z"/><path d="M6 6L5 3H2"/></svg></a>
+      </div>
+    </div>
+  </div>
+</div>`; };
+
+S.cart = () => `${bar()}
+<div class="body narrow">${side('',true)}
+  <div class="main split" style="--aside:clamp(300px,24vw,420px)">
+    <div>
+      <div class="sec"><h2>Your cart</h2><span class="label muted">3 items</span></div>
+      ${[P[0],P[16],P[3]].map((p,i)=>`<div class="row"><div class="thumb">${pic(p)}</div><div style="flex:1;min-width:0"><div style="font-weight:700">${p.n}</div><span class="label muted">${p.maker} · ${p.place}</span></div><div class="box mono" style="display:flex"><span style="padding:6px 12px;border-right:1px solid var(--fg)">−</span><span style="padding:6px 14px;border-right:1px solid var(--fg)">${i===1?2:1}</span><span style="padding:6px 12px">+</span></div><span style="font-weight:900;width:90px;text-align:right">${fmt(p.price*(i===1?2:1))}</span></div>`).join('')}
+    </div>
+    <div style="border-left:2px solid var(--fg);display:flex;flex-direction:column">
+      <div class="sec"><span class="label">List of items</span></div>
+      <div class="mono" style="font-size:13px">${[P[0],P[16],P[3]].map((p,i)=>`<div style="display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--fg)"><span>${p.n.split(' ').slice(0,3).join(' ')} × ${i===1?2:1}</span><span>${fmt(p.price*(i===1?2:1))}</span></div>`).join('')}
+        <div style="display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--fg)"><span class="muted">Shipping</span><span>Free</span></div>
+        <div style="display:flex;justify-content:space-between;padding:14px 16px;font:900 18px 'Archivo'"><span>Total</span><span>${fmt(P[0].price+P[16].price*2+P[3].price)}</span></div></div>
+      <div style="padding:16px;margin-top:auto"><a class="btn acc lg neo" href="#confirmed" style="width:100%">Checkout →</a></div>
+    </div>
+  </div>
+</div>`;
+
+S.confirmed = () => `${bar()}
+<div style="padding:22px"><div class="box" style="min-height:calc(100vh - 110px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:40px">
+  <div style="width:180px;height:180px;border:3px solid var(--fg);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:6px 6px 0 0 var(--ink)"><svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="3" stroke-linecap="square"><path d="M4 12l5 5 11-11"/></svg></div>
+  <h1 class="display" style="font-size:clamp(36px,5vw,72px)">Order confirmed</h1>
+  <div class="hi" style="font-size:34px;font-weight:700">धन्यवाद</div>
+  <span class="mono muted" style="font-size:13px">Order #PIRT2M8KQ · Priya Devi will accept it within a day · updates by SMS</span>
+  <div style="display:flex;gap:10px"><a class="btn ink neo" href="#profile">Your orders</a><a class="btn neo" href="#home">Keep shopping</a></div>
+</div></div>`;
+
+S.profile = () => `${bar()}
+<div class="body narrow">${side('',true)}
+  <div class="main split" style="--aside:clamp(320px,26vw,440px)">
+    <div class="pad" style="display:flex;flex-direction:column;gap:14px">
+      <h1 class="display" style="font-size:clamp(26px,2.8vw,40px)">Your account</h1>
+      ${[['Address','Demo User · 123 ABC Apartments, MG Road, Bangalore 560001'],['Payment','UPI · demo@upi · Cards saved: 1'],['Your orders','3 orders · 1 on the way']].map(([t,d])=>`<a class="box neo-card press" href="javascript:void(0)" style="display:flex;justify-content:space-between;align-items:center;padding:18px 20px"><div><div class="display" style="font-size:20px">${t}</div><div class="mono muted" style="font-size:12px;margin-top:4px">${d}</div></div><span style="font-size:22px">→</span></a>`).join('')}
+    </div>
+    <div style="border-left:2px solid var(--fg);padding:24px;display:flex;flex-direction:column;align-items:center;gap:20px">
+      <div style="width:200px;height:200px;border:3px solid var(--fg);border-radius:50%;display:flex;align-items:center;justify-content:center;font:900 64px 'Archivo'">DU</div>
+      <div class="box" style="width:100%;padding:14px" ><div class="label muted">Details</div><div style="font-weight:700;margin-top:6px">Demo User</div><div class="mono" style="font-size:13px">demo@pickindian.com<br>98765 43210</div><a class="btn neo" href="javascript:void(0)" style="margin-top:12px;width:100%">Edit</a></div>
+    </div>
+  </div>
+</div>`;
+
+S.login = () => `
+<div style="padding:22px;min-height:100vh"><div class="box split rev" style="--aside:clamp(340px,30vw,480px);min-height:calc(100vh - 44px)">
+  <div style="border-right:2px solid var(--fg);padding:32px;display:flex;flex-direction:column;justify-content:center;gap:16px">
+    <a href="#home" class="logo press" style="border:2px solid var(--fg);width:56px;height:56px">K</a>
+    <span class="label muted">Seller login · <span class="hi">विक्रेता लॉगिन</span></span>
+    <h1 class="display" style="font-size:clamp(30px,3vw,44px)">Welcome back, maker</h1>
+    <div><span class="label">User name / mobile</span><input placeholder="98111 00001"></div>
+    <div><span class="label">Password / OTP</span><input type="password" placeholder="••••••••"></div>
+    <a class="btn acc lg neo" href="#seller">Enter my shop</a>
+    <a class="label" href="#home" style="text-decoration:underline">New here? Open a shop in five minutes</a>
+  </div>
+  <div style="position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:32px;background:repeating-linear-gradient(135deg,transparent 0 18px,color-mix(in srgb,var(--fg) 6%,transparent) 18px 20px)">
+    <span class="label">Motivation · for the women who make</span>
+    <svg viewBox="0 0 600 320" style="width:100%;max-height:340px" fill="none" stroke="var(--fg)" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter">
+      <!-- weaver at a loom, line drawing -->
+      <path d="M60 280h480"/><path d="M120 280V120h360v160"/><path d="M120 120l-20-40h400l-20 40"/>
+      <g stroke-width="2">${[150,180,210,240,270,300,330,360,390,420,450].map(x=>`<path d="M${x} 130v140"/>`).join('')}</g>
+      <path d="M120 200h360" stroke="var(--acc)" stroke-width="6"/>
+      <circle cx="90" cy="150" r="22"/><path d="M90 172c-30 0-42 30-42 60v48h84v-48c0-30-12-60-42-60z" fill="var(--bg)"/><path d="M110 200l40 10"/><path d="M76 132c6-14 24-16 30-2"/>
+      <circle cx="540" cy="160" r="20"/><path d="M540 180c-26 0-36 26-36 52v48h72v-48c0-26-10-52-36-52z" fill="var(--bg)"/><path d="M520 208l-40 6"/>
+    </svg>
+    <div><div class="display" style="font-size:clamp(28px,3.2vw,52px);max-width:520px">Your hands made it. Let the whole country see it.</div><div class="hi" style="font-size:22px;font-weight:700;margin-top:8px">आपके हाथ का हुनर, पूरे देश तक।</div></div>
+  </div>
+</div></div>`;
+
+S.seller = () => `${bar()}
+<div class="body">${side('All crafts')}
+  <div class="main">
+    <div class="sec" style="background:var(--fg);color:var(--bg)"><span class="label" style="color:var(--acc)">Seller account · Priya Devi Block Prints · verified</span><span class="mono" style="font-size:12px">4 orders · ₹8,797 paid</span></div>
+    <div style="display:flex;align-items:center;gap:12px;margin-right:var(--pad)">${crumb(['My shop','Products','Live'])}<a class="btn acc neo" href="#upload" style="margin-top:20px;width:64px;height:64px;padding:0;font-size:28px" title="Add product">+</a></div>
+    <div class="pad" style="padding-bottom:12px;display:flex;justify-content:space-between;align-items:end"><h1 class="display" style="font-size:clamp(28px,3vw,44px)">My products <span class="hi" style="font:700 18px 'Noto Sans Devanagari';letter-spacing:0;text-transform:none;color:var(--muted)">· मेरे प्रोडक्ट</span></h1><a class="label" href="#upload" style="text-decoration:underline">Add a product · नया प्रोडक्ट</a></div>
+    <div class="grid g5" style="border-top:2px solid var(--fg)">${[P[0],P[10],P[16],P[3],P[7],P[11],P[12],P[4],P[8],P[15]].map(p=>card(p).replace('Add to cart','Edit listing')).join('')}</div>
+  </div>
+</div>`;
+
+S.upload = () => `${bar()}
+<div class="body narrow">${side('',true)}
+  <div class="main split" style="--aside:clamp(300px,24vw,400px)">
+    <div class="pad" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:20px;align-content:start">
+      <div style="grid-column:1/-1;display:flex;justify-content:space-between;align-items:end"><h1 class="display" style="font-size:clamp(26px,2.8vw,40px)">Add a product <span class="hi" style="font:700 18px 'Noto Sans Devanagari';letter-spacing:0;text-transform:none;color:var(--muted)">· नया प्रोडक्ट</span></h1><span class="label muted">Seller · Priya Devi</span></div>
+      <!-- 1 photo -->
+      <div class="box" style="padding:16px;display:flex;flex-direction:column;gap:12px;min-height:300px">
+        <span class="label">1 · Photo upload</span>
+        <div id="photoZone" class="box" style="flex:1;border-style:dashed;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:170px">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>
+          <button class="btn ink neo" onclick="doUpload()">Upload photo</button>
+          <span class="mono muted" style="font-size:11px">Studio: background cleaned automatically</span>
+        </div>
+      </div>
+      <!-- 2 description -->
+      <div class="box" style="padding:16px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center"><span class="label">2 · Product description</span><span class="label muted" id="descState">waiting for photo</span></div>
+        <div id="descBox" class="box" style="min-height:150px;padding:12px;font-size:14px;line-height:1.6;background:var(--sec)"><span class="muted">Describe it by voice, or let the app write it from the photo.</span></div>
+        <div style="display:flex;gap:8px"><button class="btn neo" id="voiceBtn" onclick="doDescribe()" disabled>🎙 Describe by voice</button><button class="btn neo" id="editBtn" onclick="editDesc()" disabled>Edit</button></div>
+      </div>
+      <!-- 3 price -->
+      <div class="box" style="padding:16px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center"><span class="label">3 · Price approx.</span><span class="label muted" id="priceState">waiting for description</span></div>
+        <div id="priceBox" class="box mono" style="display:grid;grid-template-columns:repeat(3,1fr)"><div style="padding:12px;border-right:1px solid var(--fg)"><div class="label muted">Floor</div><div style="font-size:20px">—</div></div><div style="padding:12px;border-right:1px solid var(--fg)"><div class="label">Fair</div><div style="font-size:26px">—</div></div><div style="padding:12px"><div class="label muted">Premium</div><div style="font-size:20px">—</div></div></div>
+        <div><span class="label">Your price (₹)</span><input id="priceInput" placeholder="—" oninput="check()" disabled></div>
+      </div>
+      <!-- 4 submit -->
+      <div class="box" style="padding:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+        <span class="label" style="align-self:flex-start">4 · Submit</span>
+        <div class="diamond off" id="submitBtn" onclick="submitListing()"><span>Submit<br>to market</span></div>
+        <span class="mono muted" style="font-size:11px;text-align:center" id="submitHint">Only works when the checklist is OK</span>
+      </div>
+    </div>
+    <!-- checklist -->
+    <div style="border-left:2px solid var(--fg);display:flex;flex-direction:column">
+      <div class="sec"><span class="label">Checklist of requirements</span></div>
+      <div class="check" id="ck1"><span class="m">✕</span>Photo <span class="hi muted" style="font-weight:500;margin-left:auto">फ़ोटो</span></div>
+      <div class="check" id="ck2"><span class="m">✕</span>Description <span class="hi muted" style="font-weight:500;margin-left:auto">विवरण</span></div>
+      <div class="check" id="ck3"><span class="m">✕</span>Price <span class="hi muted" style="font-weight:500;margin-left:auto">दाम</span></div>
+      <div class="pad" id="ckMsg" style="font-weight:700;color:var(--err)">✕ It can't be submitted to the market yet.</div>
+      <div class="pad mono muted" style="font-size:12px;margin-top:auto;border-top:1px solid var(--fg)">Prototype: click Upload → Describe → type a price → Submit.</div>
+    </div>
+  </div>
+</div>`;
+
+S.artist = () => `${bar()}
+<div class="body narrow">${side('',true)}
+  <div class="main split" style="--aside:clamp(320px,26vw,480px)">
+    <div class="pad" style="display:flex;flex-direction:column;gap:20px">
+      <div class="hd" style="display:grid;grid-template-columns:clamp(200px,20vw,280px) minmax(0,1fr);gap:20px;align-items:start">
+        <div class="box pimg" style="aspect-ratio:1;overflow:hidden"><img src="img/bangles-wrist.jpg" alt="Priya Devi"></div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <span class="label muted">Artist portfolio · verified maker</span>
+          <h1 class="display" style="font-size:clamp(30px,3.2vw,52px)">Priya Devi Block Prints</h1>
+          <span class="mono" style="font-size:13px">Block printing · Bagru, Jaipur, Rajasthan · since 1987 · 4 listings</span>
+          <div class="box" style="padding:14px;font-size:15px;line-height:1.6">“Third-generation block printer from Bagru. We print with natural indigo and madder on hand-loomed cotton, the way my grandmother did.”</div>
+          <div style="display:flex;gap:8px"><a class="btn ink neo" href="#products">See all work</a><a class="btn acc neo" href="javascript:void(0)">Request a bulk quote</a></div>
+        </div>
+      </div>
+      <div class="sec" style="border-top:2px solid var(--fg);padding-left:0;padding-right:0"><h2>Work</h2><span class="label muted">8 pieces</span></div>
+      <div class="grid g4" style="border:2px solid var(--fg)">${[P[0],P[10],P[16],P[3],P[7],P[11],P[12],P[4]].map(card).join('')}</div>
+    </div>
+    <div style="border-left:2px solid var(--fg);display:flex;flex-direction:column">
+      <div class="sec"><span class="label">Her story</span><span class="label muted">3 languages</span></div>
+      <div style="padding:20px;display:flex;flex-direction:column;gap:14px">
+        <svg viewBox="0 0 220 120" style="width:100%;height:120px" fill="none" stroke="var(--fg)" stroke-width="3"><path d="M40 90c-20-40 20-80 60-60 30-20 80 0 70 40-10 40-60 30-90 20-20 10-40 10-40 0z"/><path d="M60 60c10-10 30-10 40 0M120 50c8-8 24-8 32 0"/></svg>
+        <div id="storyEn"><span class="label muted">English / हिन्दी · translated by the app</span><p style="font-size:14px;line-height:1.65;margin-top:6px" id="storyText">Third-generation block printer from Bagru. We print with natural indigo and madder on hand-loomed cotton, the way my grandmother did.</p></div>
+        <div><span class="label muted">Regional language · given by the seller</span><p class="hi" style="font-size:15px;line-height:1.8;margin-top:6px">बगरू की तीसरी पीढ़ी की ब्लॉक प्रिंटर। हम हथकरघा सूती कपड़े पर प्राकृतिक नील और मजीठ से छपाई करते हैं, जैसे मेरी दादी करती थीं।</p></div>
+        <div style="display:flex;gap:8px;margin-top:auto"><button class="btn neo" onclick="toggleStory(this)">Read in हिन्दी</button><button class="btn neo" title="Read aloud">🔊 सुनें</button></div>
+      </div>
+    </div>
+  </div>
+</div>`;
+
+/* ── router + behaviours ─────────────────────────────────────────── */
+const ORDER = ['home','products','product','cart','confirmed','profile','login','seller','upload','artist'];
+const NAMES = {home:'Hero + Home',products:'Listing',product:'Product',cart:'Cart',confirmed:'Order confirmed',profile:'Profile',login:'Seller login',seller:'Seller home',upload:'Seller · add product',artist:'Artist portfolio'};
+function render(){
+  const id = (location.hash||'#home').slice(1).split('?')[0];
+  const key = S[id] ? id : 'home';
+  document.getElementById('app').innerHTML = `<section class="screen on" id="s-${key}">${S[key]()}</section>`;
+  document.getElementById('map').innerHTML = ORDER.map(k=>`<a href="#${k}" class="${k===key?'on':''}">${NAMES[k]}</a>`).join('');
+  window.scrollTo(0,0);
+  if(key==='upload') state = {photo:false,desc:false,price:false};
+  heroI = 0; if(key==='home') heroArm(); else clearInterval(heroT);
+}
+window.addEventListener('hashchange', render);
+
+/* hero slider */
+let heroI = 0, heroT = null;
+function heroGo(n, abs){
+  const bg = document.getElementById('heroBg'); if(!bg) return;
+  const slides = [...bg.children]; const prev = heroI;
+  heroI = abs ? n : (heroI + n + slides.length) % slides.length;
+  if(heroI === prev) return;
+  slides.forEach((el,i)=>{ el.classList.remove('out'); el.classList.toggle('on', i===heroI); if(i===prev) el.classList.add('out'); });
+  document.querySelectorAll('#heroDots .d').forEach((d,i)=>d.classList.toggle('on',i===heroI));
+  const cap=document.getElementById('heroCap'); if(cap) cap.textContent = HERO[heroI].cap||'';
+  heroArm();
+}
+function heroArm(){ clearInterval(heroT); heroT = setInterval(()=>{ if(document.getElementById('heroBg') && !document.hidden) heroGo(1); }, 4500); }
+
+function togglePanel(id){ ['wish','support'].forEach(k=>{ const el=document.getElementById(k); if(el) el.classList.toggle('on', k===id ? !el.classList.contains('on') : false); }); }
+document.addEventListener('click', e=>{ if(!e.target.closest('.panel') && !e.target.closest('.icell')) document.querySelectorAll('.panel.on').forEach(p=>p.classList.remove('on')); });
+
+/* seller upload flow */
+let state = {photo:false,desc:false,price:false};
+function doUpload(){
+  const z=document.getElementById('photoZone'); z.style.borderStyle='solid'; z.innerHTML = `<img src="img/saree-cream.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">` + `<span class="label" style="position:absolute;margin:8px;background:var(--fg);color:var(--bg);padding:3px 8px">Studio · cleaned</span>`; z.style.position='relative'; z.style.padding='0';
+  state.photo=true; document.getElementById('voiceBtn').disabled=false; document.getElementById('descState').textContent='photo ready · speak or generate'; check();
+}
+function doDescribe(){
+  const b=document.getElementById('descBox'); b.style.background='var(--bg)';
+  b.innerHTML = `<div class="hi muted" style="font-size:13px;border-bottom:1px solid var(--fg);padding-bottom:8px;margin-bottom:8px">“ये बगरू की सूती साड़ी है, नील और मजीठ से हाथ से छापी हुई…” <span class="mono">0:22</span></div><b>Hand Block-Printed Mulmul Cotton Saree, Indigo &amp; Madder</b><br>Hand block-printed in Bagru on hand-loomed mulmul cotton with natural indigo and madder. 5.5 m with blouse piece. Gentle hand wash in cold water.`;
+  state.desc=true; document.getElementById('editBtn').disabled=false; document.getElementById('descState').textContent='written from your voice · ✓';
+  const pb=document.getElementById('priceBox'); pb.innerHTML=`<div style="padding:12px;border-right:1px solid var(--fg)"><div class="label muted">Floor</div><div style="font-size:20px">₹1,450</div></div><div style="padding:12px;border-right:1px solid var(--fg);background:var(--acc);color:#111"><div class="label">Fair</div><div style="font-size:26px">₹1,899</div></div><div style="padding:12px"><div class="label muted">Premium</div><div style="font-size:20px">₹2,400</div></div>`;
+  const pi=document.getElementById('priceInput'); pi.disabled=false; pi.placeholder='1899 suggested'; document.getElementById('priceState').textContent='from 12 similar pieces'; pi.focus(); check();
+}
+function editDesc(){ const b=document.getElementById('descBox'); b.contentEditable = b.isContentEditable ? 'false' : 'true'; b.style.boxShadow = b.isContentEditable ? '3px 3px 0 0 var(--acc)' : 'none'; if(b.isContentEditable) b.focus(); }
+function check(){
+  const pi=document.getElementById('priceInput'); state.price = !!(pi && Number(pi.value)>0);
+  [['ck1',state.photo],['ck2',state.desc],['ck3',state.price]].forEach(([id,ok])=>{ const el=document.getElementById(id); el.classList.toggle('ok',ok); el.querySelector('.m').textContent = ok?'✓':'✕'; });
+  const all = state.photo&&state.desc&&state.price; const d=document.getElementById('submitBtn'); d.classList.toggle('off',!all);
+  const m=document.getElementById('ckMsg'); m.textContent = all ? '✓ It can be submitted to the market.' : "✕ It can't be submitted to the market yet."; m.style.color = all ? 'var(--ok)' : 'var(--err)';
+}
+function submitListing(){ if(!(state.photo&&state.desc&&state.price)) return; location.hash='#seller'; }
+function toggleStory(btn){ const t=document.getElementById('storyText'); const hi = btn.dataset.hi==='1'; t.textContent = hi ? 'Third-generation block printer from Bagru. We print with natural indigo and madder on hand-loomed cotton, the way my grandmother did.' : 'बगरू की तीसरी पीढ़ी की ब्लॉक प्रिंटर। हम हथकरघा सूती कपड़े पर प्राकृतिक नील और मजीठ से छपाई करते हैं, जैसे मेरी दादी करती थीं।'; t.className = hi ? '' : 'hi'; btn.dataset.hi = hi ? '0':'1'; btn.textContent = hi ? 'Read in हिन्दी' : 'Read in English'; }
+
+/* theme */
+const sun=`<svg class="sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>`;
+const moon=`<svg class="moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+function paintTheme(){ document.getElementById('theme').innerHTML = document.documentElement.classList.contains('dark') ? moon : sun; }
+document.getElementById('theme').onclick = () => { const next = !document.documentElement.classList.contains('dark'); const apply=()=>{ document.documentElement.classList.toggle('dark',next); try{localStorage.setItem('ks-theme',next?'dark':'light')}catch(e){} paintTheme(); }; document.startViewTransition ? document.startViewTransition(apply) : apply(); };
+paintTheme(); render();
+</script>
+</body>
+</html>

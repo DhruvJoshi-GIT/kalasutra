@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;600;700&display=swap">
+  <style>
+    body { margin: 0; background: #FFF8EC; }
+    a { color: #B3261E; text-decoration: none; } a:hover { color: #1F3A93; }
+  </style>
+</helmet>
+<div style="width: 1200px; min-height: 1060px; background: #FFF8EC; color: #1E1A16; font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif; display: flex; flex-direction: column;">
+
+  <!-- Nav -->
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px 48px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <svg width="34" height="34" viewBox="0 0 34 34"><circle cx="17" cy="17" r="16" fill="#F2B134"></circle><circle cx="17" cy="17" r="9" fill="#B3261E"></circle><circle cx="17" cy="17" r="3.5" fill="#FFF8EC"></circle></svg>
+      <span style="font-family: 'Baloo 2', 'Nirmala UI', sans-serif; font-size: 30px; font-weight: 800; color: #1F3A93; letter-spacing: -0.01em;">KalaSutra</span>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <span style="padding: 10px 18px; border-radius: 999px; font-size: 15px; font-weight: 700; background: #FFFFFF; border: 2px solid #F0E2C8;">Shop</span>
+      <span style="padding: 10px 18px; border-radius: 999px; font-size: 15px; font-weight: 700; background: #FFFFFF; border: 2px solid #F0E2C8;">Crafts</span>
+      <span style="padding: 10px 18px; border-radius: 999px; font-size: 15px; font-weight: 700; background: #FFFFFF; border: 2px solid #F0E2C8;">Artisans</span>
+      <span style="padding: 10px 18px; border-radius: 999px; font-size: 15px; font-weight: 800; background: #B3261E; color: #FFFFFF;">Sell with us</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px; color: #1F3A93;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 8h-12z"></path><path d="M6 6L5 3H2"></path><circle cx="9" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle></svg>
+    </div>
+  </div>
+
+  <!-- Hero: indigo block with printed border -->
+  <div style="margin: 8px 48px 0; border-radius: 28px; overflow: hidden; background: #1F3A93; color: #FFF8EC; display: flex; flex-direction: column;">
+    <svg width="1104" height="18" viewBox="0 0 1104 18" preserveAspectRatio="none"><defs><pattern id="tri" width="24" height="18" patternUnits="userSpaceOnUse"><rect width="24" height="18" fill="#F2B134"></rect><path d="M0 18L12 0L24 18Z" fill="#B3261E"></path></pattern></defs><rect width="1104" height="18" fill="url(#tri)"></rect></svg>
+    <div style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; padding: 44px 48px 48px; align-items: center;">
+      <div style="grid-column: span 7; display: flex; flex-direction: column; gap: 20px;">
+        <h1 style="margin: 0; font-family: 'Baloo 2', 'Nirmala UI', sans-serif; font-size: 62px; line-height: 1.08; font-weight: 800; letter-spacing: -0.01em; text-wrap: balance;">हाथ का बना।<br><span style="color: #F2B134;">दिल से बेचा।</span></h1>
+        <p style="margin: 0; font-size: 20px; line-height: 1.45; font-weight: 600; color: #DCE3FA; max-width: 520px; text-wrap: pretty;">Handmade, sold with heart. The mela never closes — buy from Bagru, Madhubani and Moradabad any day of the year.</p>
+        <div style="display: flex; gap: 12px;">
+          <div style="display: inline-flex; align-items: center; height: 52px; padding: 0 26px; background: #F2B134; color: #1E1A16; border-radius: 999px; font-size: 16px; font-weight: 800;">Shop the mela</div>
+          <div style="display: inline-flex; align-items: center; height: 52px; padding: 0 26px; background: transparent; color: #FFF8EC; border: 2px solid #FFF8EC; border-radius: 999px; font-size: 16px; font-weight: 800;">I am an artisan</div>
+        </div>
+      </div>
+      <div style="grid-column: span 5; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;">
+        <div style="height: 150px; border-radius: 20px; background: #B3261E; overflow: hidden;"><svg width="100%" height="150" viewBox="0 0 220 150" preserveAspectRatio="none"><rect width="220" height="150" fill="#B3261E"></rect><g fill="#FFF8EC"><circle cx="55" cy="75" r="22"></circle><circle cx="165" cy="75" r="22"></circle></g><g fill="#B3261E"><circle cx="55" cy="75" r="9"></circle><circle cx="165" cy="75" r="9"></circle></g></svg></div>
+        <div style="height: 150px; border-radius: 20px; background: #F2B134; overflow: hidden;"><svg width="100%" height="150" viewBox="0 0 220 150" preserveAspectRatio="none"><rect width="220" height="150" fill="#F2B134"></rect><g fill="none" stroke="#1F3A93" stroke-width="3"><path d="M20 110 Q110 20 200 110"></path><path d="M40 120 Q110 50 180 120"></path></g></svg></div>
+        <div style="height: 150px; border-radius: 20px; background: #2F7D4B; overflow: hidden;"><svg width="100%" height="150" viewBox="0 0 220 150" preserveAspectRatio="none"><rect width="220" height="150" fill="#2F7D4B"></rect><g fill="#FFF8EC"><path d="M110 25c30 30 30 70 0 100c-30-30-30-70 0-100z"></path></g><path d="M110 40v70" stroke="#2F7D4B" stroke-width="3"></path></svg></div>
+        <div style="height: 150px; border-radius: 20px; background: #FFF8EC; overflow: hidden;"><svg width="100%" height="150" viewBox="0 0 220 150" preserveAspectRatio="none"><rect width="220" height="150" fill="#FFF8EC"></rect><g fill="none" stroke="#B3261E" stroke-width="3"><rect x="40" y="35" width="140" height="80" rx="6"></rect><path d="M60 55h100M60 75h100M60 95h60"></path></g></svg></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Products: colour-blocked tiles -->
+  <div style="display: flex; flex-direction: column; gap: 18px; padding: 40px 48px 28px;">
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+      <h2 style="margin: 0; font-family: 'Baloo 2', 'Nirmala UI', sans-serif; font-size: 34px; font-weight: 800; color: #1F3A93;">Fresh from the workshops</h2>
+      <span style="padding: 8px 16px; border-radius: 999px; background: #FFFFFF; border: 2px solid #F0E2C8; font-size: 14px; font-weight: 800; color: #B3261E;">See all 19</span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px;">
+      <div style="position: relative; display: flex; flex-direction: column; gap: 10px; padding: 12px; background: #FFFFFF; border-radius: 24px; border: 2px solid #F0E2C8;">
+        <div style="height: 170px; border-radius: 16px; background: #274B7A; overflow: hidden;"><svg width="100%" height="170" viewBox="0 0 260 170" preserveAspectRatio="none"><rect width="260" height="170" fill="#274B7A"></rect><g stroke="#FFF8EC" stroke-width="2" fill="none"><path d="M0 42h260M0 85h260M0 128h260"></path><path d="M20 20l18 18-18 18-18-18zM90 20l18 18-18 18-18-18zM160 20l18 18-18 18-18-18zM230 20l18 18-18 18-18-18z"></path></g></svg></div>
+        <div style="position: absolute; top: 20px; left: 20px; padding: 6px 12px; border-radius: 999px; background: #F2B134; font-size: 13px; font-weight: 800;">₹1,899</div>
+        <div style="display: flex; flex-direction: column; gap: 2px; padding: 0 4px 4px;">
+          <div style="font-size: 16px; font-weight: 800; line-height: 1.25;">Block Print Cotton Saree</div>
+          <div style="font-size: 13px; font-weight: 600; color: #7A6F63;">Priya Devi · Bagru</div>
+        </div>
+      </div>
+      <div style="position: relative; display: flex; flex-direction: column; gap: 10px; padding: 12px; background: #FFFFFF; border-radius: 24px; border: 2px solid #F0E2C8;">
+        <div style="height: 170px; border-radius: 16px; background: #F1E4C8; overflow: hidden;"><svg width="100%" height="170" viewBox="0 0 260 170" preserveAspectRatio="none"><rect width="260" height="170" fill="#F1E4C8"></rect><g fill="none" stroke="#B3261E" stroke-width="2.5"><ellipse cx="130" cy="85" rx="70" ry="38"></ellipse><ellipse cx="130" cy="85" rx="48" ry="24"></ellipse><circle cx="130" cy="85" r="8" fill="#1F3A93" stroke="none"></circle></g></svg></div>
+        <div style="position: absolute; top: 20px; left: 20px; padding: 6px 12px; border-radius: 999px; background: #F2B134; font-size: 13px; font-weight: 800;">₹1,299</div>
+        <div style="display: flex; flex-direction: column; gap: 2px; padding: 0 4px 4px;">
+          <div style="font-size: 16px; font-weight: 800; line-height: 1.25;">Madhubani Art Print Set</div>
+          <div style="font-size: 13px; font-weight: 600; color: #7A6F63;">Meera Kumari · Madhubani</div>
+        </div>
+      </div>
+      <div style="position: relative; display: flex; flex-direction: column; gap: 10px; padding: 12px; background: #FFFFFF; border-radius: 24px; border: 2px solid #F0E2C8;">
+        <div style="height: 170px; border-radius: 16px; background: #3B2A1A; overflow: hidden;"><svg width="100%" height="170" viewBox="0 0 260 170" preserveAspectRatio="none"><rect width="260" height="170" fill="#3B2A1A"></rect><g fill="#E2B15A"><ellipse cx="70" cy="105" rx="34" ry="12"></ellipse><ellipse cx="130" cy="75" rx="34" ry="12"></ellipse><ellipse cx="190" cy="105" rx="34" ry="12"></ellipse></g><g fill="#F7C948"><ellipse cx="70" cy="93" rx="6" ry="10"></ellipse><ellipse cx="130" cy="63" rx="6" ry="10"></ellipse><ellipse cx="190" cy="93" rx="6" ry="10"></ellipse></g></svg></div>
+        <div style="position: absolute; top: 20px; left: 20px; padding: 6px 12px; border-radius: 999px; background: #F2B134; font-size: 13px; font-weight: 800;">₹1,249</div>
+        <div style="display: flex; flex-direction: column; gap: 2px; padding: 0 4px 4px;">
+          <div style="font-size: 16px; font-weight: 800; line-height: 1.25;">Brass Diya Set (5)</div>
+          <div style="font-size: 13px; font-weight: 600; color: #7A6F63;">Ramesh Saifi · Moradabad</div>
+        </div>
+      </div>
+      <div style="position: relative; display: flex; flex-direction: column; gap: 10px; padding: 12px; background: #FFFFFF; border-radius: 24px; border: 2px solid #F0E2C8;">
+        <div style="height: 170px; border-radius: 16px; background: #DCE6EE; overflow: hidden;"><svg width="100%" height="170" viewBox="0 0 260 170" preserveAspectRatio="none"><rect width="260" height="170" fill="#DCE6EE"></rect><g fill="none" stroke="#1F3A93" stroke-width="2.5"><circle cx="130" cy="85" r="56"></circle><circle cx="130" cy="85" r="38"></circle><path d="M130 29v112M74 85h112"></path></g></svg></div>
+        <div style="position: absolute; top: 20px; left: 20px; padding: 6px 12px; border-radius: 999px; background: #F2B134; font-size: 13px; font-weight: 800;">₹4,999</div>
+        <div style="display: flex; flex-direction: column; gap: 2px; padding: 0 4px 4px;">
+          <div style="font-size: 16px; font-weight: 800; line-height: 1.25;">Blue Pottery Dinner Set (21)</div>
+          <div style="font-size: 13px; font-weight: 600; color: #7A6F63;">Priya Devi · Jaipur</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Artisan portal strip -->
+  <div style="display: flex; flex-direction: column; gap: 16px; padding: 12px 48px 44px;">
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+      <h2 style="margin: 0; font-family: 'Baloo 2', 'Nirmala UI', sans-serif; font-size: 26px; font-weight: 800; color: #1F3A93;">The seller portal, in this direction</h2>
+      <div style="font-size: 14px; font-weight: 600; color: #7A6F63;">One colour per job. The artisan learns three colours, not three menus.</div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;">
+      <div style="display: flex; align-items: center; gap: 16px; padding: 22px 24px; background: #B3261E; color: #FFF8EC; border-radius: 22px;">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v8M8 12h8"></path></svg>
+        <div style="display: flex; flex-direction: column;"><span style="font-family: 'Baloo 2', 'Nirmala UI', sans-serif; font-size: 22px; font-weight: 800; line-height: 1.1;">नया प्रोडक्ट</span><span style="font-size: 14px; font-weight: 700; opacity: 0.85;">Add a product</span></div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 16px; padding: 22px 24px; background: #F2B134; color: #1E1A16; border-radius: 22px;">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l1 12H5z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg>
+        <div style="display: flex; flex-direction: column;"><span style="font-family: 'Baloo 2', 'Nirmala UI', sans-serif; font-size: 22px; font-weight: 800; line-height: 1.1;">ऑर्डर · 2 नए</span><span style="font-size: 14px; font-weight: 700; opacity: 0.8;">Orders</span></div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 16px; padding: 22px 24px; background: #2F7D4B; color: #FFF8EC; border-radius: 22px;">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l1.5-5h13L20 10"></path><path d="M4 10v10h16V10"></path><path d="M10 20v-6h4v6"></path></svg>
+        <div style="display: flex; flex-direction: column;"><span style="font-family: 'Baloo 2', 'Nirmala UI', sans-serif; font-size: 22px; font-weight: 800; line-height: 1.1;">मेरी दुकान</span><span style="font-size: 14px; font-weight: 700; opacity: 0.85;">My shop</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
