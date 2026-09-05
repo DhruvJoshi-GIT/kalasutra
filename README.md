@@ -20,7 +20,7 @@ KalaSutra lets a maker photograph a piece, describe it by voice in their own lan
 | `api-notes.md` | Endpoint shapes for the artisan APIs. |
 | `progress.md` | The running build log / hand-off file. Newest changes are at the top of its changelog. |
 
-The web app itself (Next.js 16 + Prisma + PostgreSQL) currently lives in a separate private repository and is being restructured to match this prototype; it will be added here when that is done.
+The real product is being built from this prototype: a Python FastAPI + PostgreSQL backend under `backend/` and the prototype split into modules under `web/` (see *Architecture* below and `plan.md`). Those folders appear here as the phases land.
 
 ## Try the prototype
 
@@ -34,9 +34,9 @@ The web app itself (Next.js 16 + Prisma + PostgreSQL) currently lives in a separ
 - A **floating category capsule** on the left filters the grid (collapse it with ‹). The grid adapts its column count to the screen: phone, laptop, or ultrawide.
 - **Search** matches product names, Hindi names, craft, maker and place. **Sort** by newest, price, discount or name.
 - Click any tile → the **product popup**: photo, price, quantity, Add to cart / Buy now / Wishlist, then Details, Shipping & returns, Reviews (write one) and Comments & questions.
-- **C** opens the cart (badge shows the count). Checkout is inline: choose or add an address and a UPI id / card, then *Place order* → order-confirmed page.
-- **P** is your account: details, Address, Payment, Your orders.
-- **W** is the wishlist bubble (click an item to open it). **S** is Sell & support → seller login → *My products* → *Add a product* (photo → AI description → price suggestion → submit, gated by a checklist).
+- The **cart icon** opens the cart (badge shows the count). Checkout is inline: choose or add an address and a UPI id / card, then *Place order* → order-confirmed page.
+- The **person icon** is your account: details, Address, Payment, Your orders. On phones these live in a bottom navigation bar, and *Categories* opens a sheet.
+- The **heart** is the wishlist bubble (click an item to open it). The **₹ button** is Sell & support → seller login → *My products* → *Add a product* (photo → AI description → price suggestion → submit, gated by a checklist).
 - Maker pages (`#artist/priya`, `#artist/meera`, …) show the portfolio and the story in English / Hindi / the maker's own language.
 - Theme toggle bottom-right (light "paper" / dark "ink") with a circle-reveal transition.
 
