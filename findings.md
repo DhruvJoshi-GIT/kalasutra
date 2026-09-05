@@ -136,3 +136,7 @@ Windows 11 Home. Present: `git` 2.55, `winget`, Python 3.14 (Windows Store). **A
 - The `next-auth/jwt` module augmentation in `src/types/next-auth.d.ts` is not picked up by next-auth v5 beta (`token.id` types as `unknown`); casts are used where needed.
 - `npm run lint` fails on **pre-existing** files: `src/components/products/product-filters.tsx` and the cart drawer/header create components during render (`react-hooks/static-components`). Not touched — outside scope; the new artisan files lint clean.
 - `zod ^4` works with `@hookform/resolvers` v5 `zodResolver` — confirmed on the new forms.
+
+## Status of this audit (2026-09-05)
+
+The Next.js app audited above has been **superseded**: the real build is the Python FastAPI backend in `backend/` plus `web/`. Ported from it: the Prisma data model (every table, incl. the AI ones), the artisan contracts and ownership rules, the storage-seam function set, the products list route behaviour. Fixed in the port: the unauthenticated file route (KYC docs), `is_synthetic` flagging, integer ids. The clone at `D:/swadesh/pickindian` is git-ignored and kept only for reference.

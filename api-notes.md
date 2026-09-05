@@ -32,3 +32,31 @@ Credit budget: 1,000 free. Record remaining credits here after each phase.
 ## Background matting — UNVERIFIED
 
 fal.ai `fal-ai/birefnet` or Replicate `briaai/RMBG-2.0`. Input image URL or base64; output PNG with alpha. Compose with `sharp`.
+
+## KalaSutra API (our own FastAPI backend, `backend/`) — verified by tests 2026-09-05
+
+Base `/api`. Envelope `{data}` on success; errors `{detail}` (HTTPException) or `{error:"Invalid input", details:[{loc,msg,type}]}` (422). Auth: `Authorization: Bearer <JWT>` (30 days; claims `sub`, `role`).
+
+| Route | Notes |
+|---|---|
+| `GET /health` | `{ok, version, aiMode}` |
+| `GET /catalogue/bootstrap` | `{categories, makers{slug:MakerCard}, products:[ProductCard], generatedAt}` — ProductCard = `{id, slug, n, hi, mk, price, was, img, cat, craft, d:{technique,materials,size,care}, stock, isFeatured, aiStatus}`; excludes synthetic + inactive |
+| `GET /products?page&limit&category&search&sort&artisan&minPrice&maxPrice` | sort in newest, price-asc, price-desc, sale, name; search hits name, Hindi name, craft, technique, brand, origin, description |
+| `GET /products/{id or slug}` · `/categories` · `/makers` · `/makers/{slug}` | detail adds description, images[], materialsList, bullets, tags, maker, rating, reviewCount |
+| `POST /auth/register {email,password,name?,phone?}` · `POST /auth/login` | -> `{token, user, needsProfile}` |
+| `POST /auth/otp/request {phone}` -> `{sent, expiresIn, devCode?}` · `POST /auth/otp/verify {phone, code}` | phone normalised to +91; dev code 123456; 5 attempts; 5-min expiry; challenge consumed on success |
+| `GET/PATCH /me` | |
+| `GET/PUT/DELETE /cart` · `POST /cart/merge` | items `[{id, qty}]`; merge = union with max qty |
+| `GET /wishlist` · `POST/DELETE /wishlist/{productId}` · `POST /wishlist/merge {productIds}` | |
+| `GET/POST /addresses` · `DELETE /addresses/{id}` | body uses the prototype's field names: name, phone, line, city, state, pin (6 digits) |
+| `GET/POST /payment-methods` · `DELETE /payment-methods/{id}` | body `{type:'upi' or 'card', upi?, card?, cname?}`; only a label is stored |
+| `POST /orders {addressId, paymentMethodId, items}` · `GET /orders` · `GET /orders/{no}` | prices re-read from DB; shipping 0 if subtotal >= 999 else 79; payment simulated PAID; order no `KS<base36 ms>`; server cart cleared |
+| `GET/POST /products/{id}/reviews {stars,text,name?}` | one review per user (upsert) |
+| `GET/POST /products/{id}/comments {text,name?}` · `POST /artisan/comments/{id}/answer` | |
+| `POST /enquiries {productId, quantity, targetPrice?, message?}` · `GET /enquiries` · `GET /artisan/enquiries` · `PATCH /artisan/enquiries/{id} {status, quotedPrice?}` | |
+
+Frontend contract: `web/config.js` sets `window.KS_CONFIG.API_URL` (`?api=` overrides, stored in `ks-api`). Local storage keys: `ks-session` `{token,user}`, `ks-cart`, `ks-wish`, `ks-user`, `ks-catalogue` (bootstrap cache), `ks-side`, `ks-theme`, `ks-api`.
+
+## Sarvam — key available since 2026-09-05 (in backend/.env)
+
+The endpoint shapes above are still UNVERIFIED; `scripts/verify_sarvam.py` (to be written in the AI phase) must run before relying on them.
