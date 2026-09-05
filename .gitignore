@@ -10,3 +10,11 @@ node_modules/
 storage/
 Thumbs.db
 .DS_Store
+# python backend
+backend/.venv/
+backend/storage/
+backend/.env
+__pycache__/
+*.pyc
+.pytest_cache/
+!backend/.env.example

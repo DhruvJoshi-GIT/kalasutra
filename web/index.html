@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KalaSutra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+Devanagari:wght@500;700&display=swap">
+<script>(function(){try{if(localStorage.getItem('ks-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}})();</script>
+<link rel="stylesheet" href="css/system.css">
+</head>
+<body class="side-open">
+<header class="bar" id="bar"></header>
+<aside class="cap" id="cap"></aside>
+<main id="app"></main>
+<div class="panel" id="wish"></div>
+<div class="panel" id="support"></div>
+<div class="mbg" id="mbg" onclick="if(event.target===this)closeProduct()"><div class="modal" id="modal"></div></div>
+<nav class="bnav" id="bnav"></nav>
+<button id="theme" class="neo" title="Switch theme"></button>
+<div class="toast" id="toast"></div>
+
+<script src="config.js"></script>
+<script src="js/data.js"></script>
+<script src="js/state.js"></script>
+<script src="js/api.js"></script>
+<script src="js/chrome.js"></script>
+<script src="js/tiles.js"></script>
+<script src="js/screens.js"></script>
+<script src="js/modal.js"></script>
+<script src="js/router.js"></script>
+<script src="js/seller.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

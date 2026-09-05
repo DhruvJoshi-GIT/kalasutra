@@ -1,0 +1,458 @@
+{
+  "categories": [
+    {
+      "slug": "sarees",
+      "name": "Sarees & textiles",
+      "abbr": "SA"
+    },
+    {
+      "slug": "men",
+      "name": "Menswear",
+      "abbr": "ME"
+    },
+    {
+      "slug": "jewel",
+      "name": "Jewellery",
+      "abbr": "JE"
+    },
+    {
+      "slug": "foot",
+      "name": "Footwear",
+      "abbr": "FO"
+    },
+    {
+      "slug": "home",
+      "name": "Home & decor",
+      "abbr": "HO"
+    },
+    {
+      "slug": "art",
+      "name": "Art & craft",
+      "abbr": "AR"
+    },
+    {
+      "slug": "toys",
+      "name": "Toys & games",
+      "abbr": "TO"
+    }
+  ],
+  "makers": {
+    "priya": {
+      "n": "Priya Devi",
+      "shop": "Priya Devi Block Prints",
+      "place": "Bagru, Rajasthan",
+      "craft": "Block printing · gota patti",
+      "since": 1987,
+      "img": "bangles-wrist",
+      "en": "Third-generation block printer from Bagru. We print with natural indigo and madder on hand-loomed cotton, the way my grandmother did.",
+      "hi": "बगरू की तीसरी पीढ़ी की ब्लॉक प्रिंटर। हम हथकरघा सूती कपड़े पर प्राकृतिक नील और मजीठ से छपाई करते हैं, जैसे मेरी दादी करती थीं।"
+    },
+    "meera": {
+      "n": "Meera Kumari",
+      "shop": "Meera Kumari Arts",
+      "place": "Madhubani, Bihar",
+      "craft": "Madhubani & Pattachitra painting",
+      "since": 2004,
+      "img": "necklace",
+      "en": "I paint the stories my mother painted on our walls — on paper, plates, boxes and jewellery — so they travel further than our village.",
+      "hi": "जो कहानियाँ मेरी माँ हमारी दीवारों पर बनाती थीं, उन्हें मैं कागज़, थाली, डिब्बों और गहनों पर बनाती हूँ, ताकि वे हमारे गाँव से आगे जाएँ।"
+    },
+    "ramesh": {
+      "n": "Ramesh Saifi",
+      "shop": "Saifi Handicrafts",
+      "place": "Moradabad, U.P.",
+      "craft": "Painted wood & terracotta",
+      "since": 1995,
+      "img": "drawers",
+      "en": "Our family workshop turns mango wood and clay into painted boxes, drawers and planters, each finished by hand.",
+      "hi": "हमारी पारिवारिक कार्यशाला आम की लकड़ी और मिट्टी से रंगे हुए डिब्बे, दराज़ और गमले बनाती है, हर एक हाथ से पूरा किया हुआ।"
+    },
+    "banaras": {
+      "n": "Banaras Weaves",
+      "shop": "Banaras Weaves",
+      "place": "Varanasi, U.P.",
+      "craft": "Banarasi silk & handloom cotton",
+      "since": 1978,
+      "img": "saree-blue",
+      "en": "A weavers' collective of 40 looms in Varanasi.",
+      "hi": "वाराणसी में 40 करघों का बुनकर सामूहिक।"
+    },
+    "kanchi": {
+      "n": "Kanchi Looms",
+      "shop": "Kanchi Looms",
+      "place": "Kanchipuram, T.N.",
+      "craft": "Kanjivaram silk",
+      "since": 1990,
+      "img": "saree-green",
+      "en": "Pure mulberry silk, zari borders, woven on pit looms.",
+      "hi": "शुद्ध शहतूत रेशम, ज़री किनारे, पिट करघों पर बुने हुए।"
+    },
+    "kuthampully": {
+      "n": "Kuthampully Weavers",
+      "shop": "Kuthampully Weavers",
+      "place": "Thrissur, Kerala",
+      "craft": "Kasavu handloom",
+      "since": 1982,
+      "img": "dhoti",
+      "en": "Kerala kasavu cotton with real gold-thread borders.",
+      "hi": "असली सोने के धागे की किनारी वाला केरल कसवु सूती।"
+    },
+    "jaipur": {
+      "n": "Jaipur Marble Works",
+      "shop": "Jaipur Marble Works",
+      "place": "Jaipur, Rajasthan",
+      "craft": "Painted marble & meenakari",
+      "since": 1999,
+      "img": "marble-vase",
+      "en": "Makrana marble, painted by hand with gold leaf.",
+      "hi": "मकराना संगमरमर, सोने की पत्ती से हाथ से रंगा हुआ।"
+    },
+    "assam": {
+      "n": "Assam Cane Collective",
+      "shop": "Assam Cane Collective",
+      "place": "Guwahati, Assam",
+      "craft": "Cane, bamboo & jute",
+      "since": 2010,
+      "img": "baskets",
+      "en": "Twelve women weavers from villages around Guwahati.",
+      "hi": "गुवाहाटी के आसपास के गाँवों की बारह महिला बुनकर।"
+    },
+    "kutch": {
+      "n": "Kutch Silver",
+      "shop": "Kutch Silver",
+      "place": "Bhuj, Gujarat",
+      "craft": "Silver & beadwork jewellery",
+      "since": 1993,
+      "img": "silver-earrings",
+      "en": "Oxidised silver and Rabari beadwork from Kutch.",
+      "hi": "कच्छ की ऑक्सिडाइज़्ड चाँदी और रबारी मोतियों का काम।"
+    },
+    "patiala": {
+      "n": "Patiala Jutti House",
+      "shop": "Patiala Jutti House",
+      "place": "Patiala, Punjab",
+      "craft": "Phulkari juttis",
+      "since": 1985,
+      "img": "jutti",
+      "en": "Hand-embroidered leather juttis, made to last.",
+      "hi": "हाथ से कढ़ाई की गई चमड़े की जूतियाँ, टिकाऊ।"
+    },
+    "kolhapur": {
+      "n": "Kolhapuri Crafts",
+      "shop": "Kolhapuri Crafts",
+      "place": "Kolhapur, Maharashtra",
+      "craft": "Vegetable-tanned leather footwear",
+      "since": 1975,
+      "img": "kolhapuri",
+      "en": "Genuine Kolhapuris, vegetable-tanned and hand-stitched.",
+      "hi": "असली कोल्हापुरी, वनस्पति-टैन्ड और हाथ से सिली हुई।"
+    }
+  },
+  "defaults": {
+    "sarees": {
+      "technique": "Handloom weaving",
+      "materials": "Cotton / mulberry silk, zari",
+      "size": "5.5 m × 1.1 m, with blouse piece",
+      "care": "Dry clean, or gentle cold hand wash"
+    },
+    "men": {
+      "technique": "Handloom weaving, hand finishing",
+      "materials": "Cotton",
+      "size": "S · M · L · XL (choose at checkout)",
+      "care": "Cold machine wash, dry in shade"
+    },
+    "jewel": {
+      "technique": "Hand-set, hand-painted",
+      "materials": "Brass, silver, glass beads, thread",
+      "size": "Adjustable / free size",
+      "care": "Keep dry, store in the pouch provided"
+    },
+    "foot": {
+      "technique": "Hand-stitched",
+      "materials": "Vegetable-tanned leather, jute",
+      "size": "UK 4 – 11 (choose at checkout)",
+      "care": "Wipe clean, keep away from water"
+    },
+    "home": {
+      "technique": "Hand-made and hand-painted",
+      "materials": "Cane, bamboo, terracotta, marble, wood",
+      "size": "See listing photo for scale",
+      "care": "Dust with a dry cloth"
+    },
+    "art": {
+      "technique": "Natural pigments, hand-painted",
+      "materials": "Paper, wood, cloth",
+      "size": "Approx. 25 cm",
+      "care": "Keep out of direct sunlight"
+    },
+    "toys": {
+      "technique": "Hand-carved, hand-painted",
+      "materials": "Wood, cloth, non-toxic paint",
+      "size": "Approx. 30 cm tall",
+      "care": "Wipe clean; not for children under 3"
+    }
+  },
+  "products": [
+    {
+      "id": 1,
+      "n": "Handloom Cotton Saree, Bagru print",
+      "mk": "priya",
+      "price": 1899,
+      "was": 2999,
+      "img": "saree-cream",
+      "cat": "sarees",
+      "hi": "बगरू ब्लॉक प्रिंट सूती साड़ी",
+      "d": {
+        "technique": "Hand block print, dabu resist",
+        "materials": "Mulmul cotton · indigo · madder"
+      },
+      "craft": "Hand block print"
+    },
+    {
+      "id": 2,
+      "n": "Banarasi Silk Saree, Royal Blue",
+      "mk": "banaras",
+      "price": 8499,
+      "img": "saree-blue",
+      "cat": "sarees",
+      "hi": "बनारसी रेशमी साड़ी, नीली",
+      "craft": "Banarasi silk"
+    },
+    {
+      "id": 3,
+      "n": "Kanjivaram Silk Saree, Sea Green",
+      "mk": "kanchi",
+      "price": 9999,
+      "was": 12500,
+      "img": "saree-green",
+      "cat": "sarees",
+      "hi": "कांजीवरम रेशमी साड़ी",
+      "craft": "Kanjivaram silk"
+    },
+    {
+      "id": 4,
+      "n": "Handloom Cotton Kurta, Grey",
+      "mk": "banaras",
+      "price": 1799,
+      "img": "kurta",
+      "cat": "men",
+      "hi": "हथकरघा सूती कुर्ता",
+      "craft": "Handloom cotton"
+    },
+    {
+      "id": 5,
+      "n": "Kerala Kasavu Dhoti & Angavastram",
+      "mk": "kuthampully",
+      "price": 2250,
+      "img": "dhoti",
+      "cat": "men",
+      "hi": "केरल कसवु धोती",
+      "craft": "Kasavu handloom"
+    },
+    {
+      "id": 6,
+      "n": "Block-Printed Shirt, Indigo Floral",
+      "mk": "priya",
+      "price": 1650,
+      "was": 1999,
+      "img": "shirt",
+      "cat": "men",
+      "hi": "ब्लॉक प्रिंट शर्ट",
+      "craft": "Hand block print"
+    },
+    {
+      "id": 7,
+      "n": "Pattachitra Wall Plate",
+      "mk": "meera",
+      "price": 1650,
+      "img": "pattachitra",
+      "cat": "art",
+      "hi": "पट्टचित्र दीवार थाली",
+      "craft": "Pattachitra"
+    },
+    {
+      "id": 8,
+      "n": "Hand-painted Pen Stand",
+      "mk": "meera",
+      "price": 349,
+      "img": "pen-stand",
+      "cat": "art",
+      "hi": "हाथ से रंगा पेन स्टैंड",
+      "craft": "Hand-painted"
+    },
+    {
+      "id": 9,
+      "n": "Rajasthani Puppet Doll Pair",
+      "mk": "priya",
+      "price": 899,
+      "img": "dolls",
+      "cat": "toys",
+      "hi": "राजस्थानी कठपुतली जोड़ी",
+      "craft": "Hand-carved wood"
+    },
+    {
+      "id": 10,
+      "n": "Crochet Granny-Square Cushion",
+      "mk": "meera",
+      "price": 1199,
+      "img": "cushion",
+      "cat": "home",
+      "hi": "क्रोशिया कुशन कवर",
+      "craft": "Crochet"
+    },
+    {
+      "id": 11,
+      "n": "Hand-painted Mini Drawers",
+      "mk": "ramesh",
+      "price": 1899,
+      "img": "drawers",
+      "cat": "home",
+      "hi": "रंगे हुए छोटे दराज़",
+      "craft": "Painted mango wood"
+    },
+    {
+      "id": 12,
+      "n": "Cane Basket Set (9 pieces)",
+      "mk": "assam",
+      "price": 2450,
+      "img": "baskets",
+      "cat": "home",
+      "hi": "बेंत की टोकरी सेट",
+      "craft": "Cane weave"
+    },
+    {
+      "id": 13,
+      "n": "Warli Terracotta Planter",
+      "mk": "ramesh",
+      "price": 749,
+      "was": 899,
+      "img": "warli-planter",
+      "cat": "home",
+      "hi": "वारली टेराकोटा गमला",
+      "craft": "Warli terracotta"
+    },
+    {
+      "id": 14,
+      "n": "Meenakari Marble Vase",
+      "mk": "jaipur",
+      "price": 2299,
+      "img": "marble-vase",
+      "cat": "home",
+      "hi": "मीनाकारी संगमरमर फूलदान",
+      "craft": "Meenakari marble"
+    },
+    {
+      "id": 15,
+      "n": "Painted Marble Vase Pair",
+      "mk": "jaipur",
+      "price": 4199,
+      "was": 4999,
+      "img": "vase-pair",
+      "cat": "home",
+      "hi": "रंगे संगमरमर फूलदान जोड़ी",
+      "craft": "Painted marble"
+    },
+    {
+      "id": 16,
+      "n": "Jute & Bamboo Jewellery Box",
+      "mk": "assam",
+      "price": 1150,
+      "img": "jute-box",
+      "cat": "home",
+      "hi": "जूट और बाँस का गहनों का डिब्बा",
+      "craft": "Jute & bamboo"
+    },
+    {
+      "id": 17,
+      "n": "Hand-painted Necklace Set",
+      "mk": "meera",
+      "price": 1299,
+      "img": "necklace",
+      "cat": "jewel",
+      "hi": "हाथ से रंगा हार सेट",
+      "craft": "Hand-painted"
+    },
+    {
+      "id": 18,
+      "n": "Oxidised Silver Jhumkas",
+      "mk": "kutch",
+      "price": 1450,
+      "img": "silver-earrings",
+      "cat": "jewel",
+      "hi": "ऑक्सिडाइज़्ड चाँदी के झुमके",
+      "craft": "Oxidised silver"
+    },
+    {
+      "id": 19,
+      "n": "Kutch Beadwork Earrings",
+      "mk": "kutch",
+      "price": 650,
+      "img": "bead-earrings",
+      "cat": "jewel",
+      "hi": "कच्छी मोतियों के झुमके",
+      "craft": "Rabari beadwork"
+    },
+    {
+      "id": 20,
+      "n": "Gota Patti Bangle Set",
+      "mk": "priya",
+      "price": 499,
+      "img": "bangles-rack",
+      "cat": "jewel",
+      "hi": "गोटा पट्टी चूड़ी सेट",
+      "craft": "Gota patti"
+    },
+    {
+      "id": 21,
+      "n": "Embroidered Thread Bangles (4)",
+      "mk": "priya",
+      "price": 399,
+      "was": 549,
+      "img": "bangle-stack",
+      "cat": "jewel",
+      "hi": "कढ़ाई वाली धागे की चूड़ियाँ",
+      "craft": "Thread work"
+    },
+    {
+      "id": 22,
+      "n": "Mirror-work Cuff Bangles",
+      "mk": "priya",
+      "price": 699,
+      "img": "bangles-wrist",
+      "cat": "jewel",
+      "hi": "शीशे के काम वाले कड़े",
+      "craft": "Mirror work"
+    },
+    {
+      "id": 23,
+      "n": "Phulkari Punjabi Jutti",
+      "mk": "patiala",
+      "price": 1299,
+      "img": "jutti",
+      "cat": "foot",
+      "hi": "फुलकारी पंजाबी जूती",
+      "craft": "Phulkari embroidery"
+    },
+    {
+      "id": 24,
+      "n": "Kolhapuri Leather Chappals",
+      "mk": "kolhapur",
+      "price": 1499,
+      "img": "kolhapuri",
+      "cat": "foot",
+      "hi": "कोल्हापुरी चप्पल",
+      "craft": "Vegetable-tanned leather"
+    },
+    {
+      "id": 25,
+      "n": "Braided Jute Sandals",
+      "mk": "kolhapur",
+      "price": 1099,
+      "was": 1399,
+      "img": "sandals",
+      "cat": "foot",
+      "hi": "जूट की सैंडल",
+      "craft": "Braided jute"
+    }
+  ]
+}
