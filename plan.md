@@ -9,7 +9,7 @@ The clickable prototype (`D:/swadesh/prototype/kalasutra-prototype.html`, live a
 | Decision | Choice |
 |---|---|
 | Stack | **Python FastAPI + PostgreSQL**; the **prototype becomes the frontend** (vanilla JS split into ES modules, calling the JSON API). The Next.js app in `D:/swadesh/pickindian` is dropped; its schema, contracts and API shapes are ported. |
-| Hosting | **Heroku via GitHub Student credits** ($13/mo × 24 months): Basic dyno ($7, never sleeps) + Postgres Essential-0 ($5). Frontend on GitHub Pages. Domain from **Name.com** (Student Pack, free 1 year; try `kalasutra.in` → `.co` → `.app`). |
+| Hosting | ~~Heroku~~ (offer could not be claimed) → **Render free web service** for the API + **Neon free Postgres** (never expires). Frontend on GitHub Pages. Domain **kalasutra.live** (Name.com, Student Pack). Render sleeps after 15 min idle → keep-warm ping. |
 | Heavy AI models | **Hosted APIs** (fal.ai cutout, Voyage embeddings) — no local ML on a 512 MB dyno. Sarvam for all language work, Claude (`claude-opus-5`) for structured/vision/reasoning. |
 | Keys | **Sarvam now; Anthropic, fal.ai, Voyage later** → every AI route must run in fixture mode today. |
 | Scope guards | Checkout simulated (no gateway). B2B = enquiry → quote only. Seed = the prototype's 25 real products + 11 makers, plus ~500 **flagged-synthetic** SKUs for pricing comparables (excluded from the shop, disclosed). |

@@ -1,0 +1,35 @@
+# Render blueprint — New → Blueprint → pick this repo. Creates the API web service.
+# Database: a free Neon Postgres (neon.tech) — paste its connection string into DATABASE_URL.
+services:
+  - type: web
+    name: kalasutra-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: alembic upgrade head && python scripts/seed.py && uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 1
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.7
+      - key: DATABASE_URL
+        sync: false            # from Neon: postgresql://user:pass@host/db?sslmode=require
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SARVAM_API_KEY
+        sync: false
+      - key: SARVAM_MODE
+        value: live
+      - key: AI_MODE
+        value: fixture
+      - key: OTP_DEV_MODE
+        value: "1"
+      - key: OTP_DEV_CODE
+        value: "123456"
+      - key: SERVE_WEB
+        value: "0"
+      - key: PUBLIC_BASE_URL
+        value: https://kalasutra-api.onrender.com
+      - key: CORS_ORIGINS
+        value: https://dhruvjoshi-git.github.io,https://kalasutra.live,https://www.kalasutra.live,http://localhost:8000,http://127.0.0.1:8000
