@@ -32,7 +32,7 @@ KalaSutra lets a maker photograph a piece, describe it by voice in their own lan
 
 ### The flow
 
-- **Home** opens on a slider of pieces "from the workshop" (maker portrait, craft, place, a line of their story), then the full catalogue. The logo reads **KalaSutra** at the top of the page and collapses to a square **K** once you scroll.
+- **Home** opens on a slider of pieces "from the workshop" (maker portrait, craft, place, a line of their story), then the full catalogue. The header shows the flame mark with **कलाSutra** at the top of the page and collapses to the mark alone once you scroll.
 - A **floating category capsule** on the left filters the grid (collapse it with ‹). The grid adapts its column count to the screen: phone, laptop, or ultrawide.
 - **Search** matches product names, Hindi names, craft, maker and place. **Sort** by newest, price, discount or name.
 - Click any tile → the **product popup**: photo, price, quantity, Add to cart / Buy now / Wishlist, then Details, Shipping & returns, Reviews (write one) and Comments & questions.
