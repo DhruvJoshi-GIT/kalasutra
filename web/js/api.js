@@ -45,5 +45,7 @@ async function loadCatalogue(){
   const cached = db.get('ks-catalogue', null); if(cached) applyCatalogue(cached);
   try{ const d = await api('/catalogue/bootstrap'); applyCatalogue(d); db.set('ks-catalogue', d); return true; }
   catch(e){ if(cached) return true;
+    // no server yet (or offline): use the catalogue snapshot shipped with the site, read-only
+    try{ const r = await fetch('catalogue.json', {cache:'no-cache'}); if(r.ok){ applyCatalogue(await r.json()); window.KS_OFFLINE = true; toast('Showing the saved catalogue — the server is not reachable'); return true; } }catch(_){}
     document.getElementById('app').innerHTML = `<div class="empty" style="margin:40px 0">Cannot reach the KalaSutra server.<br><span class="mono" style="font-size:11px">${esc(API_URL)}</span><button class="btn ink neo" onclick="location.reload()">Retry</button></div>`; return false; }
 }
