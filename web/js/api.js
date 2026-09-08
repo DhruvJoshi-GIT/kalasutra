@@ -5,6 +5,7 @@ const loggedIn = () => !!(session && session.token);
 function setSession(s){ session = s; db.set('ks-session', s); }
 
 async function api(path, {method='GET', body, headers={}} = {}){
+  if(window.KS_OFFLINE) return demoApi(path, method, body);           // server unreachable: simulate (js/demo.js)
   const h = {'Accept':'application/json', ...headers};
   if(body !== undefined && !(body instanceof FormData)){ h['Content-Type']='application/json'; body = JSON.stringify(body); }
   if(loggedIn()) h['Authorization'] = 'Bearer ' + session.token;
@@ -44,8 +45,10 @@ function applyCatalogue(d){
 async function loadCatalogue(){
   const cached = db.get('ks-catalogue', null); if(cached) applyCatalogue(cached);
   try{ const d = await api('/catalogue/bootstrap'); applyCatalogue(d); db.set('ks-catalogue', d); return true; }
-  catch(e){ if(cached) return true;
-    // no server yet (or offline): use the catalogue snapshot shipped with the site, read-only
-    try{ const r = await fetch('catalogue.json', {cache:'no-cache'}); if(r.ok){ applyCatalogue(await r.json()); window.KS_OFFLINE = true; toast('Showing the saved catalogue — the server is not reachable'); return true; } }catch(_){}
+  catch(e){
+    // no server yet (or offline): demo mode — cached or bundled catalogue, and js/demo.js answers the API calls locally
+    window.KS_OFFLINE = true; if(session && session.token && session.token!=='demo') setSession(null);
+    if(cached){ toast('Demo mode — the server is not reachable'); return true; }
+    try{ const r = await fetch('catalogue.json', {cache:'no-cache'}); if(r.ok){ applyCatalogue(await r.json()); toast('Demo mode — the server is not reachable'); return true; } }catch(_){}
     document.getElementById('app').innerHTML = `<div class="empty" style="margin:40px 0">Cannot reach the KalaSutra server.<br><span class="mono" style="font-size:11px">${esc(API_URL)}</span><button class="btn ink neo" onclick="location.reload()">Retry</button></div>`; return false; }
 }
