@@ -2,38 +2,37 @@
 
 > ## RESUME HERE — read this block first, then act as if you had done all of it yourself
 >
-> You are the engineer-designer on **Dhruv's hackathon entry**: an AI-driven marketplace + seller app for marginalised Indian artisans (problem statement in `plan.md`). You work in **`D:/swadesh/`** on Windows 11; the app is the user's private repo cloned at `D:/swadesh/pickindian` (Next.js 16, Prisma 5, PostgreSQL 17 portable at `D:/swadesh/tools/pgsql`, Node 24 at `C:/Program Files/nodejs` — add it to `PATH` in Git Bash: `export PATH="/c/Program Files/nodejs:$PATH"`). Start Postgres and `npm run dev` with the two commands under **How to run** if http://localhost:3000 does not answer.
+> You are the engineer-designer on **Dhruv's hackathon entry**: an AI-driven marketplace + seller app for marginalised Indian artisans (problem statement in `plan.md`). You work in **`D:/swadesh/`** on Windows 11. The build is a **Python FastAPI + PostgreSQL backend in `backend/`** and a **plain-JS frontend in `web/`** (the approved prototype split into classic `<script>` files). Local stack: portable PostgreSQL 17 at `D:/swadesh/tools/pgsql` (data `D:/swadesh/pgdata`), backend venv at `backend/.venv`; start both with the commands under **How to run** if http://127.0.0.1:8000/api/health does not answer. The old Next.js app in `D:/swadesh/pickindian` is dropped and git-ignored (reference only). Node 24 exists at `C:/Program Files/nodejs` (used only for `node -e` syntax checks).
 >
 > **Standing rules from the user (never break these):**
-> 1. **Never write to agent memory.** This folder is the only knowledge base; log every significant step here.
-> 2. **Never publish Artifacts.** Show every design or page as a local HTML file or on localhost.
-> 3. **Commit and push only when the user explicitly says "publish".** Show every change as a local file first (they review at `D:/swadesh/prototype/`), then push on their word. The public repo is `https://github.com/DhruvJoshi-GIT/kalasutra` (root = `D:/swadesh`, branch `main`); commit as the user only (`git config` is set locally, no co-author trailer). Never push to the `pickindian` remote.
-> 4. Build order the user chose: **website → AI features → Android app.** Sarvam AI is the language provider (1,000 free credits, fixtures mode during UI work); Claude does structured JSON, vision QC and pricing reasoning.
-> 5. Design: direction **B "Karkhana" — ink on paper** (user: "absolutely love the design"), with button/hover/press animations and the light↔dark circle-reveal transition taken from the user's own repo `DhruvJoshi-GIT/PrithviNet` (behaviour only, not its visuals). No radius, no soft shadows, one marigold accent.
+> 1. **Never write to agent memory.** This folder is the only knowledge base; log every significant step here, and record decisions in `decisions.md`.
+> 2. **Never publish Artifacts.** Show every design or page as a local HTML file or on localhost / the live site.
+> 3. **Git**: the public repo is `https://github.com/DhruvJoshi-GIT/kalasutra` (root = `D:/swadesh`, branch `main`); commit as the user only (`git config` is set locally, no co-author trailer). Since 2026-09-08 the user wants **every change committed and pushed as it is made** ("make the changes simultaneously to the GitHub repo as well"); before that the rule was "push only on 'publish'". Never push to the `pickindian` remote. Nothing in `tools/ pgdata/ pickindian/ scratch/ *.log .env` is ever committed.
+> 4. Build order the user chose: **website → AI features → Android app.** Sarvam AI is the language provider (1,000 free credits, fixture mode during UI work); Claude does structured JSON, vision QC and pricing reasoning; fal.ai / Voyage for cutout / embeddings — all behind fixture / record / live modes.
+> 5. Design: direction **B "Karkhana" — ink on paper**, minimal variant (photo-first tiles, hairlines, one marigold accent, rounded corners), with the PrithviNet interaction language (hard offset shadows that lift on hover and press flat, circle-reveal theme toggle). **Brand (2026-09-08)**: the flame-क mark (`web/img/logo-mark.png`) and the bilingual wordmark **कलाSutra** (Hindi first half, English second) everywhere the name appears; header shows mark + name at the top of the page and collapses to the mark on scroll.
 >
-> **Where you are right now (2026-09-05):** the user approved the prototype; round 1 (3 per row + spacing) and round 2 (translucent hero over a photo slider, fully fluid/responsive layout, real product photos from `D:/swadesh/photo/` cropped into `prototype/img/`) are done and screenshot-verified at phone / 1080p / ultrawide. **Then (v2 rebuild, 2026-09-05):** the user specified the full site flow and the prototype was rewritten around it — one-way hero, floating collapsible category capsule (4/5 tiles per row), product modal with details/returns/reviews/comments, functional cart + inline checkout, account with address/payment/orders and no demo data, wishlist, rounded corners everywhere, no bottom screen map. See the changelog entry. v2.1 added the high-res photos from `photo/files/`, the width-adaptive grid and the Top/Hero button; v2.2 fixed the seller login on ultrawide and made wishlist rows open the product popup. v2.3 added the five review-driven improvements (featured story tile, rhythm tiles, richer captions with maker portraits and craft word, single grid + sort, ultrawide sizing). v2.4 removed the hero page: the site opens on the shop, the featured tile is an 8-product slider, and the logo shows "KalaSutra" at the top and collapses to "K" on scroll. **Phases 0–1 are done, verified locally and pushed. Waiting on the user for: (a) Name.com DNS records for kalasutra.live (then enforce HTTPS), (b) Neon + Render accounts (then Blueprint deploy). Next build step: phase 2 — artisan side (onboarding, products CRUD, uploads into Postgres, artisan orders), then the AI pipelines in fixture mode, then go live per key.** Previously: the whole live site already renders in direction B; the user then hand-drew their own site vision in Excalidraw and you turned it into a clickable prototype at **`D:/swadesh/prototype/kalasutra-prototype.html`** (ten screens, hash-routed, working upload checklist). **You are waiting for the user to open that file and react.** Two guesses in it need confirming: the **S** icon = "Sell / support", the **↑** diamond = back to top.
+> **Where you are right now (2026-09-08):** the site is **live at http://kalasutra.live** (GitHub Pages, custom domain, DNS done by the user at Name.com; root `index.html` redirects to `web/`). HTTPS is **not enforced yet** because GitHub had not issued the certificate at the last check — flip `https_enforced` via the Pages API (`PUT /repos/DhruvJoshi-GIT/kalasutra/pages {"https_enforced":true}` with the stored git credential) once it exists; if it never appears, remove and re-add the custom domain. **The backend is not deployed**: Render + Neon accounts are still to be created by the user (blueprint `render.yaml` at repo root). Until then the public site runs in **demo mode** (`web/js/demo.js`): catalogue from `web/catalogue.json`, and sign-in / cart / orders / reviews simulated in the browser — the user has seen and accepted this. The user also wants the old **Vercel** deployment deleted (only they can, in the Vercel dashboard; `vercel.json` is already gone). Phases 0–1 (backend + buyer wiring) are done; **phase 2 (artisan side: onboarding, products CRUD, uploads into Postgres, artisan orders) is the next build step**, then the AI pipelines in fixture mode, then go live per key.
 >
-> **Your very next move, in order:** (1) take the user's feedback on the prototype; (2) on go-ahead, restructure the live site to the prototype's layout (persistent left category sidebar, P/C/W/S icon cluster with wishlist panel + support box, hero→home scroll, breadcrumb bar, product page with Related + right column, seller upload gated by a checklist, artist portfolio, seller login with illustration, order-confirmed, profile); (3) second pass on pages still on the old layout; (4) phase 2 AI — needs `ANTHROPIC_API_KEY` and `SARVAM_API_KEY` in `D:/swadesh/pickindian/.env`.
+> **Your very next move, in order:** (1) if the user says DNS/HTTPS or Render is done, verify it (`curl -sI https://kalasutra.live/web/`, `GET /api/health` on the Render host) and update the status board; (2) otherwise start **phase 2** from `plan.md` §D/§H — artisan profile + products CRUD + uploads + `#seller` / `#upload` wired to the API (keep the demo-mode fallbacks working); (3) then phase 4 (AI in fixture mode). Regenerate `web/catalogue.json` after any seed change.
 >
-> Read the rest of this file, then `decisions.md` (why things are the way they are) and `findings.md` (repo audit) before touching code. Talk to the user plainly and briefly; they review by clicking through, not by reading reports.
+> Read the rest of this file, then `decisions.md` (why things are the way they are), `api-notes.md` (verified shapes) and `plan.md` before touching code. Talk to the user plainly and briefly; they review by clicking through on the live site and their phone, not by reading reports.
 
-> **If you are a fresh agent: read this file top to bottom, then `findings.md` and `decisions.md`. Do not write anything to agent memory — this folder is the only knowledge base. Do not publish Artifacts — everything is reviewed as local HTML or on localhost. Update this file after every significant execution.**
+> **If you are a fresh agent: read this file top to bottom, then `decisions.md`, `api-notes.md` and `plan.md` (`findings.md` is the audit of the dropped Next.js app). Do not write anything to agent memory — this folder is the only knowledge base. Do not publish Artifacts. Update this file after every significant execution and push.**
 
 ## What this is
 
-Hackathon build: *AI-Driven Market Linkage and Smart Cataloging Mobile Application for Marginalized Artisans*. Base code is the user's private repo `InfinitelyAsymptotic/pickindian` (Next.js 16 + Prisma/Postgres marketplace), cloned at `D:/swadesh/pickindian` on branch `develop`. Full plan in `plan.md`; repo audit in `findings.md`; rationale for every decision in `decisions.md`; endpoint shapes in `api-notes.md`.
+Hackathon build: *AI-Driven Market Linkage and Smart Cataloging Mobile Application for Marginalized Artisans*. Real build: FastAPI + Postgres in `backend/`, plain-JS frontend in `web/` (from the approved prototype), live at http://kalasutra.live. The user's private Next.js repo `InfinitelyAsymptotic/pickindian` (clone at `D:/swadesh/pickindian`) was the first base and is now reference only. Full plan in `plan.md`; repo audit in `findings.md`; rationale for every decision in `decisions.md`; endpoint shapes in `api-notes.md`.
 
 **Build order (user's call): 1. website → 2. key AI features → 3. Android app.**
 
 ## Current phase
 
-**Phase 1c — website design, awaiting the user's review of the hand-drawn-vision prototype.** (2026-09-04 ~19:45)
+**Between phase 1 and phase 2 — site live on the domain in demo mode; backend not yet deployed.** (2026-09-08)
 
 State of play:
-- The live site (http://localhost:3000) runs in design direction B ("Karkhana", ink on paper) with PrithviNet's interaction language. Every page returns 200; `tsc` and lint are clean.
-- The user then hand-drew their own site vision (Excalidraw). It has been turned into a clickable local prototype: `D:/swadesh/prototype/kalasutra-prototype.html`. **The user has not reviewed it yet.**
-- Nothing has been committed to git (user has never asked for a commit).
-
+- http://kalasutra.live → `web/` on GitHub Pages: brand logo, bilingual wordmark, phone bottom bar with a working Categories sheet, demo-mode sign-in / cart / orders when the API is unreachable.
+- Backend (`backend/`, FastAPI + Postgres) runs locally on :8000 with 11 tests green; Render + Neon deploy waits on the user's accounts.
+- Everything is committed and pushed (`main`).
 ## Status board
 
 | Item | State |
@@ -78,20 +77,16 @@ State of play:
 
 ## What works end-to-end today
 
-1. Start Postgres + `npm run dev`, open http://localhost:3000 — storefront with 19 seeded products, new design, theme toggle bottom-right.
-2. Log in as an artisan (`priya@kalasetu.in` / `password123`) → header shows **My shop** → `/artisan` dashboard: three tiles, numbers, "needs your action" with a working **Accept**.
-3. `/artisan/products/new` — upload photos (stored under `D:/swadesh/pickindian/storage`), fill the numbered sections, publish → product appears in the shop under her brand and origin.
-4. `/artisan/orders` — change status, add tracking. `/artisan/profile` — shop details, languages, payout, KYC uploads.
-5. `/sell` — a new visitor creates an artisan account in one form.
-6. `D:/swadesh/prototype/kalasutra-prototype.html` — the hand-drawn vision as ten clickable screens (see below).
-
+1. **Live site** http://kalasutra.live (redirects to `/web/`): browse 25 products / 7 categories / 11 makers, search, sort, wishlist, product popup with reviews and comments, cart, checkout, account, maker pages, theme toggle; phone layout with bottom bar and Categories sheet.
+2. **Demo mode** (no API): seller login with `9811000001` (Priya) / `9811000002` (Meera) + code `123456` → `#seller` shows their listings → `#upload` demo flow; buyer `demo@kalasutra.in` / `password123` or any new email → address → UPI/card → order → confirmed → Your orders.
+3. **Local full stack**: Postgres + uvicorn on :8000 serving `web/` and the API (`/api/docs`); the same flows hit the real database; `pytest` green.
+4. `D:/swadesh/prototype/kalasutra-prototype.html` — the frozen approved prototype (reference).
 ## Exact next action
 
-1. **Wait for the user's review of the prototype.** Two interpretations to confirm with them: the **S** icon = "Sell / support" (their arrow pointed it at "Contact"); the diamond **↑** at top-right = back-to-top.
-2. On their go-ahead, restructure the live site to the prototype's information architecture: persistent left category sidebar, P/C/W/S icon cluster with wishlist panel + support box, hero → home scroll, breadcrumb bar on listing, product page with Related + right column, seller upload with the gated checklist, artist portfolio page, seller login with the illustration, order-confirmed page, profile page.
-3. Then the second pass on the pages still on the old layout (list above).
-4. Then **phase 2 (AI)**: `src/lib/ai/sarvam.ts` wrapper with fixtures mode → voice cataloguer → studio → pricing. Needs `ANTHROPIC_API_KEY` and `SARVAM_API_KEY` in `.env`.
-
+1. **User-side blockers** (check when they say so): Name.com DNS ✅ done · GitHub Pages HTTPS certificate ⬜ (watcher script `scratch/https_watch.sh` flips enforcement) · Render + Neon accounts ⬜ · delete the Vercel project ⬜ · Anthropic / Voyage / fal keys ⬜.
+2. **Phase 2 — artisan side** (`plan.md` §D, §H): `POST/GET/PUT /artisan/profile`, `GET/POST/PATCH/DELETE /artisan/products`, `POST /uploads` + `GET /files/{key}` (Postgres bytea), `GET/PATCH /artisan/orders`; wire `#seller`, `#upload`, `#artist/<slug>` to them, keeping `demo.js` answers for the same routes so the public site still demos without the server.
+3. **Phase 4 — AI in fixture mode**: `provider.py`, `job` table + polling, the three pipelines with `default.json` fixtures, `audio.js`, synthetic catalogue + kNN; `verify_sarvam.py` once with the real key.
+4. Deploy (phase 3) as soon as the user has Render + Neon: Blueprint → set `DATABASE_URL`, `SARVAM_API_KEY`, `JWT_SECRET` → seed → `GET /api/health` → the live site leaves demo mode by itself.
 ## How to run
 
 ```powershell
@@ -135,32 +130,28 @@ Logins (all `password123`): buyer `demo@pickindian.com` · artisans `priya@kalas
 - Shared chrome: square logo top-left, search bar, icon cluster **P C W S**, ↑ button, left category sidebar with three filter dots.
 - Prototype: `D:/swadesh/prototype/kalasutra-prototype.html` (+ `prototype/img/*.jpg`, the cropped product photos; `photo/1.png`, `photo/2.png` are the user's source collages) — hash-routed, ink-on-paper system, PrithviNet interactions, working upload checklist (Upload → Describe → price → Submit unlocks), EN⇄हिन्दी story toggle, theme toggle, screen-map bar at the bottom. Verified: every screen template renders (node dry run), no syntax errors.
 
-## Env vars
+## Env vars (`backend/.env`, see `backend/.env.example`)
 
-| Var | Where | Status |
-|---|---|---|
-| `DATABASE_URL` | `.env` | ✅ `postgresql://postgres:postgres@localhost:5432/pickindian` |
-| `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `AUTH_TRUST_HOST` | `.env` | ✅ |
-| `GOOGLE_CLIENT_ID/SECRET` | `.env` | empty — Google login only |
-| `ANTHROPIC_API_KEY` | `.env` | ⬜ user to provide before phase 2 |
-| `SARVAM_API_KEY` | `.env` | ⬜ user to provide before phase 2 (1,000 free credits) |
-| `SARVAM_FIXTURES` | `.env` | `1` — replay canned responses during UI work |
-| `VOYAGE_API_KEY`, `FAL_KEY` | `.env` | ⬜ optional (embeddings, background matting) |
-| `STORAGE_DIR` | `.env` | unset → defaults to `<repo>/storage` |
-
+| Var | Status |
+|---|---|
+| `DATABASE_URL` | ✅ local `postgresql://postgres:postgres@localhost:5432/kalasutra` (tests use `kalasutra_test`) |
+| `JWT_SECRET` | ✅ local value |
+| `OTP_DEV_MODE=1`, `OTP_DEV_CODE=123456` | ✅ |
+| `CORS_ORIGINS` | localhost + `https://dhruvjoshi-git.github.io` + `https://kalasutra.live` |
+| `AI_MODE` | `fixture` |
+| `SARVAM_API_KEY` | ✅ pasted by the user (not committed) |
+| `ANTHROPIC_API_KEY`, `VOYAGE_API_KEY`, `FAL_KEY` | ⬜ user to provide (every route runs in fixture mode without them) |
+| `ADMIN_KEY`, `SERVE_WEB` | local only |
 ## Sarvam credits remaining
 
 1,000 (none used yet).
 
 ## Open questions for the user
 
-- Prototype review: does it match the drawing? Confirm **S** = Sell/support and **↑** = back to top.
-- Should the live site be restructured to the hand-drawn IA now (before the AI phase)?
-- App name — `KalaSutra` is a placeholder (used in seed emails `@kalasetu.in`).
-- API keys: Anthropic, Sarvam — needed before phase 2.
-- Git: commit on `develop` or a `feat/artisan-portal` branch? Nothing committed yet.
-- Buyer↔seller comms: the problem statement never mentions it (only "connect directly with larger B2B buyers"); recommendation logged — enquiry → quote as core, voice-reply thread and SMS/WhatsApp notifications as later differentiators.
-
+- Render + Neon: when created, paste `DATABASE_URL` into Render and click New → Blueprint on this repo.
+- Vercel: delete the old project in the Vercel dashboard (Project → Settings → Delete).
+- API keys: Anthropic, Voyage, fal — needed only to leave fixture mode.
+- Buyer↔seller comms: recommendation stands — enquiry → quote as core; voice-reply thread and SMS/WhatsApp notifications as later differentiators.
 ## Changelog (newest first)
 
 - **2026-09-08 (demo mode — seller + buyer flows work without the server, pushed)** — User: "making a seller account … the demo thingy does not open up" on mobile and desktop. Cause: on kalasutra.live there is no API yet (Render not deployed), so `POST /auth/otp/request` failed with "Cannot reach the KalaSutra server" and the OTP step never appeared. Fix: **`web/js/demo.js`** — when the bootstrap fetch fails, `window.KS_OFFLINE=true` and `api()` routes every call to `demoApi()`, which simulates the backend locally (state in `localStorage['ks-demo']`): OTP request/verify (code `123456`; `98110000NN` maps to the Nth maker in the catalogue snapshot, other numbers get `needsProfile`), email login/register (demo buyer `demo@kalasutra.in` / `password123`, any other email creates a buyer), `/me`, cart + wishlist mirrors, addresses (6-digit PIN), payment labels (UPI id / card → `•••• 1234`), orders (server-side price rule, free shipping ≥ ₹999, `KS<base36>` numbers), reviews (one per name) and comments, enquiries; anything else throws "Not available in demo mode". A non-demo token is dropped when entering demo mode. Verified headlessly with `?api=` pointed at a dead port: Priya's OTP login → `#seller` shows her 6 listings (1400 px and 390 px), buyer sign-in → address → UPI → order → confirmed page. **Login screen on small screens** was two squeezed columns (inline grid on `.box.login` beat the stacking rule): new `@media (max-width:900px)` rules stack it, form first, illustration folded beneath (SVG hidden). Harness gained `api=`, `reset=1` and `js=` params (`scratch/shots/_shot.html`). When Render goes live nothing changes: the real API answers and demo mode never engages.

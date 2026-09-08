@@ -55,7 +55,9 @@ Base `/api`. Envelope `{data}` on success; errors `{detail}` (HTTPException) or 
 | `GET/POST /products/{id}/comments {text,name?}` · `POST /artisan/comments/{id}/answer` | |
 | `POST /enquiries {productId, quantity, targetPrice?, message?}` · `GET /enquiries` · `GET /artisan/enquiries` · `PATCH /artisan/enquiries/{id} {status, quotedPrice?}` | |
 
-Frontend contract: `web/config.js` sets `window.KS_CONFIG.API_URL` (`?api=` overrides, stored in `ks-api`). Local storage keys: `ks-session` `{token,user}`, `ks-cart`, `ks-wish`, `ks-user`, `ks-catalogue` (bootstrap cache), `ks-side`, `ks-theme`, `ks-api`.
+Frontend contract: `web/config.js` sets `window.KS_CONFIG.API_URL` (`kalasutra.live` → `https://api.kalasutra.live/api`; `github.io` → `https://kalasutra-api.onrender.com/api`; else same origin; `?api=` overrides, stored in `ks-api`). Local storage keys: `ks-session` `{token,user}`, `ks-cart`, `ks-wish`, `ks-user`, `ks-catalogue` (bootstrap cache), `ks-demo` (demo-mode store), `ks-side`, `ks-theme`, `ks-api`.
+
+**Demo mode (2026-09-08)** — if `GET /catalogue/bootstrap` fails, `window.KS_OFFLINE=true`, the catalogue comes from the cache or `web/catalogue.json` (a committed snapshot of the bootstrap `data`; regenerate after seed changes), and `api()` routes every call to `demoApi()` in `web/js/demo.js`, which mirrors the shapes above for: `/auth/otp/request` (`devCode` 123456), `/auth/otp/verify` (`98110000NN` → Nth maker in the snapshot, else `needsProfile:true`), `/auth/login|register` (demo buyer `demo@kalasutra.in` / `password123`), `/me`, `/cart*`, `/wishlist*`, `/addresses`, `/payment-methods`, `/orders`, `/products/{id}/reviews|comments`, `POST /enquiries`. Unknown routes throw "Not available in demo mode". A non-demo token is cleared when demo mode engages. Order shape used by the screens: `{no, date, status, items:[{id,n,qty,price}], subtotal, shipping, total, addr:{name,phone,line,city,state,pin}, pay:{type:'upi'|'card', label}}`.
 
 ## Sarvam — key available since 2026-09-05 (in backend/.env)
 

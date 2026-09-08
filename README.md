@@ -9,7 +9,9 @@ KalaSutra lets a maker photograph a piece, describe it by voice in their own lan
 
 | Path | What it is |
 |---|---|
-| `prototype/kalasutra-prototype.html` | The **clickable prototype** of the whole site: one HTML file, no build step. Open it in a browser. |
+| `web/` | **The site** (what https://kalasutra.live serves): `index.html`, `css/system.css`, `js/*.js` (plain scripts, no build step), `img/` (product photos + the logo mark), `catalogue.json` (demo-mode snapshot). |
+| `backend/` | **The API**: Python FastAPI + PostgreSQL (SQLAlchemy 2, Alembic), seed data, tests. `render.yaml` at the root deploys it to Render. |
+| `prototype/kalasutra-prototype.html` | The approved **clickable prototype** the site was built from: one HTML file, no build step. Kept as reference. |
 | `prototype/img/` | Product photos used by the prototype (web-sized). |
 | `prototype/archive/` | Earlier prototype versions, kept for reference. |
 | `photo/` | Original product photos (`photo/files/`) and the source collages they came from. |
@@ -20,7 +22,7 @@ KalaSutra lets a maker photograph a piece, describe it by voice in their own lan
 | `api-notes.md` | Endpoint shapes for the artisan APIs. |
 | `progress.md` | The running build log / hand-off file. Newest changes are at the top of its changelog. |
 
-The real product is being built from this prototype: a Python FastAPI + PostgreSQL backend under `backend/` and the prototype split into modules under `web/` (see *Architecture* below and `plan.md`). Those folders appear here as the phases land.
+**Live site: https://kalasutra.live** (GitHub Pages). Until the API is deployed the site runs in *demo mode*: the catalogue comes from a bundled snapshot and sign-in, cart, orders, reviews and comments are simulated in your browser (`web/js/demo.js`). Demo logins: maker `9811000001` (code `123456`), buyer `demo@kalasutra.in` / `password123`.
 
 ## Try the prototype
 
@@ -42,6 +44,8 @@ The real product is being built from this prototype: a Python FastAPI + PostgreS
 
 ## Design system
 
+Brand: the flame mark containing the Devanagari **क** and the bilingual wordmark **कलाSutra** (Hindi first half, English second); the header shows both at the top of the page and collapses to the mark on scroll.
+
 Direction **B — "Karkhana", ink on paper**, in its minimal form: paper `#F6F5F0`, ink `#111`, one marigold accent `#E2A100` reserved for the next action; rounded corners; hairline rules; tiles are photo-first with a quiet three-line caption (name · craft and place · price); hard offset shadows that lift on hover and press flat on click. Phones get a bottom navigation bar and a categories sheet. Type: Archivo (display + body), IBM Plex Mono (labels), Noto Sans Devanagari (Hindi).
 
 ## The AI features (what the real build adds)
@@ -58,9 +62,9 @@ Provider split: **Sarvam AI** owns language (speech, translation, speech synthes
 
 ## Architecture (see `plan.md`)
 
-- **Frontend**: this prototype, split into ES modules under `web/`, served by GitHub Pages on a custom domain; guest cart and wishlist stay local and merge on login.
+- **Frontend**: the prototype split into plain `<script>` modules under `web/`, served by GitHub Pages on kalasutra.live (root `index.html` redirects to `web/`); guest cart and wishlist stay local and merge on login; demo mode when the API is unreachable.
 - **Backend**: Python **FastAPI + PostgreSQL** (SQLAlchemy 2, Alembic), JWT auth with buyer email login and artisan phone OTP, orders, reviews, comments, B2B enquiries, artisan portal, uploads stored in Postgres, background jobs for the AI pipelines.
-- **Hosting**: Heroku (dyno + Postgres) for the API, GitHub Pages for the site.
+- **Hosting**: Render (free web service, `render.yaml`) + Neon Postgres for the API at `api.kalasutra.live`; GitHub Pages for the site; domain from Name.com.
 - **Mobile**: Expo Android app later, on the same API.
 
 Build order: backend skeleton → frontend wiring → artisan side → deploy → AI in fixture mode → go live per key → rehearsal.
