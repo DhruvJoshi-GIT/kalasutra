@@ -6,7 +6,7 @@ function shopArea(){
   return `${home ? featured() : ''}
   <div class="sec"><h1>${state.q ? `Results for “${esc(state.q)}”` : catName(state.cat)}</h1><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span class="label muted">${list.length} listing${list.length===1?'':'s'}</span>${sortSel()}</div></div>
   ${list.length ? `<div class="grid shop">${tiles(list)}</div>` : `<div class="empty" style="margin:12px 0">Nothing matches. Try another word or category.</div>`}
-  <div class="sec" style="border-top:2px solid var(--fg);padding-top:14px"><span class="label muted">© KalaSutra · UPI · Cards · Ships across India</span><a class="label" href="#login" style="text-decoration:underline">Sell with us →</a></div>`;
+  <div class="sec" style="border-top:2px solid var(--fg);padding-top:14px"><span class="label muted">© <span class="hi">कला</span>Sutra · UPI · Cards · Ships across India</span><a class="label" href="#login" style="text-decoration:underline">Sell with us →</a></div>`;
 }
 S.home = () => `<div id="shopArea">${shopArea()}</div>`;
 S.shop = S.home;
@@ -81,7 +81,7 @@ S.confirmed = (no) => { const o = orders.find(x=>x.no===no) || orders[0]; return
 </div>`; };
 
 S.account = (open='') => {
-  if(!loggedIn()) return `<div class="sec"><h1>Your account</h1></div><div class="split"><div>${authBox('Sign in or create an account')}</div><div class="box" style="padding:20px"><div class="label muted">Makers</div><p style="margin:8px 0 12px;font-size:14px">Sell your work on KalaSutra: log in with your phone number.</p><a class="btn acc neo" href="#login/seller">Seller login →</a></div></div>`;
+  if(!loggedIn()) return `<div class="sec"><h1>Your account</h1></div><div class="split"><div>${authBox('Sign in or create an account')}</div><div class="box" style="padding:20px"><div class="label muted">Makers</div><p style="margin:8px 0 12px;font-size:14px">Sell your work on <span class="hi">कला</span>Sutra: log in with your phone number.</p><a class="btn acc neo" href="#login/seller">Seller login →</a></div></div>`;
   const ini = (user.name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || '?';
   const acc = (key,title,sub,body) => `<div class="acc-item ${open===key?'on':''}" id="acc-${key}"><div class="hd" onclick="this.parentElement.classList.toggle('on')"><div><div class="display" style="font-size:20px">${title}</div><div class="mono muted" style="font-size:12px;margin-top:4px">${sub}</div></div><span style="font-size:22px">›</span></div><div class="bd">${body}</div></div>`;
   return `
