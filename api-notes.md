@@ -62,3 +62,28 @@ Frontend contract: `web/config.js` sets `window.KS_CONFIG.API_URL` (`kalasutra.l
 ## Sarvam — key available since 2026-09-05 (in backend/.env)
 
 The endpoint shapes above are still UNVERIFIED; `scripts/verify_sarvam.py` (to be written in the AI phase) must run before relying on them.
+
+## Photo studio + seller routes (2026-09-09) — verified by `tests/test_studio.py` in fixture mode
+
+| Route | Notes |
+|---|---|
+| `GET /ai/studio` | `{server, provider, mode, backdrops[]}` — `server` true only when the fal.ai mode is live/record (i.e. `FAL_KEY` set); the frontend stores it as `window.KS_STUDIO` |
+| `POST /ai/cutout` (seller, multipart `file`) | → `image/png` with alpha, cropped to content; header `X-Studio-Mode: fal|fixture`; 422 for non-images / nothing found, 413 > 20 MB |
+| `POST /ai/enhance` (seller, multipart `file`, form `backdrop`, `shadow`) | cutout + composite on the server → `{url, key, mode, backdrop}`; the JPEG is a `stored_file` of kind `enhanced` |
+| `POST /uploads` (seller, multipart `file`, form `kind=images|audio|kyc`) | images are re-encoded (EXIF stripped, ≤2048 px) → `{key, url, contentType, size}` |
+| `GET /files/{key}` | bytes with a one-year cache header; `kyc` files are owner/admin only (403) |
+| `GET /artisan/products` | the seller's own active listings as ProductCards |
+| `POST /artisan/products {name, nameHi?, price, categorySlug, craft?, description?, technique?, materials?, size?, care?, imageData? (data:image/… URL) | imageUrl?, stock?}` | → 201 ProductCard; details fall back to the category defaults; `aiStatus` AI_ENHANCED when the photo came from the studio |
+| `DELETE /artisan/products/{id}` | deletes, or deactivates if it was ever ordered; 404 for someone else's product |
+
+File URLs are `PUBLIC_BASE_URL + /api/files/<key>` (relative when `PUBLIC_BASE_URL` is empty, as in local dev).
+
+**Demo mode additions** (`web/js/demo.js`): `GET /ai/studio` → `{server:false, provider:'browser'}`; `GET/POST /artisan/products` and `DELETE /artisan/products/{id}` keep listings in `localStorage['ks-demo'].listings` (ids from 1000) and they are merged into `P` on load.
+
+## fal.ai BiRefNet — UNVERIFIED until the first live call
+
+`POST https://fal.run/fal-ai/birefnet`, header `Authorization: Key <FAL_KEY>`, JSON `{image_url: <data URI or URL>, model: "General Use (Light)", operating_resolution: "1024x1024", output_format: "png", refine_foreground: true}` → `{image: {url, content_type, width, height}}`. Implemented in `backend/app/services/ai/fal.py`. On the first live run, confirm the field names against https://fal.ai/models/fal-ai/birefnet/api and update this note.
+
+## Browser model — verified in headless Edge 2026-09-09
+
+`import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/+esm')` → `removeBackground(blob, {model:'isnet_quint8', progress})`. Downloads ~44 MB (model) + 12 MB (onnx wasm) from `staticimgly.com` the first time (Cache API keeps them), then ≈ 25 s per photo single-threaded on a laptop. Multi-threading would need cross-origin isolation headers, which GitHub Pages cannot set.

@@ -9,8 +9,8 @@ KalaSutra lets a maker photograph a piece, describe it by voice in their own lan
 
 | Path | What it is |
 |---|---|
-| `web/` | **The site** (what https://kalasutra.live serves): `index.html`, `css/system.css`, `js/*.js` (plain scripts, no build step), `img/` (product photos + the logo mark), `catalogue.json` (demo-mode snapshot). |
-| `backend/` | **The API**: Python FastAPI + PostgreSQL (SQLAlchemy 2, Alembic), seed data, tests. `render.yaml` at the root deploys it to Render. |
+| `web/` | **The site** (what https://kalasutra.live serves): `index.html`, `css/system.css`, `js/*.js` (plain scripts, no build step; `studio.js` is the photo studio), `img/` (product photos, `img/t/` thumbnails, the seven banners, the logo mark), `catalogue.json` (demo-mode snapshot, regenerate with `python backend/scripts/snapshot.py`). |
+| `backend/` | **The API**: Python FastAPI + PostgreSQL (SQLAlchemy 2, Alembic), seed data (`data/seed_products.json`: 82 listings, 14 makers), the photo-studio gateway (`app/services/ai/`), tests. `render.yaml` at the root deploys it to Render. |
 | `prototype/kalasutra-prototype.html` | The approved **clickable prototype** the site was built from: one HTML file, no build step. Kept as reference. |
 | `prototype/img/` | Product photos used by the prototype (web-sized). |
 | `prototype/archive/` | Earlier prototype versions, kept for reference. |
@@ -54,16 +54,20 @@ The prototype's seller flow already shows the shape of the three AI features; th
 
 | Feature | What the maker does | What happens behind it |
 |---|---|---|
-| **Image studio** | Uploads one phone photo | Background cutout (fal.ai), composite onto the paper backdrop with a contact shadow (Pillow), then a vision QC pass (Claude) that returns retake coaching **in Hindi** — "step back so the whole saree is visible" — instead of silently failing. |
+| **Photo studio** ✅ built | Takes one phone photo of the piece on any background | Cutout on the KalaSutra server (fal.ai BiRefNet, needs `FAL_KEY`) or, with no key, an on-device model in the browser (nothing uploaded); edges cleaned; the piece is placed on a backdrop of the maker's choice — paper, plain white, warm studio, terracotta wall, indigo block print, haveli sandstone, marigold, ink — with a contact shadow; then it becomes the listing photo. A vision QC pass (Claude) with retake coaching in Hindi is the next step. |
 | **Voice cataloguer** | Speaks for ~20 s in their own language | Sarvam Saarika (native transcript) + Saaras (English), Claude turns it into a 14-field listing (name, description, bullets, materials, technique, size, care, category, tags, SEO, GI tag, HSN), Sarvam Mayura translates the copy to Hindi, Sarvam Bulbul **reads it back** so a low-literacy maker can confirm without reading. |
 | **Pricing assistant** | Enters material cost and hours | Voyage embeddings → 12 nearest comparable pieces (kNN in Python), a state-wise wage-floor cost model, then Claude reasons to a **floor / fair / premium** band with a spoken Hindi rationale. Comparables are shown, never a bare number. Synthetic catalogue rows used for comparables are flagged and disclosed. |
 
 Provider split: **Sarvam AI** owns language (speech, translation, speech synthesis, Indian model, 1,000 free credits with a content-hash cache so nothing is billed twice), **Claude** owns structure, vision and reasoning, hosted models for cutout and embeddings.
 
+## Photo studio: the one step left
+
+The studio already works on the live site with **no key** (the browser downloads a 45 MB model once and cuts the photo out on the device). To move the cutout to the server, paste a fal.ai key into **`FAL_KEY`** — as a Render environment variable (declared in `render.yaml`) or in `backend/.env` locally. That is the whole step: `GET /api/ai/studio` then reports `server: true` and the site uses the server automatically.
+
 ## Architecture (see `plan.md`)
 
 - **Frontend**: the prototype split into plain `<script>` modules under `web/`, served by GitHub Pages on kalasutra.live (root `index.html` redirects to `web/`); guest cart and wishlist stay local and merge on login; demo mode when the API is unreachable.
-- **Backend**: Python **FastAPI + PostgreSQL** (SQLAlchemy 2, Alembic), JWT auth with buyer email login and artisan phone OTP, orders, reviews, comments, B2B enquiries, artisan portal, uploads stored in Postgres, background jobs for the AI pipelines.
+- **Backend**: Python **FastAPI + PostgreSQL** (SQLAlchemy 2, Alembic), JWT auth with buyer email login and artisan phone OTP, orders, reviews, comments, B2B enquiries, seller uploads and listings (`/api/uploads`, `/api/files/{key}`, `/api/artisan/products`), the photo-studio gateway (`/api/ai/studio`, `/api/ai/cutout`, `/api/ai/enhance`), background jobs for the remaining AI pipelines.
 - **Hosting**: Render (free web service, `render.yaml`) + Neon Postgres for the API at `api.kalasutra.live`; GitHub Pages for the site; domain from Name.com.
 - **Mobile**: Expo Android app later, on the same API.
 
