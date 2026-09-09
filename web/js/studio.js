@@ -4,7 +4,11 @@
    Every step has a fallback, so the flow always ends with a usable studio photo:
      server cutout (needs FAL_KEY on the API)  →  browser model (@imgly/background-removal, ~45 MB, cached)
      →  "framed" mode (no cutout, the photo on a paper backdrop) when neither is available. */
+/* the model + runtime are served by this site itself (web/vendor/bg/: bundled library, ONNX runtime, isnet_quint8
+   model chunks, resources.json) so the studio needs nothing but kalasutra.live; the public CDN is only a fallback */
+const STUDIO_LOCAL = new URL('vendor/bg/', location.href).href;
 const STUDIO_CDN = 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/+esm';
+const STUDIO_CDN_DATA = 'https://staticimgly.com/@imgly/background-removal-data/1.7.0/dist/';
 const STUDIO_SIZE = 1024;
 const BACKDROPS = [
   {k:'paper',      n:'Paper',              hi:'कागज़'},
@@ -60,7 +64,7 @@ async function studioRun(){
     if(!png){
       setStage('Loading the on-device model (first time ≈ 45 MB, then cached)…', 5);
       const mod = await loadBgModule();
-      png = await mod.removeBackground(small, { model:'isnet_quint8', progress:(key, cur, tot)=>{
+      png = await mod.removeBackground(small, { model:'isnet_quint8', publicPath: studio.assets, progress:(key, cur, tot)=>{
         if(key.startsWith('fetch')) setStage(`Downloading model ${Math.round(cur/1048576)} / ${Math.round(tot/1048576)} MB`, 5 + 55*(tot?cur/tot:0));
         else setStage(key.replace('compute:','').replace(/^\w/,c=>c.toUpperCase())+'…', 60 + 30*(tot?cur/tot:0));
       }});
@@ -89,7 +93,13 @@ function studioCompose(){
   const m=document.getElementById('stMode'); if(m) m.textContent=studioModeLabel();
   const p=document.getElementById('stProg'); if(p) p.hidden=true;
 }
-function loadBgModule(){ return studio.modP || (studio.modP = import(STUDIO_CDN).catch(e=>{ studio.modP=null; throw new Error('model could not be downloaded'); })); }
+function loadBgModule(){
+  if(studio.modP) return studio.modP;
+  studio.modP = import(STUDIO_LOCAL + 'bg.mjs').then(m=>{ studio.assets = STUDIO_LOCAL; return m; })
+    .catch(()=> import(STUDIO_CDN).then(m=>{ studio.assets = STUDIO_CDN_DATA; studio.note = 'Loaded the model from the public CDN (the site copy was not reachable).'; return m; }))
+    .catch(e=>{ studio.modP=null; throw new Error('model could not be loaded'); });
+  return studio.modP;
+}
 async function serverCutout(blob){
   const fd = new FormData(); fd.append('file', blob, 'photo.jpg');
   const res = await fetch(API_URL + '/ai/cutout', {method:'POST', body:fd, headers:{'Authorization':'Bearer '+session.token}});
