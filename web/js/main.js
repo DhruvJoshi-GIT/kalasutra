@@ -11,3 +11,8 @@ paintTheme(); paintBar(); paintWish();
   const ok = await loadCatalogue();
   if(ok){ await render(); if(loggedIn()) refreshSession(); }
 })();
+
+/* every form on the site is handled by an async function (onsubmit="return fn(this)"); an async function returns a
+   Promise, which is truthy, so the browser would ALSO submit the form natively and reload the page as ?phone=…
+   — that broke the seller OTP step and the buyer sign-in. Nothing here ever needs a native submit. */
+document.addEventListener('submit', e => e.preventDefault());
