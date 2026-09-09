@@ -24,7 +24,7 @@ const studio = { src:null, cut:null, bd:'paper', shadow:true, result:null, busy:
 
 /* ── entry points used by the screens ─────────────────────────────── */
 function studioPick(){
-  const i = document.createElement('input'); i.type='file'; i.accept='image/*'; i.capture='environment';
+  const i = document.createElement('input'); i.type='file'; i.accept='image/*';   // no `capture`: phones then offer both the camera and the gallery
   i.onchange = async () => { const f = i.files && i.files[0]; if(!f) return;
     try{ studio.src = await fileToDataURL(f); }catch(e){ toast('Could not read that photo'); return; }
     studio.cut=null; studio.result=null; studio.note=''; studio.mode=''; studio.showOrig=false;
@@ -151,8 +151,12 @@ function compose(cut, bd, shadow){
   const pad=S*0.09, k=Math.min((S-2*pad)/cut.width, (S-2*pad)/cut.height), w=cut.width*k, h=cut.height*k, px=(S-w)/2, py=(S-h)/2 + (bd==='plain'?0:S*0.015);
   if(shadow){
     const sil=silhouette(cut);
-    x.save(); x.filter='blur(22px)'; x.globalAlpha=0.28; x.drawImage(sil, px+w*0.04, py+h*0.9, w*0.92, h*0.16); x.restore();   // contact shadow under the base
-    x.save(); x.filter='blur(26px)'; x.globalAlpha=0.16; x.drawImage(sil, px+10, py+18, w, h); x.restore();                   // soft drop shadow
+    const soft=(dx,dy,dw,dh,blur,alpha)=>{                       // blurred silhouette; browsers without canvas filters get a stacked approximation
+      if('filter' in x){ x.save(); x.filter=`blur(${blur}px)`; x.globalAlpha=alpha; x.drawImage(sil,dx,dy,dw,dh); x.restore(); return; }
+      x.save(); x.globalAlpha=alpha/9; for(let i=-4;i<=4;i++){ const k=1+i*0.035; x.drawImage(sil, dx+(dw-dw*k)/2, dy+(dh-dh*k)/2, dw*k, dh*k); } x.restore();
+    };
+    soft(px+w*0.04, py+h*0.9, w*0.92, h*0.16, 22, 0.28);       // contact shadow under the base
+    soft(px+10, py+18, w, h, 26, 0.16);                         // soft drop shadow
   }
   x.drawImage(cut, px, py, w, h);
   return c;

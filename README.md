@@ -54,15 +54,15 @@ The prototype's seller flow already shows the shape of the three AI features; th
 
 | Feature | What the maker does | What happens behind it |
 |---|---|---|
-| **Photo studio** ✅ built | Takes one phone photo of the piece on any background | Cutout on the KalaSutra server (fal.ai BiRefNet, needs `FAL_KEY`) or, with no key, an on-device model in the browser (nothing uploaded); edges cleaned; the piece is placed on a backdrop of the maker's choice — paper, plain white, warm studio, terracotta wall, indigo block print, haveli sandstone, marigold, ink — with a contact shadow; then it becomes the listing photo. A vision QC pass (Claude) with retake coaching in Hindi is the next step. |
+| **Photo studio** ✅ built | Takes one phone photo of the piece on any background | On-device cutout in the browser with a model served from this site (nothing uploaded, no key; an optional fal.ai server tier exists behind `FAL_KEY`); edges cleaned; the piece is placed on a backdrop of the maker's choice — paper, plain white, warm studio, terracotta wall, indigo block print, haveli sandstone, marigold, ink — with a contact shadow; then it becomes the listing photo. A vision QC pass (Claude) with retake coaching in Hindi is the next step. |
 | **Voice cataloguer** | Speaks for ~20 s in their own language | Sarvam Saarika (native transcript) + Saaras (English), Claude turns it into a 14-field listing (name, description, bullets, materials, technique, size, care, category, tags, SEO, GI tag, HSN), Sarvam Mayura translates the copy to Hindi, Sarvam Bulbul **reads it back** so a low-literacy maker can confirm without reading. |
 | **Pricing assistant** | Enters material cost and hours | Voyage embeddings → 12 nearest comparable pieces (kNN in Python), a state-wise wage-floor cost model, then Claude reasons to a **floor / fair / premium** band with a spoken Hindi rationale. Comparables are shown, never a bare number. Synthetic catalogue rows used for comparables are flagged and disclosed. |
 
 Provider split: **Sarvam AI** owns language (speech, translation, speech synthesis, Indian model, 1,000 free credits with a content-hash cache so nothing is billed twice), **Claude** owns structure, vision and reasoning, hosted models for cutout and embeddings.
 
-## Photo studio: the one step left
+## Photo studio: free, on-device, nothing to sign up for
 
-The studio already works on the live site with **no key** (the browser downloads a 45 MB model once and cuts the photo out on the device). To move the cutout to the server, paste a fal.ai key into **`FAL_KEY`** — as a Render environment variable (declared in `render.yaml`) or in `backend/.env` locally. That is the whole step: `GET /api/ai/studio` then reports `server: true` and the site uses the server automatically.
+The studio runs in the seller's browser: the model (45 MB, downloaded once and cached) and its runtime are served from this site (`web/vendor/bg/`), so it needs no account, no key and no third-party service — only kalasutra.live. Photos never leave the phone. An optional server tier exists (`FAL_KEY`, fal.ai BiRefNet) but is not required.
 
 ## Architecture (see `plan.md`)
 

@@ -87,3 +87,7 @@ File URLs are `PUBLIC_BASE_URL + /api/files/<key>` (relative when `PUBLIC_BASE_U
 ## Browser model — verified in headless Edge 2026-09-09
 
 `import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/+esm')` → `removeBackground(blob, {model:'isnet_quint8', progress})`. Downloads ~44 MB (model) + 12 MB (onnx wasm) from `staticimgly.com` the first time (Cache API keeps them), then ≈ 25 s per photo single-threaded on a laptop. Multi-threading would need cross-origin isolation headers, which GitHub Pages cannot set.
+
+## Self-hosted studio assets (2026-09-09) — verified on kalasutra.live with all other hosts blocked
+
+`web/vendor/bg/bg.mjs` (esbuild bundle of `@imgly/background-removal@1.7.0`, 865 KB), `web/vendor/bg/resources.json` (trimmed manifest: `/models/isnet_quint8`, `/onnxruntime-web/ort-wasm-simd-threaded{,.jsep}.{wasm,mjs}`) and 22 hash-named 4 MB chunks copied from `https://staticimgly.com/@imgly/background-removal-data/1.7.0/dist/` (sha256 verified). `js/studio.js` imports the local bundle and passes `publicPath = <site>/web/vendor/bg/`; if that import fails it falls back to the jsDelivr `+esm` build with the staticimgly data path. First load per browser ≈ 56 MB (model + wasm), then cached by the library (Cache API). Rebuild the bundle with `npx esbuild node_modules/@imgly/background-removal/dist/index.mjs --bundle --format=esm --minify` (see `scratch/bgpkg/`).
