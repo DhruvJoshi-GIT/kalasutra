@@ -75,7 +75,7 @@ S.confirmed = (no) => { const o = orders.find(x=>x.no===no) || orders[0]; return
 <div class="box" style="min-height:calc(100vh - 160px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:40px;margin-top:20px">
   <div style="width:150px;height:150px;border:3px solid var(--fg);border-radius:48px;display:flex;align-items:center;justify-content:center;box-shadow:6px 6px 0 0 var(--ink)"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="3" stroke-linecap="round"><path d="M4 12l5 5 11-11"/></svg></div>
   <h1 class="display" style="font-size:clamp(36px,5vw,72px)">Order confirmed</h1>
-  <div class="hi" style="font-size:34px;font-weight:700">धन्यवाद${(session.user?.name||user.name)?', '+esc((session.user?.name||user.name).split(' ')[0]):''}</div>
+  <div class="hi" style="font-size:34px;font-weight:700">धन्यवाद${(session?.user?.name||user.name)?', '+esc((session?.user?.name||user.name).split(' ')[0]):''}</div>
   ${o ? `<span class="mono muted" style="font-size:13px">Order ${o.no} · ${o.items.length} item${o.items.length===1?'':'s'} · ${fmt(o.total)} · paid by ${o.pay.type==='upi'?'UPI':'card'}<br>Delivering to ${esc(o.addr.city)} · the makers will accept it within a day · updates by SMS</span>`:''}
   <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><a class="btn ink neo" href="#account/orders">Your orders</a><a class="btn neo" href="#shop/all">Keep shopping</a></div>
 </div>`; };
@@ -85,7 +85,7 @@ S.account = (open='') => {
   const ini = (user.name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || '?';
   const acc = (key,title,sub,body) => `<div class="acc-item ${open===key?'on':''}" id="acc-${key}"><div class="hd" onclick="this.parentElement.classList.toggle('on')"><div><div class="display" style="font-size:20px">${title}</div><div class="mono muted" style="font-size:12px;margin-top:4px">${sub}</div></div><span style="font-size:22px">›</span></div><div class="bd">${body}</div></div>`;
   return `
-  <div class="sec"><h1>Your account</h1><span style="display:flex;gap:10px;align-items:center"><span class="label muted">${esc(session.user.email||session.user.phone||'')}</span><button class="btn sm neo" onclick="logout()">Sign out</button></span></div>
+  <div class="sec"><h1>Your account</h1><span style="display:flex;gap:10px;align-items:center"><span class="label muted">${esc(session?.user?.email||session?.user?.phone||'')}</span><button class="btn sm neo" onclick="logout()">Sign out</button></span></div>
   <div class="split">
     <div>
       ${acc('addr','Address', addrs.length?`${addrs.length} saved`:'nothing saved yet',
@@ -151,34 +151,38 @@ S.login = (tab) => { if(tab==='seller'||tab==='buyer') state.tab=tab; const sell
   </div>
 </div>`; };
 
-S.seller = () => { const slug = session.user?.artisanSlug; if(!slug) return `<div class="sec"><h1>My shop</h1></div><div class="empty">Sign in as a maker to see your shop.<a class="btn acc neo" href="#login/seller">Seller login</a></div>`; const me = MAKERS[slug]||{}; const mine = P.filter(p=>p.mk===slug); return `
+const sellerGate = title => `<div class="sec"><h1>${title}</h1></div><div class="empty">Sign in as a maker to use this.<a class="btn acc neo" href="#login/seller">Seller login</a></div>`;
+S.seller = () => { const slug = session?.user?.artisanSlug; if(!slug) return sellerGate('My shop'); const me = MAKERS[slug]||{}; const mine = P.filter(p=>p.mk===slug); return `
   <div class="box" style="margin-top:20px;padding:10px 18px;background:var(--fg);color:var(--bg);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><span class="label" style="color:var(--acc)">Seller account · ${esc(me.shop||me.n||'')} · ${(me.kycStatus||'').toLowerCase()||'pending'}</span><span class="mono" style="font-size:12px">${mine.length} live listing${mine.length===1?'':'s'}</span></div>
-  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">${crumb(['My shop','Products','Live'])}<a class="btn acc neo" href="#upload" style="margin-top:20px;width:56px;height:56px;padding:0;font-size:26px" title="Add product">+</a></div>
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">${crumb(['My shop','Products','Live'])}<a class="btn acc neo" href="#upload" style="margin-top:20px;width:56px;height:56px;padding:0;font-size:26px" title="Add product">+</a><a class="btn neo" href="#studio" style="margin-top:20px" title="Photo studio">✦ Photo studio</a></div>
   <div class="sec"><h1>My products <span class="hi" style="font:700 18px 'Noto Sans Devanagari';letter-spacing:0;text-transform:none;color:var(--muted)">· मेरे प्रोडक्ट</span></h1><a class="label" href="#upload" style="text-decoration:underline">Add a product · नया प्रोडक्ट</a></div>
-  <div class="grid shop">${mine.map(card).join('')}</div>`; };
+  ${mine.length ? `<div class="grid shop">${mine.map(card).join('')}</div>` : `<div class="empty">No listings yet.<a class="btn acc neo" href="#upload">Add your first product</a></div>`}`; };
 const crumb = parts => `<div class="crumb">${parts.map(x=>`<span>${x}</span>`).join('')}</div>`;
 
-S.upload = () => `
-  <div class="sec"><h1>Add a product <span class="hi" style="font:700 18px 'Noto Sans Devanagari';letter-spacing:0;text-transform:none;color:var(--muted)">· नया प्रोडक्ट</span></h1><span class="label muted">Seller · ${esc(MAKERS[session.user?.artisanSlug]?.n||'')}</span></div>
+S.upload = () => { if(!session?.user?.artisanSlug) return sellerGate('Add a product'); const ph = studio.result; return `
+  <div class="sec"><h1>Add a product <span class="hi" style="font:700 18px 'Noto Sans Devanagari';letter-spacing:0;text-transform:none;color:var(--muted)">· नया प्रोडक्ट</span></h1><span class="label muted">Seller · ${esc(MAKERS[session?.user?.artisanSlug]?.n||'')}</span></div>
   <div class="split" style="grid-template-columns:minmax(0,1fr) clamp(300px,24vw,400px)">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px;align-content:start">
       <div class="box" style="padding:16px;display:flex;flex-direction:column;gap:12px;min-height:300px">
-        <span class="label">1 · Photo upload</span>
-        <div id="photoZone" class="box" style="flex:1;border-style:dashed;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:170px;position:relative;overflow:hidden">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>
-          <button class="btn ink neo" onclick="doUpload()">Upload photo</button>
-          <span class="mono muted" style="font-size:11px">Studio: background cleaned automatically</span>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="label">1 · Photo <span class="hi muted" style="font-weight:500">· फ़ोटो</span></span><span class="label muted" id="photoState">${ph?'studio · ready':'take or choose one'}</span></div>
+        <div id="photoZone" class="box" style="flex:1;border-style:${ph?'solid':'dashed'};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:190px;position:relative;overflow:hidden;background:var(--sec)">
+          ${ph ? `<img src="${ph}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain"><span class="label" style="position:absolute;left:8px;top:8px;background:var(--fg);color:var(--bg);padding:3px 8px;border-radius:6px">Studio · ${studio.mode==='server'?'server':studio.mode==='lite'?'framed':'on-device'} · ${esc((BACKDROPS.find(b=>b.k===studio.bd)||{}).n||'')}</span>`
+               : `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+          <button class="btn ink neo" onclick="studioPick()">📷 Take / upload photo</button>
+          <span class="mono muted" style="font-size:11px;text-align:center;padding:0 10px">Opens the AI photo studio: background removed, studio backdrop, your choice of look</span>`}
         </div>
+        ${ph ? `<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn neo sm" href="#studio">✦ Change look</a><button class="btn neo sm" onclick="studioPick()">Retake</button></div>` : ''}
       </div>
       <div class="box" style="padding:16px;display:flex;flex-direction:column;gap:12px">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="label">2 · Product description</span><span class="label muted" id="descState">waiting for photo</span></div>
-        <div id="descBox" class="box" style="min-height:150px;padding:12px;font-size:14px;line-height:1.6;background:var(--sec)"><span class="muted">Describe it by voice, or let the app write it from the photo.</span></div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn neo" id="voiceBtn" onclick="doDescribe()" disabled>🎙 Describe by voice</button><button class="btn neo" id="editBtn" onclick="editDesc()" disabled>Edit</button></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="label">2 · Description <span class="hi muted" style="font-weight:500">· विवरण</span></span><span class="label muted" id="descState">${ph?'photo ready · speak or generate':'waiting for photo'}</span></div>
+        <div class="field"><span class="label muted">Category · श्रेणी</span><select id="catSel" onchange="listing.cat=this.value">${CATS.filter(c=>c.k!=='all').map(c=>`<option value="${c.k}" ${c.k===listing.cat?'selected':''}>${esc(c.n)}</option>`).join('')}</select></div>
+        <div id="descBox" class="box" style="min-height:150px;padding:12px;font-size:14px;line-height:1.6;background:${listing.descHtml?'var(--bg)':'var(--sec)'}">${listing.descHtml || `<span class="muted">Describe it by voice, or let the app write it from the photo.</span>`}</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn neo" id="voiceBtn" onclick="doDescribe()" ${ph?'':'disabled'}>🎙 Describe by voice</button><button class="btn neo" id="editBtn" onclick="editDesc()" ${listing.descHtml?'':'disabled'}>Edit</button></div>
       </div>
       <div class="box" style="padding:16px;display:flex;flex-direction:column;gap:12px">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="label">3 · Price approx.</span><span class="label muted" id="priceState">waiting for description</span></div>
-        <div id="priceBox" class="box mono" style="display:grid;grid-template-columns:repeat(3,1fr);overflow:hidden"><div style="padding:12px;border-right:1px solid var(--fg)"><div class="label muted">Floor</div><div style="font-size:20px">—</div></div><div style="padding:12px;border-right:1px solid var(--fg)"><div class="label">Fair</div><div style="font-size:26px">—</div></div><div style="padding:12px"><div class="label muted">Premium</div><div style="font-size:20px">—</div></div></div>
-        <div class="field"><span class="label">Your price (₹)</span><input id="priceInput" placeholder="—" oninput="check()" disabled inputmode="numeric"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="label">3 · Price <span class="hi muted" style="font-weight:500">· दाम</span></span><span class="label muted" id="priceState">${listing.descHtml?'from 12 similar pieces':'waiting for description'}</span></div>
+        <div id="priceBox" class="box mono" style="display:grid;grid-template-columns:repeat(3,1fr);overflow:hidden">${priceBand(listing.band)}</div>
+        <div class="field"><span class="label">Your price (₹)</span><input id="priceInput" placeholder="${listing.band?listing.band[1]+' suggested':'—'}" value="${esc(listing.price||'')}" oninput="check()" ${listing.descHtml?'':'disabled'} inputmode="numeric"></div>
       </div>
       <div class="box" style="padding:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
         <span class="label" style="align-self:flex-start">4 · Submit</span>
@@ -192,14 +196,33 @@ S.upload = () => `
       <div class="check" id="ck2"><span class="m">✕</span>Description <span class="hi muted" style="font-weight:500;margin-left:auto">विवरण</span></div>
       <div class="check" id="ck3"><span class="m">✕</span>Price <span class="hi muted" style="font-weight:500;margin-left:auto">दाम</span></div>
       <div style="padding:14px 16px;font-weight:700;color:var(--err)" id="ckMsg">✕ It can't be submitted to the market yet.</div>
-      <div class="mono muted" style="font-size:12px;padding:12px 16px;border-top:1px solid var(--fg)">Prototype: click Upload → Describe → type a price → Submit. The listing then appears in your shop and in the store.</div>
+      <div class="mono muted" style="font-size:12px;padding:12px 16px;border-top:1px solid var(--fg)">Photo → Describe → price → Submit. The listing then appears in your shop and in the store${window.KS_OFFLINE?' (demo mode: saved in this browser)':''}.</div>
     </div>
-  </div>`;
+  </div>`; };
+
+/* the photo studio (sellers only): cutout → backdrop → studio composite; logic in js/studio.js */
+S.studio = () => { if(!session?.user?.artisanSlug) return sellerGate('Photo studio'); const st = studio; return `
+  <div class="sec"><h1>Photo studio <span class="hi" style="font:700 18px 'Noto Sans Devanagari';letter-spacing:0;text-transform:none;color:var(--muted)">· फ़ोटो स्टूडियो</span></h1><span class="label muted" id="stMode">${studioModeLabel()}</span></div>
+  ${!st.src ? `<div class="empty" style="margin-top:12px;min-height:280px;justify-content:center"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Take a photo of the piece on any background.<br>The studio cuts it out and puts it on a clean backdrop of your choice.<button class="btn ink lg neo" onclick="studioPick()">📷 Take / upload photo</button><a class="label" href="#upload" style="text-decoration:underline">Back to the listing</a></div>` : `
+  <div class="studio">
+    <div>
+      <div class="stage" id="stStage"><img id="stOut" alt="" src="${st.showOrig ? st.src : (st.result||st.src)}"><div class="prog" id="stProg" ${st.busy?'':'hidden'}><span id="stStage1">${esc(st.stage||'Starting…')}</span><div class="bar"><i id="stBar" style="width:${st.pct||0}%"></i></div></div></div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn neo sm" id="stOrig" onclick="studioToggleOrig(this)">${st.showOrig?'Show studio photo':'Show original'}</button><button class="btn neo sm" onclick="studioRedo()" ${st.busy?'disabled':''}>↻ Redo cutout</button><a class="btn neo sm" id="stDl" href="${st.result||'#'}" download="kalasutra-studio.jpg" ${st.result?'':'hidden'}>Download</a></div>
+    </div>
+    <div class="box" style="padding:16px;display:flex;flex-direction:column;gap:14px">
+      <span class="label">Backdrop <span class="hi muted" style="font-weight:500">· पृष्ठभूमि</span></span>
+      <div class="bd-grid">${BACKDROPS.map(b=>`<div class="bd ${b.k===st.bd?'on':''}" data-bdk="${b.k}" onclick="studioSet('${b.k}')"><canvas class="sw" data-bd="${b.k}" width="96" height="96"></canvas>${b.n}<br><span class="hi muted" style="font-weight:500">${b.hi}</span></div>`).join('')}</div>
+      <label class="opt" style="margin:0"><input type="checkbox" ${st.shadow?'checked':''} onchange="studio.shadow=this.checked;studioCompose()" style="width:auto;min-height:0"> <span>Contact shadow <span class="hi muted">· छाया</span></span></label>
+      <div class="mono muted" style="font-size:11px;line-height:1.5" id="stNote">${esc(st.note||'')}</div>
+      <button class="btn acc lg neo" id="stUse" onclick="studioUse()" ${st.result&&!st.busy?'':'disabled'}>Use this photo →</button>
+      <button class="btn neo" onclick="studioPick()">Retake / choose another</button>
+    </div>
+  </div>`}`; };
 
 S.artist = (key='priya') => { const m = MAKERS[key]||Object.values(MAKERS)[0]; if(!m) return `<div class="empty" style="margin:40px 0">Maker not found.</div>`; key = m.slug||key; const work = P.filter(p=>p.mk===key); return `
   <div class="split" style="margin-top:20px;grid-template-columns:minmax(0,1fr) clamp(300px,26vw,440px)">
     <div>
-      <div style="display:grid;grid-template-columns:clamp(160px,18vw,260px) minmax(0,1fr);gap:20px;align-items:start">
+      <div class="who2" style="display:grid;grid-template-columns:clamp(160px,18vw,260px) minmax(0,1fr);gap:20px;align-items:start">
         <div class="box pimg" style="aspect-ratio:1;overflow:hidden"><img src="${m.img||''}" alt="${esc(m.n)}"></div>
         <div style="display:flex;flex-direction:column;gap:10px">
           <span class="label muted">Artist portfolio · verified maker</span>
@@ -220,6 +243,11 @@ S.artist = (key='priya') => { const m = MAKERS[key]||Object.values(MAKERS)[0]; i
     </div>
   </div>`; };
 
+/* screens that run code after they are painted */
+const MOUNT = {
+  studio: () => studioMount(),
+  upload: () => check(),
+};
 /* screens that need server data before they render */
 const LOAD = {
   cart: async () => { if(loggedIn()){ [addrs, pays] = await Promise.all([api('/addresses'), api('/payment-methods')]); } },

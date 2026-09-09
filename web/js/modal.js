@@ -9,7 +9,7 @@ function productHtml(p){
   const inCart = cart.find(c=>c.id===p.id);
   return `<button class="x press" onclick="closeProduct()" title="Close">✕</button>
   <div class="top">
-    <div class="gal">${pic(p)}</div>
+    <div class="gal">${pic(p,true)}</div>
     <div class="info">
       <span class="label muted"><a href="#shop/${p.cat}" onclick="closeProduct()">${catName(p.cat)}</a> › ${esc(m.n)}</span>
       <h2>${esc(p.n)}</h2>
@@ -18,7 +18,7 @@ function productHtml(p){
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="stars">${'★'.repeat(Math.round(avg))}${'☆'.repeat(5-Math.round(avg))}</span><span class="mono muted" style="font-size:12px">${rv.length?`${avg.toFixed(1)} · ${rv.length} review${rv.length===1?'':'s'}`:'no reviews yet'}</span></div>
       <div class="price">${fmt(p.price)}${p.was?`<s>${fmt(p.was)}</s>`:''}</div>
       <span class="mono muted" style="font-size:12px">In stock · made to order in 2–4 days · ${p.price>=999?'free shipping':'shipping ₹79, free above ₹999'}</span>
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px">
+      <div class="act" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px">
         <div class="qty"><button onclick="mQty=Math.max(1,mQty-1);document.getElementById('mq').textContent=mQty">−</button><span id="mq">${mQty}</span><button onclick="mQty=Math.min(20,mQty+1);document.getElementById('mq').textContent=mQty">+</button></div>
         <button class="btn ink lg neo" id="mAdd" onclick="addToCart(${p.id},mQty);this.textContent='Added ✓ · view cart';this.onclick=()=>{closeProduct();location.hash='#cart'}">${inCart?`In cart (${inCart.qty}) · add more`:'Add to cart'}</button>
         <button class="btn acc lg neo" onclick="addToCart(${p.id},mQty);closeProduct();location.hash='#cart'">Buy now →</button>
@@ -32,14 +32,14 @@ function productHtml(p){
     ${!reviews[p.id] ? `<div class="mono muted" style="font-size:12px">Loading…</div>` : rv.length ? rv.map(r=>`<div class="rev"><div class="who"><b>${esc(r.name)}</b><span class="muted mono">${new Date(r.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</span></div><span class="stars">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</span><div style="margin-top:4px">${esc(r.text)}</div></div>`).join('') : `<div class="empty" style="padding:16px">No reviews yet. Bought this? Be the first.</div>`}
     <form class="form" style="margin-top:14px" onsubmit="return addReview(this,${p.id})">
       <div class="full" style="display:flex;align-items:center;gap:10px"><span class="label muted">Your rating</span><span class="stars pick" id="pick">${[1,2,3,4,5].map(i=>`<span onclick="pickStar(${i})">★</span>`).join('')}</span></div>
-      <input name="name" placeholder="Your name" required value="${esc(session.user?.name||user.name)}"><input name="text" placeholder="What did you think?" required>
+      <input name="name" placeholder="Your name" required value="${esc(session?.user?.name||user.name)}"><input name="text" placeholder="What did you think?" required>
       <button class="btn ink neo" type="submit">Post review</button>
     </form>
   </section>
   <section><h3>Comments &amp; questions <span class="mono muted" style="font:400 12px 'IBM Plex Mono'">${cm.length}</span></h3>
     ${!comments[p.id] ? `<div class="mono muted" style="font-size:12px">Loading…</div>` : cm.length ? cm.map(c=>`<div class="rev"><div class="who"><b>${esc(c.name)}</b><span class="muted mono">${new Date(c.date).toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</span></div><div>${esc(c.text)}</div></div>`).join('') : `<div class="empty" style="padding:16px">No questions yet. Ask the maker anything about this piece.</div>`}
     <form class="form" style="margin-top:14px" onsubmit="return addComment(this,${p.id})">
-      <input name="name" placeholder="Your name" required value="${esc(session.user?.name||user.name)}"><input name="text" placeholder="Ask a question or leave a comment" required>
+      <input name="name" placeholder="Your name" required value="${esc(session?.user?.name||user.name)}"><input name="text" placeholder="Ask a question or leave a comment" required>
       <button class="btn neo" type="submit">Post</button>
     </form>
   </section>`;

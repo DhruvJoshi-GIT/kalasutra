@@ -9,7 +9,7 @@ async function render(){
   if(LOAD[key]){ app.innerHTML = '<div class="empty" style="margin:30px 0">Loading…</div>'; try{ await LOAD[key](arg); }catch(e){ toast(e.message) } }
   app.innerHTML = S[key](arg);
   paintCap(key==='shop'||key==='home' ? state.cat : '');
-  if(key==='upload') upState = {photo:false,desc:false,price:false};
+  if(typeof MOUNT!=='undefined' && MOUNT[key]) MOUNT[key](arg);   // screens that run code after painting (studio, upload checklist)
   window.scrollTo(0,0); paintTop(); document.body.classList.remove('cats-open'); paintBnav();
   if(document.getElementById('ftrack')) featArm(); else clearInterval(featT);
 }

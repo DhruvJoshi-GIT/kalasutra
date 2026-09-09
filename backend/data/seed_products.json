@@ -26,6 +26,11 @@
       "abbr": "HO"
     },
     {
+      "slug": "pottery",
+      "name": "Pottery & ceramics",
+      "abbr": "PO"
+    },
+    {
       "slug": "art",
       "name": "Art & craft",
       "abbr": "AR"
@@ -43,7 +48,7 @@
       "place": "Bagru, Rajasthan",
       "craft": "Block printing · gota patti",
       "since": 1987,
-      "img": "bangles-wrist",
+      "img": "workshop-block-print",
       "en": "Third-generation block printer from Bagru. We print with natural indigo and madder on hand-loomed cotton, the way my grandmother did.",
       "hi": "बगरू की तीसरी पीढ़ी की ब्लॉक प्रिंटर। हम हथकरघा सूती कपड़े पर प्राकृतिक नील और मजीठ से छपाई करते हैं, जैसे मेरी दादी करती थीं।"
     },
@@ -146,6 +151,36 @@
       "img": "kolhapuri",
       "en": "Genuine Kolhapuris, vegetable-tanned and hand-stitched.",
       "hi": "असली कोल्हापुरी, वनस्पति-टैन्ड और हाथ से सिली हुई।"
+    },
+    "khurja": {
+      "n": "Khurja Pottery Collective",
+      "shop": "Khurja Pottery Collective",
+      "place": "Khurja, U.P.",
+      "craft": "Glazed ceramic pottery",
+      "since": 1988,
+      "img": "vase-trio",
+      "en": "Khurja has fired glazed pottery for four hundred years; our collective of eleven families still throws every piece by hand and paints it before the second firing.",
+      "hi": "खुर्जा चार सौ साल से चमकदार मिट्टी के बर्तन पकाता आया है; हमारे ग्यारह परिवारों का सामूहिक आज भी हर बर्तन हाथ से बनाता है और दूसरी बार पकाने से पहले उसे रंगता है।"
+    },
+    "kundan": {
+      "n": "Jaipur Kundan House",
+      "shop": "Jaipur Kundan House",
+      "place": "Jaipur, Rajasthan",
+      "craft": "Kundan & meenakari jewellery",
+      "since": 1996,
+      "img": "necklace-kundan-emerald",
+      "en": "Kundan setting and meenakari enamel, done the Jaipur way by the same family since the nineties. Every stone is set by hand in lac and gold foil.",
+      "hi": "कुंदन जड़ाई और मीनाकारी, जयपुर के तरीक़े से, नब्बे के दशक से एक ही परिवार के हाथों। हर नग लाख और सोने की पन्नी में हाथ से जड़ा जाता है।"
+    },
+    "warli": {
+      "n": "Palghar Adivasi Kala",
+      "shop": "Palghar Adivasi Kala",
+      "place": "Palghar, Maharashtra",
+      "craft": "Warli & Gond painting",
+      "since": 2008,
+      "img": "warli-painting-red",
+      "en": "Warli women from villages near Palghar paint the rice-paste stories of our fields, weddings and dances on cloth and board; our Gond friends from Dindori add their forest animals.",
+      "hi": "पालघर के पास के गाँवों की वारली महिलाएँ हमारे खेतों, शादियों और नृत्यों की चावल-लेप वाली कहानियाँ कपड़े और बोर्ड पर बनाती हैं; डिंडोरी के हमारे गोंड साथी अपने जंगल के जानवर जोड़ते हैं।"
     }
   },
   "defaults": {
@@ -190,6 +225,12 @@
       "materials": "Wood, cloth, non-toxic paint",
       "size": "Approx. 30 cm tall",
       "care": "Wipe clean; not for children under 3"
+    },
+    "pottery": {
+      "technique": "Wheel-thrown, hand-finished",
+      "materials": "Stoneware / terracotta, food-safe glaze",
+      "size": "See listing photo for scale",
+      "care": "Hand wash, dust with a dry cloth"
     }
   },
   "products": [
@@ -199,7 +240,7 @@
       "mk": "priya",
       "price": 1899,
       "was": 2999,
-      "img": "saree-cream",
+      "img": "saree-bagru-white",
       "cat": "sarees",
       "hi": "बगरू ब्लॉक प्रिंट सूती साड़ी",
       "d": {
@@ -213,7 +254,7 @@
       "n": "Banarasi Silk Saree, Royal Blue",
       "mk": "banaras",
       "price": 8499,
-      "img": "saree-blue",
+      "img": "saree-banarasi-navy",
       "cat": "sarees",
       "hi": "बनारसी रेशमी साड़ी, नीली",
       "craft": "Banarasi silk"
@@ -224,7 +265,7 @@
       "mk": "kanchi",
       "price": 9999,
       "was": 12500,
-      "img": "saree-green",
+      "img": "saree-kanjivaram-green",
       "cat": "sarees",
       "hi": "कांजीवरम रेशमी साड़ी",
       "craft": "Kanjivaram silk"
@@ -234,7 +275,7 @@
       "n": "Handloom Cotton Kurta, Grey",
       "mk": "banaras",
       "price": 1799,
-      "img": "kurta",
+      "img": "kurta-grey",
       "cat": "men",
       "hi": "हथकरघा सूती कुर्ता",
       "craft": "Handloom cotton"
@@ -327,7 +368,7 @@
       "price": 749,
       "was": 899,
       "img": "warli-planter",
-      "cat": "home",
+      "cat": "pottery",
       "hi": "वारली टेराकोटा गमला",
       "craft": "Warli terracotta"
     },
@@ -377,7 +418,7 @@
       "n": "Oxidised Silver Jhumkas",
       "mk": "kutch",
       "price": 1450,
-      "img": "silver-earrings",
+      "img": "jhumka-silver-peacock",
       "cat": "jewel",
       "hi": "ऑक्सिडाइज़्ड चाँदी के झुमके",
       "craft": "Oxidised silver"
@@ -428,7 +469,7 @@
       "n": "Phulkari Punjabi Jutti",
       "mk": "patiala",
       "price": 1299,
-      "img": "jutti",
+      "img": "jutti-phulkari",
       "cat": "foot",
       "hi": "फुलकारी पंजाबी जूती",
       "craft": "Phulkari embroidery"
@@ -453,6 +494,885 @@
       "cat": "foot",
       "hi": "जूट की सैंडल",
       "craft": "Braided jute"
+    },
+    {
+      "id": 26,
+      "n": "Banarasi Silk Saree, Wine",
+      "mk": "banaras",
+      "price": 8999,
+      "img": "saree-banarasi-wine",
+      "cat": "sarees",
+      "hi": "बनारसी रेशमी साड़ी, वाइन",
+      "craft": "Banarasi brocade",
+      "was": 10999,
+      "d": {
+        "technique": "Handloom weaving",
+        "materials": "Mulberry silk, zari",
+        "size": "5.5 m × 1.1 m, with blouse piece",
+        "care": "Dry clean only"
+      }
+    },
+    {
+      "id": 27,
+      "n": "Chanderi Silk Saree, Ivory Floral",
+      "mk": "banaras",
+      "price": 5499,
+      "img": "saree-chanderi-ivory",
+      "cat": "sarees",
+      "hi": "चंदेरी रेशमी साड़ी, आइवरी",
+      "craft": "Chanderi silk",
+      "d": {
+        "technique": "Handloom weaving",
+        "materials": "Chanderi silk-cotton, zari",
+        "size": "5.5 m × 1.1 m, with blouse piece",
+        "care": "Dry clean only"
+      }
+    },
+    {
+      "id": 28,
+      "n": "Kanjivaram Silk Saree, Maroon",
+      "mk": "kanchi",
+      "price": 11499,
+      "img": "saree-kanjivaram-maroon",
+      "cat": "sarees",
+      "hi": "कांजीवरम रेशमी साड़ी, मरून",
+      "craft": "Kanjivaram silk",
+      "was": 12999,
+      "d": {
+        "technique": "Handloom weaving",
+        "materials": "Mulberry silk, zari",
+        "size": "5.5 m × 1.1 m, with blouse piece",
+        "care": "Dry clean only"
+      }
+    },
+    {
+      "id": 29,
+      "n": "Ajrakh Block-Print Saree, Indigo",
+      "mk": "priya",
+      "price": 3299,
+      "img": "saree-ajrakh-indigo",
+      "cat": "sarees",
+      "hi": "अजरक ब्लॉक प्रिंट साड़ी, नील",
+      "craft": "Ajrakh block print",
+      "d": {
+        "technique": "Resist block printing, natural dyes",
+        "materials": "Mulmul cotton, natural indigo, madder",
+        "size": "5.5 m × 1.1 m, with blouse piece",
+        "care": "Gentle cold hand wash, dry in shade"
+      }
+    },
+    {
+      "id": 30,
+      "n": "Bagru Block-Print Saree, Madder Red",
+      "mk": "priya",
+      "price": 2199,
+      "img": "saree-bagru-red",
+      "cat": "sarees",
+      "hi": "बगरू ब्लॉक प्रिंट साड़ी, लाल",
+      "craft": "Bagru block print",
+      "was": 2599,
+      "d": {
+        "technique": "Hand block printing, natural dyes",
+        "materials": "Cotton, madder, iron black",
+        "size": "5.5 m × 1.1 m, with blouse piece",
+        "care": "Gentle cold hand wash, dry in shade"
+      }
+    },
+    {
+      "id": 31,
+      "n": "Khadi Cotton Saree, Natural",
+      "mk": "banaras",
+      "price": 2499,
+      "img": "saree-khadi-natural",
+      "cat": "sarees",
+      "hi": "खादी सूती साड़ी",
+      "craft": "Hand-spun khadi",
+      "d": {
+        "technique": "Handloom weaving",
+        "materials": "Hand-spun, hand-woven cotton",
+        "size": "5.5 m × 1.1 m, with blouse piece",
+        "care": "Cold hand wash"
+      }
+    },
+    {
+      "id": 32,
+      "n": "Banarasi Silk Saree, Red",
+      "mk": "banaras",
+      "price": 7999,
+      "img": "saree-banarasi-red",
+      "cat": "sarees",
+      "hi": "बनारसी रेशमी साड़ी, लाल",
+      "craft": "Banarasi brocade",
+      "d": {
+        "technique": "Handloom weaving",
+        "materials": "Mulberry silk, zari",
+        "size": "5.5 m × 1.1 m, with blouse piece",
+        "care": "Dry clean only"
+      }
+    },
+    {
+      "id": 33,
+      "n": "Handloom Cotton Kurta, White",
+      "mk": "banaras",
+      "price": 1499,
+      "img": "kurta-white",
+      "cat": "men",
+      "hi": "हथकरघा सूती कुर्ता, सफ़ेद",
+      "craft": "Handloom cotton"
+    },
+    {
+      "id": 34,
+      "n": "Block-Printed Kurta, Rose",
+      "mk": "priya",
+      "price": 1899,
+      "img": "kurta-rose",
+      "cat": "men",
+      "hi": "ब्लॉक प्रिंट कुर्ता, गुलाबी",
+      "craft": "Hand block print",
+      "d": {
+        "technique": "Hand block printing on handloom cotton",
+        "materials": "Cotton",
+        "size": "S · M · L · XL (choose at checkout)",
+        "care": "Cold machine wash, dry in shade"
+      }
+    },
+    {
+      "id": 35,
+      "n": "Banarasi Brocade Sherwani, Royal Blue",
+      "mk": "banaras",
+      "price": 14999,
+      "img": "sherwani-blue",
+      "cat": "men",
+      "hi": "बनारसी ब्रोकेड शेरवानी, नीली",
+      "craft": "Banarasi brocade",
+      "was": 17999,
+      "d": {
+        "technique": "Handloom brocade, hand tailored",
+        "materials": "Silk brocade, velvet stole",
+        "size": "S · M · L · XL, with churidar",
+        "care": "Dry clean only"
+      }
+    },
+    {
+      "id": 36,
+      "n": "Silk Sherwani with Dupatta, Emerald",
+      "mk": "banaras",
+      "price": 12999,
+      "img": "sherwani-green",
+      "cat": "men",
+      "hi": "रेशमी शेरवानी, हरी",
+      "craft": "Silk brocade",
+      "d": {
+        "technique": "Handloom silk, hand tailored",
+        "materials": "Silk, velvet dupatta",
+        "size": "S · M · L · XL, with churidar",
+        "care": "Dry clean only"
+      }
+    },
+    {
+      "id": 37,
+      "n": "Brocade Sherwani, Bronze",
+      "mk": "banaras",
+      "price": 13499,
+      "img": "sherwani-bronze",
+      "cat": "men",
+      "hi": "ब्रोकेड शेरवानी, कांस्य",
+      "craft": "Banarasi brocade",
+      "d": {
+        "technique": "Handloom brocade, hand tailored",
+        "materials": "Silk brocade, velvet stole",
+        "size": "S · M · L · XL, with churidar",
+        "care": "Dry clean only"
+      }
+    },
+    {
+      "id": 38,
+      "n": "Oxidised Silver Choker Set, Mirror-work",
+      "mk": "kutch",
+      "price": 2899,
+      "img": "necklace-silver-mirror",
+      "cat": "jewel",
+      "hi": "ऑक्सिडाइज़्ड चाँदी का चोकर सेट",
+      "craft": "Oxidised silver",
+      "d": {
+        "technique": "Hand-cast, oxidised",
+        "materials": "German silver, mirror, glass beads",
+        "size": "Adjustable dori",
+        "care": "Keep dry, store in the pouch provided"
+      }
+    },
+    {
+      "id": 39,
+      "n": "Silver Mirror Cuff Pair",
+      "mk": "kutch",
+      "price": 2199,
+      "img": "cuff-silver-mirror",
+      "cat": "jewel",
+      "hi": "चाँदी के शीशे वाले कड़े",
+      "craft": "Oxidised silver",
+      "d": {
+        "technique": "Hand-cast, oxidised",
+        "materials": "German silver, mirror, pearls",
+        "size": "Free size, open cuff",
+        "care": "Keep dry, store in the pouch provided"
+      }
+    },
+    {
+      "id": 40,
+      "n": "Tribal Silver Collar Set",
+      "mk": "kutch",
+      "price": 3499,
+      "img": "necklace-tribal-silver",
+      "cat": "jewel",
+      "hi": "आदिवासी चाँदी का हार सेट",
+      "craft": "Oxidised silver",
+      "was": 3999,
+      "d": {
+        "technique": "Hand-cast, oxidised",
+        "materials": "German silver, glass stones, beads",
+        "size": "Adjustable dori",
+        "care": "Keep dry, store in the pouch provided"
+      }
+    },
+    {
+      "id": 41,
+      "n": "Turquoise Silver Cuff",
+      "mk": "kutch",
+      "price": 1899,
+      "img": "cuff-turquoise",
+      "cat": "jewel",
+      "hi": "फ़िरोज़ा चाँदी का कड़ा",
+      "craft": "Silver & turquoise",
+      "d": {
+        "technique": "Hand-engraved, stone set",
+        "materials": "Silver-plated brass, turquoise",
+        "size": "Free size, open cuff",
+        "care": "Keep dry, store in the pouch provided"
+      }
+    },
+    {
+      "id": 42,
+      "n": "Silver Hasli Necklace Set",
+      "mk": "kutch",
+      "price": 2499,
+      "img": "hasli-silver",
+      "cat": "jewel",
+      "hi": "चाँदी का हँसली हार सेट",
+      "craft": "Oxidised silver",
+      "d": {
+        "technique": "Hand-forged hasli",
+        "materials": "German silver, mirror, pearls",
+        "size": "Free size",
+        "care": "Keep dry, store in the pouch provided"
+      }
+    },
+    {
+      "id": 43,
+      "n": "Silver Filigree Pendant Set, Green",
+      "mk": "kutch",
+      "price": 2299,
+      "img": "pendant-silver-green",
+      "cat": "jewel",
+      "hi": "चाँदी का फ़िलिग्री पेंडेंट सेट",
+      "craft": "Silver filigree",
+      "d": {
+        "technique": "Filigree, stone set",
+        "materials": "Silver-plated brass, green glass",
+        "size": "Chain 45 cm",
+        "care": "Keep dry, store in the pouch provided"
+      }
+    },
+    {
+      "id": 44,
+      "n": "Gold-plated Mirror Cuffs",
+      "mk": "kundan",
+      "price": 2999,
+      "img": "cuff-gold-mirror",
+      "cat": "jewel",
+      "hi": "सोने की पॉलिश वाले शीशे के कड़े",
+      "craft": "Gold-plated brass",
+      "d": {
+        "technique": "Hand-set, gold plated",
+        "materials": "Brass, mirror, amethyst beads",
+        "size": "Free size, open cuff",
+        "care": "Keep away from perfume and water"
+      }
+    },
+    {
+      "id": 45,
+      "n": "Kundan Bridal Necklace Set, Emerald",
+      "mk": "kundan",
+      "price": 6499,
+      "img": "necklace-kundan-emerald",
+      "cat": "jewel",
+      "hi": "कुंदन दुल्हन हार सेट, हरा",
+      "craft": "Kundan setting",
+      "was": 7499,
+      "d": {
+        "technique": "Kundan setting in lac and gold foil",
+        "materials": "Gold-plated brass, kundan, green beads",
+        "size": "Adjustable dori, with jhumkas",
+        "care": "Keep away from perfume and water"
+      }
+    },
+    {
+      "id": 46,
+      "n": "Kundan Necklace Set, Sapphire",
+      "mk": "kundan",
+      "price": 5999,
+      "img": "necklace-kundan-sapphire",
+      "cat": "jewel",
+      "hi": "कुंदन हार सेट, नीला",
+      "craft": "Kundan setting",
+      "d": {
+        "technique": "Kundan setting in lac and gold foil",
+        "materials": "Gold-plated brass, kundan, blue beads",
+        "size": "Adjustable dori, with jhumkas",
+        "care": "Keep away from perfume and water"
+      }
+    },
+    {
+      "id": 47,
+      "n": "Meenakari Necklace, Green Beads",
+      "mk": "kundan",
+      "price": 3999,
+      "img": "necklace-meenakari-green",
+      "cat": "jewel",
+      "hi": "मीनाकारी हार, हरे मोती",
+      "craft": "Meenakari enamel",
+      "d": {
+        "technique": "Meenakari enamel, hand-strung beads",
+        "materials": "Gold-plated brass, enamel, glass beads",
+        "size": "Adjustable dori",
+        "care": "Keep away from perfume and water"
+      }
+    },
+    {
+      "id": 48,
+      "n": "Chandbali Earrings, Blue Enamel",
+      "mk": "kundan",
+      "price": 1799,
+      "img": "earrings-chandbali",
+      "cat": "jewel",
+      "hi": "चाँदबाली झुमके, नीली मीनाकारी",
+      "craft": "Meenakari enamel",
+      "d": {
+        "technique": "Meenakari enamel, pearl drops",
+        "materials": "Gold-plated brass, enamel, pearls",
+        "size": "7 cm drop",
+        "care": "Keep away from perfume and water"
+      }
+    },
+    {
+      "id": 49,
+      "n": "Navratna Pendant Set",
+      "mk": "kundan",
+      "price": 4499,
+      "img": "pendant-navratna",
+      "cat": "jewel",
+      "hi": "नवरत्न पेंडेंट सेट",
+      "craft": "Kundan & meenakari",
+      "d": {
+        "technique": "Kundan setting, meenakari back",
+        "materials": "Gold-plated brass, nine coloured stones",
+        "size": "Chain 50 cm",
+        "care": "Keep away from perfume and water"
+      }
+    },
+    {
+      "id": 50,
+      "n": "Zardozi Mojari, Emerald",
+      "mk": "patiala",
+      "price": 1899,
+      "img": "mojari-emerald",
+      "cat": "foot",
+      "hi": "ज़रदोज़ी मोजड़ी, हरी",
+      "craft": "Zardozi embroidery",
+      "d": {
+        "technique": "Hand-stitched, zardozi embroidery",
+        "materials": "Leather, silk, metallic thread",
+        "size": "UK 4 – 11 (choose at checkout)",
+        "care": "Wipe clean, keep away from water"
+      }
+    },
+    {
+      "id": 51,
+      "n": "Leather Jutti with Brooch, Bottle Green",
+      "mk": "patiala",
+      "price": 1599,
+      "img": "jutti-green-leather",
+      "cat": "foot",
+      "hi": "चमड़े की जूती, हरी",
+      "craft": "Hand-stitched leather"
+    },
+    {
+      "id": 52,
+      "n": "Hand-tooled Leather Jutti, Tan",
+      "mk": "kolhapur",
+      "price": 1399,
+      "img": "jutti-tan-tooled",
+      "cat": "foot",
+      "hi": "नक्काशी वाली चमड़े की जूती",
+      "craft": "Hand-tooled leather"
+    },
+    {
+      "id": 53,
+      "n": "Embroidered Jutti, Emerald & Gold",
+      "mk": "patiala",
+      "price": 1499,
+      "img": "jutti-emerald-gold",
+      "cat": "foot",
+      "hi": "कढ़ाई वाली जूती, हरी-सुनहरी",
+      "craft": "Zari embroidery"
+    },
+    {
+      "id": 54,
+      "n": "Cowrie-shell Mojari, Tan",
+      "mk": "patiala",
+      "price": 1699,
+      "img": "mojari-cowrie",
+      "cat": "foot",
+      "hi": "कौड़ी वाली मोजड़ी",
+      "craft": "Thread & cowrie work"
+    },
+    {
+      "id": 55,
+      "n": "Embroidered Leather Brogues, Oxblood",
+      "mk": "kolhapur",
+      "price": 2999,
+      "img": "brogue-oxblood",
+      "cat": "foot",
+      "hi": "कढ़ाई वाले चमड़े के जूते",
+      "craft": "Hand-stitched leather",
+      "was": 3499
+    },
+    {
+      "id": 56,
+      "n": "Hand-stitched Leather Loafers, Brown",
+      "mk": "kolhapur",
+      "price": 2499,
+      "img": "loafer-brown",
+      "cat": "foot",
+      "hi": "हाथ से सिले चमड़े के लोफ़र",
+      "craft": "Hand-stitched leather"
+    },
+    {
+      "id": 57,
+      "n": "Celadon Floral Mug",
+      "mk": "khurja",
+      "price": 549,
+      "img": "mug-celadon",
+      "cat": "pottery",
+      "hi": "सेलाडॉन फूलदार मग",
+      "craft": "Glazed stoneware",
+      "d": {
+        "technique": "Wheel-thrown, carved, glazed",
+        "materials": "Stoneware, food-safe glaze",
+        "size": "Approx. 350 ml",
+        "care": "Dishwasher safe"
+      }
+    },
+    {
+      "id": 58,
+      "n": "Blue Pottery Mug, Floral",
+      "mk": "khurja",
+      "price": 599,
+      "img": "mug-blue-floral",
+      "cat": "pottery",
+      "hi": "नीली मिट्टी का मग",
+      "craft": "Blue pottery",
+      "d": {
+        "technique": "Hand-painted under glaze",
+        "materials": "Stoneware, food-safe glaze",
+        "size": "Approx. 350 ml",
+        "care": "Hand wash"
+      }
+    },
+    {
+      "id": 59,
+      "n": "Glazed Ceramic Vase Trio",
+      "mk": "khurja",
+      "price": 1899,
+      "img": "vase-trio",
+      "cat": "pottery",
+      "hi": "चमकदार सिरेमिक फूलदान तिकड़ी",
+      "craft": "Glazed stoneware",
+      "was": 2199,
+      "d": {
+        "technique": "Wheel-thrown, carved, glazed",
+        "materials": "Stoneware",
+        "size": "Tallest 22 cm",
+        "care": "Dust with a dry cloth"
+      }
+    },
+    {
+      "id": 60,
+      "n": "Peacock Cut-work Vase",
+      "mk": "khurja",
+      "price": 1499,
+      "img": "vase-peacock-cutwork",
+      "cat": "pottery",
+      "hi": "मोर कट-वर्क फूलदान",
+      "craft": "Cut-work ceramic",
+      "d": {
+        "technique": "Hand-cut, painted, glazed",
+        "materials": "Stoneware, wire trim",
+        "size": "Approx. 26 cm",
+        "care": "Dust with a dry cloth"
+      }
+    },
+    {
+      "id": 61,
+      "n": "Celadon Round Vase",
+      "mk": "khurja",
+      "price": 1299,
+      "img": "vase-celadon-round",
+      "cat": "pottery",
+      "hi": "सेलाडॉन गोल फूलदान",
+      "craft": "Glazed stoneware",
+      "d": {
+        "technique": "Wheel-thrown, carved, glazed",
+        "materials": "Stoneware",
+        "size": "Approx. 20 cm",
+        "care": "Dust with a dry cloth"
+      }
+    },
+    {
+      "id": 62,
+      "n": "Teal Bottle Vase, Wire Trim",
+      "mk": "khurja",
+      "price": 899,
+      "img": "vase-teal-bottle",
+      "cat": "pottery",
+      "hi": "तार सजावट वाला नीला फूलदान",
+      "craft": "Glazed stoneware",
+      "d": {
+        "technique": "Wheel-thrown, painted, glazed",
+        "materials": "Stoneware, copper wire",
+        "size": "Approx. 24 cm",
+        "care": "Dust with a dry cloth"
+      }
+    },
+    {
+      "id": 63,
+      "n": "Terracotta Matka, Rope Handle",
+      "mk": "ramesh",
+      "price": 649,
+      "img": "matka-terracotta",
+      "cat": "pottery",
+      "hi": "टेराकोटा मटका",
+      "craft": "Wheel-thrown terracotta",
+      "d": {
+        "technique": "Wheel-thrown, low-fired",
+        "materials": "Terracotta, jute rope",
+        "size": "Approx. 22 cm",
+        "care": "Rinse with water, air dry"
+      }
+    },
+    {
+      "id": 64,
+      "n": "Carved Terracotta Vase, Large",
+      "mk": "ramesh",
+      "price": 1799,
+      "img": "vase-terracotta-carved",
+      "cat": "pottery",
+      "hi": "नक्काशीदार टेराकोटा फूलदान",
+      "craft": "Carved terracotta",
+      "d": {
+        "technique": "Wheel-thrown, hand-carved",
+        "materials": "Terracotta, cane handle",
+        "size": "Approx. 36 cm",
+        "care": "Dust with a dry cloth"
+      }
+    },
+    {
+      "id": 65,
+      "n": "Hand-painted Matka, Paisley",
+      "mk": "ramesh",
+      "price": 1249,
+      "img": "matka-painted",
+      "cat": "pottery",
+      "hi": "हाथ से रंगा मटका",
+      "craft": "Painted terracotta",
+      "d": {
+        "technique": "Wheel-thrown, hand-painted",
+        "materials": "Terracotta, acrylic colours",
+        "size": "Approx. 26 cm",
+        "care": "Dust with a dry cloth"
+      }
+    },
+    {
+      "id": 66,
+      "n": "Jute Tote, Chevron",
+      "mk": "assam",
+      "price": 499,
+      "img": "jute-tote-chevron",
+      "cat": "home",
+      "hi": "जूट का थैला, शेवरॉन",
+      "craft": "Woven jute",
+      "d": {
+        "technique": "Hand-woven, hand-stitched",
+        "materials": "Jute, cotton lining",
+        "size": "38 × 32 × 12 cm",
+        "care": "Spot clean"
+      }
+    },
+    {
+      "id": 67,
+      "n": "Hand-painted Jute Tote, Birds",
+      "mk": "assam",
+      "price": 799,
+      "img": "jute-tote-painted",
+      "cat": "home",
+      "hi": "हाथ से रंगा जूट का थैला",
+      "craft": "Painted jute",
+      "d": {
+        "technique": "Hand-woven, hand-painted",
+        "materials": "Jute, fabric colours",
+        "size": "38 × 32 × 12 cm",
+        "care": "Spot clean"
+      }
+    },
+    {
+      "id": 68,
+      "n": "Embroidered Table Runner, Lotus",
+      "mk": "assam",
+      "price": 899,
+      "img": "jute-runner",
+      "cat": "home",
+      "hi": "कढ़ाई वाला टेबल रनर",
+      "craft": "Jute embroidery",
+      "d": {
+        "technique": "Hand embroidery on jute",
+        "materials": "Jute, cotton thread",
+        "size": "150 × 35 cm",
+        "care": "Spot clean"
+      }
+    },
+    {
+      "id": 69,
+      "n": "Woven Jute Pendant Lamp",
+      "mk": "assam",
+      "price": 1699,
+      "img": "jute-lamp",
+      "cat": "home",
+      "hi": "जूट का लटकता लैंप",
+      "craft": "Woven jute",
+      "d": {
+        "technique": "Hand-woven on a cane frame",
+        "materials": "Jute rope, cane",
+        "size": "Approx. 35 cm tall; E27 holder",
+        "care": "Dust with a dry cloth"
+      }
+    },
+    {
+      "id": 70,
+      "n": "Braided Jute Basket with Handles",
+      "mk": "assam",
+      "price": 1099,
+      "img": "jute-basket-handles",
+      "cat": "home",
+      "hi": "जूट की टोकरी",
+      "craft": "Braided jute",
+      "d": {
+        "technique": "Hand-braided and coiled",
+        "materials": "Jute, cotton",
+        "size": "Approx. 40 cm across",
+        "care": "Spot clean"
+      }
+    },
+    {
+      "id": 71,
+      "n": "Macramé Jute Planter",
+      "mk": "assam",
+      "price": 699,
+      "img": "jute-planter-macrame",
+      "cat": "home",
+      "hi": "मैक्रैमे जूट गमला कवर",
+      "craft": "Macramé jute",
+      "d": {
+        "technique": "Hand-knotted macramé",
+        "materials": "Jute rope",
+        "size": "Fits a 20 cm pot",
+        "care": "Keep dry"
+      }
+    },
+    {
+      "id": 72,
+      "n": "Embroidered Jute Cushion Cover",
+      "mk": "assam",
+      "price": 849,
+      "img": "jute-cushion",
+      "cat": "home",
+      "hi": "कढ़ाई वाला जूट कुशन कवर",
+      "craft": "Jute embroidery",
+      "d": {
+        "technique": "Hand embroidery on jute",
+        "materials": "Jute, cotton thread",
+        "size": "45 × 45 cm",
+        "care": "Spot clean"
+      }
+    },
+    {
+      "id": 73,
+      "n": "Jute Wall Organiser, 6 Pockets",
+      "mk": "assam",
+      "price": 749,
+      "img": "jute-wall-organiser",
+      "cat": "home",
+      "hi": "जूट का दीवार ऑर्गनाइज़र",
+      "craft": "Woven jute",
+      "d": {
+        "technique": "Hand-woven, hand-stitched",
+        "materials": "Jute, wooden rod",
+        "size": "60 × 35 cm",
+        "care": "Dust with a dry cloth"
+      }
+    },
+    {
+      "id": 74,
+      "n": "Warli Village Painting, Red",
+      "mk": "warli",
+      "price": 2499,
+      "img": "warli-painting-red",
+      "cat": "art",
+      "hi": "वारली गाँव चित्र, लाल",
+      "craft": "Warli painting",
+      "d": {
+        "technique": "Rice-paste on geru, hand-painted",
+        "materials": "Cotton canvas, natural pigments, wood frame",
+        "size": "Approx. 40 × 40 cm, framed",
+        "care": "Keep out of direct sunlight"
+      }
+    },
+    {
+      "id": 75,
+      "n": "Warli Tarpa Dance Painting",
+      "mk": "warli",
+      "price": 2299,
+      "img": "warli-dance",
+      "cat": "art",
+      "hi": "वारली तारपा नृत्य चित्र",
+      "craft": "Warli painting",
+      "d": {
+        "technique": "Hand-painted with bamboo brush",
+        "materials": "Handmade paper, natural pigments, wood frame",
+        "size": "Approx. 40 × 40 cm, framed",
+        "care": "Keep out of direct sunlight"
+      }
+    },
+    {
+      "id": 76,
+      "n": "Gond Painting, Deer under the Tree",
+      "mk": "warli",
+      "price": 2999,
+      "img": "gond-deer",
+      "cat": "art",
+      "hi": "गोंड चित्र, पेड़ के नीचे हिरण",
+      "craft": "Gond painting",
+      "was": 3499,
+      "d": {
+        "technique": "Hand-painted dot and line work",
+        "materials": "Canvas, acrylic colours, wood frame",
+        "size": "Approx. 40 × 40 cm, framed",
+        "care": "Keep out of direct sunlight"
+      }
+    },
+    {
+      "id": 77,
+      "n": "Warli Mandala on Jute Board",
+      "mk": "warli",
+      "price": 1899,
+      "img": "warli-mandala",
+      "cat": "art",
+      "hi": "जूट बोर्ड पर वारली मंडल",
+      "craft": "Warli painting",
+      "d": {
+        "technique": "Hand-painted on jute",
+        "materials": "Jute, natural pigments, wood frame",
+        "size": "Approx. 35 × 35 cm",
+        "care": "Keep out of direct sunlight"
+      }
+    },
+    {
+      "id": 78,
+      "n": "Madhubani Durga Painting",
+      "mk": "meera",
+      "price": 3499,
+      "img": "madhubani-durga",
+      "cat": "art",
+      "hi": "मधुबनी दुर्गा चित्र",
+      "craft": "Madhubani painting",
+      "d": {
+        "technique": "Natural pigments, nib-pen line work",
+        "materials": "Handmade paper, wood frame",
+        "size": "Approx. 30 × 40 cm, framed",
+        "care": "Keep out of direct sunlight"
+      }
+    },
+    {
+      "id": 79,
+      "n": "Madhubani Tree of Life",
+      "mk": "meera",
+      "price": 2799,
+      "img": "madhubani-tree-of-life",
+      "cat": "art",
+      "hi": "मधुबनी जीवन वृक्ष",
+      "craft": "Madhubani painting",
+      "d": {
+        "technique": "Natural pigments, nib-pen line work",
+        "materials": "Handmade paper, wood frame",
+        "size": "Approx. 30 × 40 cm, framed",
+        "care": "Keep out of direct sunlight"
+      }
+    },
+    {
+      "id": 80,
+      "n": "Ajrakh Wall Panel, Indigo",
+      "mk": "priya",
+      "price": 3299,
+      "img": "ajrakh-wall-panel",
+      "cat": "art",
+      "hi": "अजरक दीवार पैनल, नील",
+      "craft": "Ajrakh block print",
+      "d": {
+        "technique": "Resist block printing, natural dyes",
+        "materials": "Cotton, natural indigo, wood frame",
+        "size": "Approx. 45 × 55 cm",
+        "care": "Dust with a dry cloth"
+      }
+    },
+    {
+      "id": 81,
+      "n": "Block-Print Triptych Frame, Indigo",
+      "mk": "priya",
+      "price": 2499,
+      "img": "block-print-triptych-indigo",
+      "cat": "art",
+      "hi": "ब्लॉक प्रिंट तीन-खाना फ़्रेम, नील",
+      "craft": "Hand block print",
+      "d": {
+        "technique": "Hand block printing, natural dyes",
+        "materials": "Cotton, wood frame",
+        "size": "Approx. 60 × 30 cm",
+        "care": "Dust with a dry cloth"
+      }
+    },
+    {
+      "id": 82,
+      "n": "Block-Print Triptych Frame, Madder",
+      "mk": "priya",
+      "price": 2499,
+      "img": "block-print-triptych-red",
+      "cat": "art",
+      "hi": "ब्लॉक प्रिंट तीन-खाना फ़्रेम, लाल",
+      "craft": "Hand block print",
+      "d": {
+        "technique": "Hand block printing, natural dyes",
+        "materials": "Cotton, wood frame",
+        "size": "Approx. 60 × 30 cm",
+        "care": "Dust with a dry cloth"
+      }
     }
   ]
 }

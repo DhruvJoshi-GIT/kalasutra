@@ -5,7 +5,9 @@
    comments are simulated here and kept in localStorage['ks-demo'].
    Nothing here is billed or persisted anywhere else. */
 const DEMO_CODE = '123456';
-function demoStore(){ return db.get('ks-demo', {seq:1, addrs:[], pays:[], orders:[], reviews:{}, comments:{}}); }
+function demoStore(){ const d = db.get('ks-demo', {seq:1, addrs:[], pays:[], orders:[], reviews:{}, comments:{}}); d.listings = d.listings || []; return d; }
+/* listings a maker created in demo mode (studio photo + copy) — merged into the catalogue when the site is offline */
+function demoListings(){ return demoStore().listings; }
 function demoSave(d){ db.set('ks-demo', d); return d; }
 function demoDigits(phone){ const d=String(phone||'').replace(/\D/g,''); return d.length>10 ? d.slice(-10) : d; }
 function demoMakerForPhone(phone){ const m=/^98110000(\d\d)$/.exec(demoDigits(phone)); if(!m) return null; const slug=Object.keys(MAKERS)[Number(m[1])-1]; return slug ? {slug, ...MAKERS[slug]} : null; }
@@ -56,11 +58,21 @@ async function demoApi(path, method, body){
   /* reviews + comments per product */
   const rc=/^\/products\/(\d+)\/(reviews|comments)$/.exec(p);
   if(rc){ const pid=rc[1], kind=rc[2]; const list=d[kind][pid]||(d[kind][pid]=[]);
-    if(method==='POST'){ if(!String(body.text||'').trim()) throw new Error('Write something first'); const name=(body.name||session.user?.name||'Guest').trim();
+    if(method==='POST'){ if(!String(body.text||'').trim()) throw new Error('Write something first'); const name=(body.name||session?.user?.name||'Guest').trim();
       if(kind==='reviews'){ if(!(body.stars>=1)) throw new Error('Pick a star rating'); const i=list.findIndex(r=>r.name===name); const r={id:d.seq++, stars:body.stars, text:body.text, name, date:new Date().toISOString()}; if(i>=0) list[i]=r; else list.unshift(r); }
       else list.unshift({id:d.seq++, text:body.text, name, date:new Date().toISOString(), answer:null});
       demoSave(d); }
     return list; }
   if(p==='/enquiries' && method==='POST'){ need(); return {id:d.seq++, status:'OPEN'}; }
+  /* seller listings (the studio flow) — kept in this browser */
+  if(p==='/artisan/products'){ need(); const slug=session?.user?.artisanSlug; if(!slug){ const e=new Error('Seller account required'); e.status=403; throw e; }
+    if(method==='POST'){
+      if(!String(body.name||'').trim()) throw new Error('Give the piece a name'); if(!(Number(body.price)>0)) throw new Error('Enter a price'); if(!body.imageData) throw new Error('Add a photo first');
+      const cat = CATS.some(c=>c.k===body.categorySlug) ? body.categorySlug : 'sarees';
+      const card = {id: 1000+d.seq++, slug:'demo-'+Date.now().toString(36), n:String(body.name).trim(), hi:body.nameHi||'', mk:slug, price:Number(body.price), was:null, img:body.imageData, cat, craft:body.craft||'', d:{...(DEF[cat]||DEF.home)}, stock:12, isFeatured:false, aiStatus:'AI_ENHANCED', description:body.description||''};
+      d.listings.push(card); try{ demoSave(d); if(!db.get('ks-demo',{}).listings?.some(x=>x.id===card.id)) throw 0; }catch(e){ throw new Error('This browser is out of storage space for more demo listings'); } return card; }
+    return d.listings.filter(x=>x.mk===slug); }
+  if(p.startsWith('/artisan/products/') && method==='DELETE'){ need(); d.listings=d.listings.filter(x=>x.id!==Number(id)); demoSave(d); P=P.filter(x=>x.id!==Number(id)); return {ok:true}; }
+  if(p==='/ai/studio') return {server:false, provider:'browser', mode:'demo'};
   throw new Error('Not available in demo mode — this needs the KalaSutra server');
 }

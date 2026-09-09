@@ -1,4 +1,4 @@
-"""Idempotent seed: categories, makers (users + profiles), the 25 real products, a demo buyer, an admin.
+"""Idempotent seed: categories, makers (users + profiles), the real products from data/seed_products.json, a demo buyer, an admin.
 
     python scripts/seed.py            # upserts by slug / email / phone
 """
@@ -95,8 +95,11 @@ def run() -> None:
             prod.is_featured = p["id"] in (3, 12, 7, 15, 23, 1, 17, 11)
             prod.tags = [p["cat"], p.get("craft") or ""]
             db.flush()
+            url = f"img/{p['img']}.jpg"
             if not prod.images:
-                db.add(ProductImage(product_id=prod.id, url=f"img/{p['img']}.jpg", alt=p["n"], position=0))
+                db.add(ProductImage(product_id=prod.id, url=url, alt=p["n"], position=0))
+            elif prod.images[0].url != url:          # photo replaced in the seed data
+                prod.images[0].url, prod.images[0].alt = url, p["n"]
 
         # demo buyer + admin
         for email, name, role in (("demo@kalasutra.in", "Demo Buyer", Role.USER), ("admin@kalasutra.in", "Admin", Role.ADMIN)):

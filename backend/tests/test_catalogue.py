@@ -7,9 +7,9 @@ def test_bootstrap_has_the_prototype_catalogue(client):
     r = client.get("/api/catalogue/bootstrap")
     assert r.status_code == 200
     data = r.json()["data"]
-    assert len(data["categories"]) == 7
-    assert len(data["makers"]) == 11
-    assert len(data["products"]) == 25
+    assert len(data["categories"]) == 8
+    assert len(data["makers"]) == 14
+    assert len(data["products"]) == 82
     p = data["products"][0]
     for key in ("id", "slug", "n", "mk", "price", "img", "cat", "craft", "d"):
         assert key in p
@@ -20,7 +20,7 @@ def test_bootstrap_has_the_prototype_catalogue(client):
 
 def test_products_filter_sort_search(client):
     jewel = client.get("/api/products", params={"category": "jewel"}).json()
-    assert jewel["meta"]["total"] == 6 and all(p["cat"] == "jewel" for p in jewel["data"])
+    assert jewel["meta"]["total"] == 18 and all(p["cat"] == "jewel" for p in jewel["data"])
     asc = client.get("/api/products", params={"sort": "price-asc", "limit": 100}).json()["data"]
     prices = [p["price"] for p in asc]
     assert prices == sorted(prices)
@@ -31,8 +31,8 @@ def test_products_filter_sort_search(client):
 
 
 def test_product_detail_and_maker(client):
-    p = client.get("/api/products/saree-cream").json()["data"]
-    assert p["maker"]["slug"] == "priya" and p["images"] == ["img/saree-cream.jpg"]
+    p = client.get("/api/products/saree-bagru-white").json()["data"]
+    assert p["maker"]["slug"] == "priya" and p["images"] == ["img/saree-bagru-white.jpg"]
     assert isinstance(p["reviewCount"], int) and p["reviewCount"] >= 0
     m = client.get("/api/makers/priya").json()["data"]
     assert m["maker"]["n"] == "Priya Devi" and len(m["products"]) >= 5

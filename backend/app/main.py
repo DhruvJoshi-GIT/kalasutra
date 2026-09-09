@@ -10,7 +10,7 @@ from sqlalchemy import text
 
 from app.config import settings
 from app.db import engine
-from app.routers import auth, buyer, catalogue, social
+from app.routers import ai, artisan, auth, buyer, catalogue, social
 
 API = "/api"
 
@@ -38,6 +38,8 @@ def create_app() -> FastAPI:
     app.include_router(catalogue.router, prefix=API)
     app.include_router(buyer.router, prefix=API)
     app.include_router(social.router, prefix=API)
+    app.include_router(artisan.router, prefix=API)
+    app.include_router(ai.router, prefix=API)
 
     web = settings.web_path if settings.serve_web else None
     if web is not None:

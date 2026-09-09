@@ -23,11 +23,24 @@ const DEF = {
   home:{technique:'Hand-made and hand-painted',materials:'Cane, bamboo, terracotta, marble, wood',size:'See listing photo for scale',care:'Dust with a dry cloth'},
   art:{technique:'Natural pigments, hand-painted',materials:'Paper, wood, cloth',size:'Approx. 25 cm',care:'Keep out of direct sunlight'},
   toys:{technique:'Hand-carved, hand-painted',materials:'Wood, cloth, non-toxic paint',size:'Approx. 30 cm tall',care:'Wipe clean; not for children under 3'},
+  pottery:{technique:'Wheel-thrown, hand-finished',materials:'Stoneware / terracotta, food-safe glaze',size:'See listing photo for scale',care:'Hand wash, dust with a dry cloth'},
 };
+/* the opening slider: full-width banners, one per craft family (never cropped — the box keeps the image's own 3.2:1 ratio) */
+const BANNERS = [
+  {img:'img/banner-sarees.jpg',    href:'#shop/sarees',  alt:'Timeless sarees — woven with patience, draped in tradition'},
+  {img:'img/banner-jewellery.jpg', href:'#shop/jewel',   alt:'Exquisite Indian jewellery'},
+  {img:'img/banner-jute.jpg',      href:'#shop/home',    alt:'Handcrafted jute collectibles'},
+  {img:'img/banner-menswear.jpg',  href:'#shop/men',     alt:'Regal kurtas and sherwanis'},
+  {img:'img/banner-pottery.jpg',   href:'#shop/pottery', alt:'Master artisan crafts — pottery'},
+  {img:'img/banner-footwear.jpg',  href:'#shop/foot',    alt:'Classic Kolhapuris'},
+  {img:'img/banner-art.jpg',       href:'#shop/art',     alt:'Handcrafted Adivasi art'},
+];
 let FEATURED = [];            // filled from the catalogue (isFeatured)
 let P = [];                   // products, from GET /api/catalogue/bootstrap
 let MAKERS = {};              // makers by slug, same call
 const fmt = n => '₹' + Math.round(n).toLocaleString('en-IN');
 const esc = s => String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const pic = p => `<img src="${p.img}" alt="${esc(p.n)}" loading="lazy">`;
+/* tiles load the 520px thumbnail (img/t/…), the popup loads the full photo; uploaded / data-URL images are used as they are */
+const thumb = src => (src && src.startsWith('img/') && !src.startsWith('img/t/')) ? 'img/t/' + src.slice(4) : src;
+const pic = (p, full=false) => `<img src="${full ? p.img : thumb(p.img)}" alt="${esc(p.n)}" loading="lazy" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='${p.img}'}">`;
 const maker = p => MAKERS[p.mk];

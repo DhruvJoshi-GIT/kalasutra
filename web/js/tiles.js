@@ -11,22 +11,15 @@ function sortList(l){ const a=[...l]; switch(state.sort){
   default: return a.sort((x,y)=>y.id-x.id); } }
 function setSort(v){ state.sort=v; const g=document.getElementById('shopArea'); if(g) g.innerHTML=shopArea(); }
 const sortSel = () => `<select class="sortsel" onchange="setSort(this.value)" title="Sort">${Object.entries(SORTS).map(([k,v])=>`<option value="${k}" ${state.sort===k?'selected':''}>${v}</option>`).join('')}</select>`;
+/* opening slider: full-width banners (BANNERS in data.js), each a link to its category; the box has the
+   banners' own 3.2:1 ratio, so nothing is ever cropped — on a phone, a tablet or a 3440px monitor */
 let featI = 0, featT = null;
 function featured(){
-  const items = FEATURED.map(byId).filter(Boolean); if(!items.length) return '';
-  const ctrl = `<div class="ctrl" onclick="event.stopPropagation()"><span class="nav press" onclick="featGo(-1)">‹</span><span class="dots">${items.map((_,k)=>`<span class="d ${k===featI?'on':''}" onclick="featGo(${k},true)"></span>`).join('')}</span><span class="nav press" onclick="featGo(1)">›</span></div>`;
-  const slide = p => { const m = maker(p); return `<div class="fslide">
-    <div class="ph" onclick="openProduct(${p.id})">${pic(p)}<span class="tag">From the workshop</span>${ctrl}</div>
-    <div class="tx">
-      <div class="who"><img src="${m.img||''}" alt=""><div><div style="font-weight:700">${esc(m.n)}</div><span class="label muted">${esc(m.craft)} · ${esc(m.place)}</span></div></div>
-      <h2>${esc(p.n)}</h2>
-      <q>${esc(m.en.split('. ').slice(0,2).join('. ').replace(/\.$/,''))}.</q>
-      <div class="pr">${fmt(p.price)}${p.was?` <s class="mono muted" style="font:400 14px 'IBM Plex Mono'">${fmt(p.was)}</s>`:''}</div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn ink neo" onclick="openProduct(${p.id})">See the piece</button><a class="btn neo" href="#artist/${p.mk}">Meet the maker</a></div>
-    </div>
-  </div>`; };
+  if(!BANNERS.length) return '';
+  const ctrl = `<div class="ctrl"><span class="nav press" onclick="featGo(-1)" title="Previous">‹</span><span class="dots">${BANNERS.map((_,k)=>`<span class="d ${k===featI?'on':''}" onclick="featGo(${k},true)"></span>`).join('')}</span><span class="nav press" onclick="featGo(1)" title="Next">›</span></div>`;
+  const slide = b => `<a class="fslide" href="${b.href}" draggable="false"><img src="${b.img}" srcset="${b.img.replace('.jpg','-s.jpg')} 900w, ${b.img} 1923w" sizes="100vw" alt="${esc(b.alt)}" draggable="false"></a>`;
   return `<div class="feat" onmouseenter="clearInterval(featT)" onmouseleave="featArm()">
-    <div class="ftrack" id="ftrack" style="transform:translateX(-${featI*100}%)">${items.map(slide).join('')}</div>
+    <div class="ftrack" id="ftrack" style="transform:translateX(-${featI*100}%)">${BANNERS.map(slide).join('')}</div>${ctrl}
   </div>`;
 }
 function featGo(n, abs){
@@ -37,4 +30,9 @@ function featGo(n, abs){
   featArm();
 }
 function featArm(){ clearInterval(featT); featT = setInterval(()=>{ if(document.getElementById('ftrack') && !document.hidden) featGo(1); }, 5000); }
+/* swipe on touch screens: a horizontal flick moves the slider and does not follow the banner link */
+let swX = null, swY = null, swT = 0;
+document.addEventListener('touchstart', e=>{ if(!e.target.closest('.feat')){ swX=null; return; } swX=e.touches[0].clientX; swY=e.touches[0].clientY; }, {passive:true});
+document.addEventListener('touchend', e=>{ if(swX==null) return; const dx=e.changedTouches[0].clientX-swX, dy=e.changedTouches[0].clientY-swY; swX=null; if(Math.abs(dx)>36 && Math.abs(dx)>Math.abs(dy)){ featGo(dx<0?1:-1); swT=Date.now(); } }, {passive:true});
+document.addEventListener('click', e=>{ if(Date.now()-swT<600 && e.target.closest('.fslide')){ e.preventDefault(); e.stopPropagation(); } }, true);
 const filtered = () => allP().filter(p => (state.cat==='all' || p.cat===state.cat) && (!state.q || (p.n+' '+(p.hi||'')+' '+p.craft+' '+maker(p).n+' '+maker(p).place+' '+catName(p.cat)).toLowerCase().includes(state.q.toLowerCase())));

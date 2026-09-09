@@ -23,6 +23,8 @@ services:
         value: live
       - key: AI_MODE
         value: fixture
+      - key: FAL_KEY
+        sync: false            # PHOTO STUDIO: paste your fal.ai key here (fal.ai/dashboard/keys) — that is the only step; leave empty = on-device studio
       - key: OTP_DEV_MODE
         value: "1"
       - key: OTP_DEV_CODE
