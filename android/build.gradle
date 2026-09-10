@@ -1,0 +1,4 @@
+// KalaSutra Android — the site (web/) bundled inside a WebView shell, model included.
+plugins {
+    id 'com.android.application' version '8.7.3' apply false
+}

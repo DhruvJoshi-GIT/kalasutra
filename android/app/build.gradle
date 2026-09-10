@@ -1,0 +1,59 @@
+plugins { id 'com.android.application' }
+
+// The whole site (web/: HTML, JS, CSS, photos, catalogue snapshot and the 75 MB on-device
+// background-removal model in web/vendor/bg) is copied into the APK's assets at build time,
+// so the app runs entirely offline and never downloads the model.
+def webSrc = rootProject.file('../web')
+def webOut = layout.buildDirectory.dir('webassets').get().asFile
+tasks.register('copyWebAssets', Copy) {
+    from(webSrc) { into 'web' }
+    into webOut
+}
+
+android {
+    namespace 'live.kalasutra.app'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'live.kalasutra.app'
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName '0.1.0-beta'
+    }
+
+    signingConfigs {
+        beta {
+            // Throwaway self-signed key for sideloaded beta builds (not a store key).
+            storeFile rootProject.file('keystore/kalasutra-beta.jks')
+            storePassword 'kalasutra'
+            keyAlias 'kalasutra'
+            keyPassword 'kalasutra'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.beta
+        }
+        debug { signingConfig signingConfigs.beta }
+    }
+
+    sourceSets { main { assets.srcDirs += webOut } }
+
+    androidResources { noCompress 'json', 'mjs', 'wasm' }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+tasks.named('preBuild') { dependsOn 'copyWebAssets' }
+
+dependencies {
+    implementation platform('org.jetbrains.kotlin:kotlin-bom:1.8.22')   // aligns the stdlib pulled in by AndroidX
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.webkit:webkit:1.12.1'
+}

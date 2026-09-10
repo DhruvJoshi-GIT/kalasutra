@@ -4,6 +4,7 @@
   let saved = null; try{ saved = localStorage.getItem('ks-api'); }catch(e){}
   const host = location.hostname;
   const guess = host.endsWith('kalasutra.live') ? 'https://api.kalasutra.live/api'
+            : host === 'appassets.androidplatform.net' ? 'https://api.kalasutra.live/api'   // the Android app (site bundled in the APK)
             : host.endsWith('github.io') ? 'https://kalasutra-api.onrender.com/api'
             : location.origin + '/api';
   window.KS_CONFIG = { API_URL: saved || guess };

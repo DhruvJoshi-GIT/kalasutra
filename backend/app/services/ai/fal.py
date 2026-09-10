@@ -3,7 +3,7 @@
 Live mode needs FAL_KEY (https://fal.ai/dashboard/keys). Without it the fixture cutout in image.py answers,
 so every route keeps working; the browser then prefers its own on-device model (web/js/studio.js).
 
-Endpoint shape is UNVERIFIED until the first live call — see api-notes.md; `scripts/verify_fal.py` checks it.
+Endpoint shape is UNVERIFIED until the first live call — see docs/api-notes.md; `scripts/verify_fal.py` checks it.
 """
 from __future__ import annotations
 
