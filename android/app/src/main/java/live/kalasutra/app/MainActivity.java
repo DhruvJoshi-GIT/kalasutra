@@ -1,9 +1,12 @@
 package live.kalasutra.app;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.speech.RecognizerIntent;
+import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
@@ -20,8 +23,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import androidx.webkit.WebViewAssetLoader;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Locale;
 
 /**
@@ -31,6 +37,9 @@ import java.util.Locale;
  * background-removal model, so browsing, the seller flow and the photo studio all work
  * with no network. The API (api.kalasutra.live) is used when reachable; otherwise the
  * site's own demo mode takes over, exactly as on kalasutra.live.
+ *
+ * The page can also use the phone's own speech recogniser: the site calls
+ * {@code KSNative.dictate(lang)} and receives the text in {@code window.onNativeDictation(text, err)}.
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -55,6 +64,45 @@ public class MainActivity extends AppCompatActivity {
                 cameraUri = null;
             });
 
+    /** The phone's speech recogniser (Google / vendor app), launched from the page's Dictate button. */
+    private final ActivityResultLauncher<Intent> dictationLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), r -> {
+                String text = null;
+                if (r.getResultCode() == RESULT_OK && r.getData() != null) {
+                    ArrayList<String> results = r.getData().getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    if (results != null && !results.isEmpty()) text = results.get(0);
+                }
+                dictationResult(text, text == null ? "cancelled" : null);
+            });
+
+    /** Exposed to the page as {@code window.KSNative}. */
+    private class NativeBridge {
+        @JavascriptInterface
+        public boolean canDictate() { return true; }
+
+        @JavascriptInterface
+        public void dictate(final String lang) { runOnUiThread(() -> startDictation(lang)); }
+    }
+
+    private void startDictation(String lang) {
+        Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+                .putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                .putExtra(RecognizerIntent.EXTRA_LANGUAGE, lang == null || lang.isEmpty() ? "hi-IN" : lang)
+                .putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.dictate_prompt));
+        try {
+            dictationLauncher.launch(i);
+        } catch (ActivityNotFoundException e) {
+            dictationResult(null, "unavailable");
+        }
+    }
+
+    private void dictationResult(String text, String err) {
+        String js = "window.onNativeDictation && onNativeDictation("
+                + (text == null ? "null" : JSONObject.quote(text)) + ","
+                + (err == null ? "null" : JSONObject.quote(err)) + ")";
+        web.evaluateJavascript(js, null);
+    }
+
     @Override
     protected void onCreate(Bundle saved) {
         super.onCreate(saved);
@@ -72,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
         st.setLoadWithOverviewMode(true);
         st.setTextZoom(100);
         st.setCacheMode(WebSettings.LOAD_DEFAULT);
+        web.addJavascriptInterface(new NativeBridge(), "KSNative");
 
         final WebViewAssetLoader.AssetsPathHandler assets = new WebViewAssetLoader.AssetsPathHandler(this);
         final WebViewAssetLoader loader = new WebViewAssetLoader.Builder()

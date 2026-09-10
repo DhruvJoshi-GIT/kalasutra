@@ -179,15 +179,17 @@ S.upload = () => { if(!session?.user?.artisanSlug) return sellerGate('Add a prod
         ${ph ? `<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn neo sm" href="#studio">✦ Change look</a><button class="btn neo sm" onclick="studioPick()">Retake</button></div>` : ''}
       </div>
       <div class="box" style="padding:16px;display:flex;flex-direction:column;gap:12px">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="label">2 · Description <span class="hi muted" style="font-weight:500">· विवरण</span></span><span class="label muted" id="descState">${ph?'photo ready · speak or generate':'waiting for photo'}</span></div>
-        <div class="field"><span class="label muted">Category · श्रेणी</span><select id="catSel" onchange="listing.cat=this.value">${CATS.filter(c=>c.k!=='all').map(c=>`<option value="${c.k}" ${c.k===listing.cat?'selected':''}>${esc(c.n)}</option>`).join('')}</select></div>
-        <div id="descBox" class="box" style="min-height:150px;padding:12px;font-size:14px;line-height:1.6;background:${listing.descHtml?'var(--bg)':'var(--sec)'}">${listing.descHtml || `<span class="muted">Describe it by voice, or let the app write it from the photo.</span>`}</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn neo" id="voiceBtn" onclick="doDescribe()" ${ph?'':'disabled'}>🎙 Describe by voice</button><button class="btn neo" id="editBtn" onclick="editDesc()" ${listing.descHtml?'':'disabled'}>Edit</button></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="label">2 · Description <span class="hi muted" style="font-weight:500">· विवरण</span></span><span class="label muted" id="descState">${listing.desc.trim()?'✓ written':'type it, or dictate'}</span></div>
+        <div class="field"><span class="label muted">Category · श्रेणी</span><select id="catSel" onchange="descChanged()">${CATS.filter(c=>c.k!=='all').map(c=>`<option value="${c.k}" ${c.k===listing.cat?'selected':''}>${esc(c.n)}</option>`).join('')}</select></div>
+        <div class="field"><span class="label muted">Name of the piece · नाम</span><input id="titleInput" placeholder="e.g. Hand block-printed cotton saree" value="${esc(listing.title)}" oninput="descChanged()" autocomplete="off"></div>
+        <div class="field"><span class="label muted">Description · विवरण</span><textarea id="descInput" rows="5" placeholder="What it is, how you made it, the materials, size and care. Type here in any language, or tap 🎙 to speak." oninput="descChanged()">${esc(listing.desc)}</textarea></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><button class="btn ink neo" id="voiceBtn" onclick="dictate()">🎙 Dictate</button><select id="langSel" title="Dictation language" style="width:auto;min-height:0;padding:8px 10px;font-size:13px" onchange="listing.lang=this.value;try{localStorage.setItem('ks-lang',this.value)}catch(e){}">${langOptions()}</select><button class="btn neo sm" onclick="suggestCopy()" title="Fill in sample text for this category, then edit it">Suggest text</button></div>
+        <div class="mono muted" id="voiceHint" style="font-size:11px;line-height:1.5">${voiceHint()}</div>
       </div>
       <div class="box" style="padding:16px;display:flex;flex-direction:column;gap:12px">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="label">3 · Price <span class="hi muted" style="font-weight:500">· दाम</span></span><span class="label muted" id="priceState">${listing.descHtml?'from 12 similar pieces':'waiting for description'}</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="label">3 · Price <span class="hi muted" style="font-weight:500">· दाम</span></span><span class="label muted" id="priceState">${listing.desc.trim()?'from 12 similar pieces':'waiting for description'}</span></div>
         <div id="priceBox" class="box mono" style="display:grid;grid-template-columns:repeat(3,1fr);overflow:hidden">${priceBand(listing.band)}</div>
-        <div class="field"><span class="label">Your price (₹)</span><input id="priceInput" placeholder="${listing.band?listing.band[1]+' suggested':'—'}" value="${esc(listing.price||'')}" oninput="check()" ${listing.descHtml?'':'disabled'} inputmode="numeric"></div>
+        <div class="field"><span class="label">Your price (₹)</span><input id="priceInput" placeholder="${listing.band?listing.band[1]+' suggested':'—'}" value="${esc(listing.price||'')}" oninput="check()" ${listing.desc.trim()?'':'disabled'} inputmode="numeric"></div>
       </div>
       <div class="box" style="padding:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
         <span class="label" style="align-self:flex-start">4 · Submit</span>
@@ -251,7 +253,7 @@ S.artist = (key='priya') => { const m = MAKERS[key]||Object.values(MAKERS)[0]; i
 /* screens that run code after they are painted */
 const MOUNT = {
   studio: () => studioMount(),
-  upload: () => check(),
+  upload: () => descChanged(),
 };
 /* screens that need server data before they render */
 const LOAD = {

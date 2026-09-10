@@ -5,6 +5,7 @@
 
     <queries>
         <intent><action android:name="android.media.action.IMAGE_CAPTURE" /></intent>
+        <intent><action android:name="android.speech.action.RECOGNIZE_SPEECH" /></intent>
     </queries>
 
     <application
