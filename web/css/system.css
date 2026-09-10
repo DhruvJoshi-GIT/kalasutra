@@ -206,7 +206,7 @@ main.plain{padding-left:var(--pad)}
 /* wide screens: bigger photos, not more of them */
 @media (min-width:2200px){.grid.shop{grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr))}.card .n{font-size:15px}.card .p{font-size:18px}.card .craft{font-size:12px}.card .mk{font-size:11px}.card .mk img{width:24px;height:24px}}
 /* bottom nav (phones) */
-.bnav{display:none;position:fixed;left:0;right:0;bottom:0;z-index:55;background:var(--bg);border-top:2px solid var(--fg);padding:6px 6px calc(6px + env(safe-area-inset-bottom));grid-template-columns:repeat(5,1fr)}
+.bnav{display:none;position:fixed;left:0;right:0;bottom:0;z-index:55;background:var(--bg);border-top:2px solid var(--fg);padding:6px 4px calc(6px + env(safe-area-inset-bottom));grid-template-columns:repeat(6,1fr)}
 .bnav a{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border-radius:10px;font:700 9px 'IBM Plex Mono';letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
 .bnav a svg{width:22px;height:22px}
 .bnav a.on{color:var(--fg);background:var(--sec)}

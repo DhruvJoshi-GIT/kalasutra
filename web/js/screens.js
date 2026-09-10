@@ -86,6 +86,9 @@ S.account = (open='') => {
   const acc = (key,title,sub,body) => `<div class="acc-item ${open===key?'on':''}" id="acc-${key}"><div class="hd" onclick="this.parentElement.classList.toggle('on')"><div><div class="display" style="font-size:20px">${title}</div><div class="mono muted" style="font-size:12px;margin-top:4px">${sub}</div></div><span style="font-size:22px">›</span></div><div class="bd">${body}</div></div>`;
   return `
   <div class="sec"><h1>Your account</h1><span style="display:flex;gap:10px;align-items:center"><span class="label muted">${esc(session?.user?.email||session?.user?.phone||'')}</span><button class="btn sm neo" onclick="logout()">Sign out</button></span></div>
+  ${session?.user?.artisanSlug
+    ? `<div class="box" id="sellerCard" style="margin-top:16px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><span class="label" style="color:var(--acc)">Seller account · ${esc(MAKERS[session.user.artisanSlug]?.shop||user.name||'')}</span><div style="font-size:14px;margin-top:4px">Your shop, your listings and the photo studio. <span class="hi muted">· आपकी दुकान</span></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn acc neo" href="#upload">+ Add a product</a><a class="btn ink neo" href="#seller">My shop</a><a class="btn neo" href="#studio">✦ Studio</a></div></div>`
+    : `<div class="box" style="margin-top:16px;padding:12px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><span style="font-size:14px">Are you a maker? Sell your work on <span class="hi">कला</span>Sutra.</span><a class="btn acc neo sm" href="#login/seller">Seller login</a></div>`}
   <div class="split">
     <div>
       ${acc('addr','Address', addrs.length?`${addrs.length} saved`:'nothing saved yet',
@@ -115,7 +118,9 @@ S.account = (open='') => {
 };
 async function saveUser(f){ const d=Object.fromEntries(new FormData(f)); Object.keys(d).forEach(k=>{ if(d[k]==='') delete d[k]; }); try{ if(loggedIn()){ const u=await api('/me',{method:'PATCH',body:d}); session.user=u; db.set('ks-session',session); } user={...user,...d}; db.set('ks-user',user); toast('Saved'); render(); }catch(e){ toast(e.message) } return false; }
 
-S.login = (tab) => { if(tab==='seller'||tab==='buyer') state.tab=tab; const seller = state.tab==='seller'; return `
+S.login = (tab) => { if(tab==='seller'||tab==='buyer') state.tab=tab; const seller = state.tab==='seller';
+  if(seller && session?.user?.artisanSlug){ location.hash='#seller'; return `<div class="empty" style="margin:30px 0">Opening your shop…</div>`; }   // already signed in as a maker
+  return `
 <div class="box split login" style="grid-template-columns:clamp(320px,32vw,720px) minmax(0,1fr);gap:0;align-items:stretch;height:calc(100vh - 110px);min-height:560px;margin-top:20px;overflow:hidden">
   <div style="border-right:2px solid var(--fg);padding:clamp(24px,3vw,80px);display:flex;flex-direction:column;justify-content:center;gap:clamp(14px,1.2vw,28px)">
     <div style="display:flex;gap:8px"><button class="btn ${seller?'':'ink'} neo" onclick="state.tab='buyer';render()">Buyer</button><button class="btn ${seller?'ink':''} neo" onclick="state.tab='seller';render()">Maker / seller</button></div>

@@ -8,7 +8,7 @@ function paintBar(){
     <a class="icell press" href="#account" title="${loggedIn()?'Your account':'Sign in'}"><span class="k">${ICON.user}</span><span class="t">${loggedIn()?'Account':'Sign in'}</span></a>
     <a class="icell press" href="#cart" title="Cart"><span class="k">${ICON.cart}</span><span class="t">Cart</span><span class="badge">${cartCount()||''}</span></a>
     <a class="icell press" href="javascript:void(0)" onclick="togglePanel('wish')" title="Wishlist"><span class="k">${ICON.heart}</span><span class="t">Wishlist</span><span class="badge">${wish.length||''}</span></a>
-    <a class="icell press acc" href="javascript:void(0)" onclick="togglePanel('support')" title="Sell / Support"><span class="k">${ICON.rupee}</span><span class="t">Sell</span></a>
+    <a class="icell press acc" href="javascript:void(0)" onclick="togglePanel('support')" title="Sell / Support"><span class="k">${ICON.rupee}</span><span class="t">${session?.user?.artisanSlug?'My shop':'Sell'}</span></a>
     <a class="icell press" href="javascript:void(0)" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top"><span class="k">${ICON.up}</span><span class="t">Top</span></a>
   </div>`;
   paintTop(); paintBnav();
@@ -21,12 +21,14 @@ window.addEventListener('scroll', paintTop, {passive:true});
 function paintBnav(){
   const key = (location.hash||'#home').slice(1).split('/')[0];
   const on = k => (k===key || (k==='home' && key==='shop')) ? 'on' : '';
+  const seller = !!session?.user?.artisanSlug;   // a signed-in maker gets a direct "My shop" tab (the header's Sell button is hidden on phones)
   document.getElementById('bnav').innerHTML = `
     <a class="${on('home')}" href="#home">${ICON.home}<span>Home</span></a>
     <a data-cats class="${document.body.classList.contains('cats-open')?'on':''}" href="javascript:void(0)" onclick="toggleCats()">${ICON.grid}<span>Categories</span></a>
     <a class="${on('cart')}" href="#cart">${ICON.cart}<span>Cart</span><b class="badge">${cartCount()||''}</b></a>
     <a href="javascript:void(0)" onclick="togglePanel('wish')">${ICON.heart}<span>Wishlist</span><b class="badge">${wish.length||''}</b></a>
-    <a class="${on('account')||on('login')||on('seller')||on('upload')}" href="#account">${ICON.user}<span>Profile</span></a>`;
+    <a class="sell ${on('seller')||on('upload')||on('studio')||(seller?'':on('login'))}" href="${seller?'#seller':'#login/seller'}">${ICON.rupee}<span>${seller?'My shop':'Sell'}</span></a>
+    <a class="${on('account')||(seller?on('login'):'')}" href="#account">${ICON.user}<span>Profile</span></a>`;
 }
 function toggleCats(force){ const on = document.body.classList.toggle('cats-open', force); const a=document.querySelector('#bnav a[data-cats]'); if(a) a.classList.toggle('on', on); if(on) paintCap(currentCat()); }
 function paintCap(active){
@@ -38,7 +40,7 @@ function paintCap(active){
 }
 function toggleSide(){ document.body.classList.toggle('side-closed'); db.set('ks-side', document.body.classList.contains('side-closed')?'closed':'open'); paintCap(currentCat()); }
 function currentCat(){ const h=(location.hash||'#home').slice(1).split('/'); return h[0]==='shop' ? (h[1]||'all') : (h[0]==='home'?'all':''); }
-function togglePanel(id){ ['wish','support'].forEach(k=>{ const el=document.getElementById(k); el.classList.toggle('on', k===id ? !el.classList.contains('on') : false); }); if(id==='wish') paintWish(); }
+function togglePanel(id){ ['wish','support'].forEach(k=>{ const el=document.getElementById(k); el.classList.toggle('on', k===id ? !el.classList.contains('on') : false); }); if(id==='wish') paintWish(); if(id==='support') paintSupport(); }
 document.addEventListener('click', e=>{ if(!e.target.isConnected) return; if(!e.target.closest('.panel') && !e.target.closest('.icell') && !e.target.closest('.bnav')) document.querySelectorAll('.panel.on').forEach(p=>p.classList.remove('on')); if(document.body.classList.contains('cats-open') && !e.target.closest('.cap') && !e.target.closest('.bnav')) toggleCats(false); });
 function paintWish(){
   const items = wish.map(byId).filter(Boolean);
@@ -47,10 +49,18 @@ function paintWish(){
   <div style="padding:10px 14px;border-top:2px solid var(--fg)"><button class="btn ink neo" style="width:100%" onclick="wish.forEach(id=>addToCart(id));">Move all to cart</button></div>`
   : `<div style="padding:18px"><div class="empty">Nothing saved yet.<br>Tap ♥ on any product to keep it here.</div></div>`}`;
 }
-document.getElementById('support').innerHTML = `<h4>Sell &amp; support</h4>
+/* Sell & support panel: a signed-in maker gets their shop, "Add a product" and the studio; everyone else gets the seller login */
+function paintSupport(){
+  const slug = session?.user?.artisanSlug;
+  document.getElementById('support').innerHTML = `<h4>Sell &amp; support</h4>
   <div style="padding:14px;display:flex;flex-direction:column;gap:10px">
-    <a class="btn acc neo" href="#login/seller" onclick="togglePanel()">Open a shop → seller login</a>
+    ${slug ? `<a class="btn acc neo" href="#upload" onclick="togglePanel()">+ Add a product · नया प्रोडक्ट</a>
+    <a class="btn ink neo" href="#seller" onclick="togglePanel()">My shop → ${esc(MAKERS[slug]?.shop||MAKERS[slug]?.n||'')}</a>
+    <a class="btn neo" href="#studio" onclick="togglePanel()">✦ Photo studio</a>`
+    : `<a class="btn acc neo" href="#login/seller" onclick="togglePanel()">Open a shop → seller login</a>`}
     <div class="box" style="padding:12px"><div class="label muted">Contact</div><div class="mono" style="font-size:13px;margin-top:6px">Call 1800-[NUMBER]<br>WhatsApp: [NUMBER]<br>help@kalasutra.in</div></div>
     <div class="hi" style="font-size:13px">हिन्दी में मदद के लिए कॉल करें</div>
   </div>`;
+}
+paintSupport();
 function search(v){ state.q=v; const g=document.getElementById('shopArea'); if(g) g.innerHTML = shopArea(); else location.hash='#shop/all'; }
