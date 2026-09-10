@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import time
-from decimal import Decimal
+from decimal import ROUND_HALF_UP, Decimal
 
 from fastapi import HTTPException
 from sqlalchemy import select
@@ -15,6 +15,20 @@ from app.schemas.commerce import CartLine, OrderAddrOut, OrderLineOut, OrderOut,
 
 FREE_SHIPPING_FROM = Decimal("999")
 SHIPPING_FEE = Decimal("79")
+# Bulk pricing tiers (minimum pieces, discount) - the same table as BULK_TIERS in web/js/state.js
+BULK_TIERS = [(100, Decimal("0.20")), (50, Decimal("0.15")), (25, Decimal("0.10")), (10, Decimal("0.05"))]
+
+
+def bulk_rate(qty: int) -> Decimal:
+    for min_qty, rate in BULK_TIERS:
+        if qty >= min_qty:
+            return rate
+    return Decimal("0")
+
+
+def unit_price(price: Decimal, qty: int) -> Decimal:
+    """Per-piece price at this quantity, in whole rupees (rounded half up, as Math.round does in the UI)."""
+    return (price * (1 - bulk_rate(qty))).quantize(Decimal("1"), rounding=ROUND_HALF_UP)
 
 
 def shipping_for(subtotal: Decimal) -> Decimal:
@@ -54,10 +68,11 @@ def place_order(db: Session, user: User, address_id: int, payment_method_id: int
     subtotal = Decimal("0")
     for l in lines:
         p = products[l.id]
-        line_total = p.price * l.qty
+        unit = unit_price(p.price, l.qty)
+        line_total = unit * l.qty
         subtotal += line_total
         items.append(OrderItem(product_id=p.id, artisan_id=p.artisan_id, name=p.name, sku=p.sku,
-                               price=p.price, quantity=l.qty, total=line_total))
+                               price=unit, quantity=l.qty, total=line_total))
     ship = shipping_for(subtotal)
     order = Order(
         order_number=new_order_number(), user_id=user.id, address_id=addr.id,

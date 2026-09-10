@@ -71,3 +71,15 @@ def test_reviews_comments_enquiry(client, buyer):
     q = client.patch(f"/api/artisan/enquiries/{lst[0]['id']}", headers=priya, json={"status": "QUOTED", "quotedPrice": 1650})
     assert q.json()["data"]["status"] == "QUOTED" and q.json()["data"]["quotedPrice"] == 1650
     assert client.get("/api/artisan/enquiries", headers=buyer).status_code == 403
+
+
+def test_bulk_pricing(client, buyer):
+    # 50 pieces of product 1 (Rs 1899) get the 15% tier: Rs 1614 each, shipping free
+    a = client.post("/api/addresses", headers=buyer, json={"name": "Bulk Buyer", "phone": "9876543210", "line": "1 Bazaar", "city": "Jaipur", "state": "Rajasthan", "pin": "302001"}).json()["data"]
+    p = client.post("/api/payment-methods", headers=buyer, json={"type": "upi", "upi": "bulk@upi"}).json()["data"]
+    o = client.post("/api/orders", headers=buyer, json={"addressId": a["id"], "paymentMethodId": p["id"], "items": [{"id": 1, "qty": 50}, {"id": 8, "qty": 2}]})
+    assert o.status_code == 201, o.text
+    order = o.json()["data"]
+    assert order["items"][0]["price"] == 1614 and order["items"][0]["total"] == 1614 * 50
+    assert order["items"][1]["price"] == 349                      # 2 pieces: no discount
+    assert order["sub"] == 1614 * 50 + 2 * 349 and order["ship"] == 0

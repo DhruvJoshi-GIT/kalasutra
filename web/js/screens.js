@@ -22,7 +22,7 @@ S.cart = () => {
   <div class="sec"><h1>Your cart</h1><span class="label muted">${cartCount()} item${cartCount()===1?'':'s'}</span></div>
   <div class="split">
     <div>
-      ${items.length ? items.map(({p,qty})=>`<div class="crow"><div class="thumb" onclick="openProduct(${p.id})">${pic(p)}</div><div class="nm"><div style="font-weight:700;line-height:1.25">${esc(p.n)}</div><span class="label muted">${esc(maker(p).n)} · ${esc(maker(p).place)}</span><div class="mono muted" style="font-size:12px;margin-top:2px">${fmt(p.price)} each</div></div><div class="qty"><button onclick="setQty(${p.id},${qty-1});render()">−</button><span>${qty}</span><button onclick="setQty(${p.id},${qty+1});render()">+</button></div><span style="font-weight:900;min-width:90px;text-align:right">${fmt(p.price*qty)}</span><button class="btn sm ghost" title="Remove" onclick="removeFromCart(${p.id});render()">✕</button></div>`).join('')
+      ${items.length ? items.map(({p,qty})=>`<div class="crow"><div class="thumb" onclick="openProduct(${p.id})">${pic(p)}</div><div class="nm"><div style="font-weight:700;line-height:1.25">${esc(p.n)}</div><span class="label muted">${esc(maker(p).n)} · ${esc(maker(p).place)}</span><div class="mono muted" style="font-size:12px;margin-top:2px">${bulkRate(qty) ? `<s>${fmt(p.price)}</s> ${fmt(unitPrice(p,qty))} each · <b style="color:var(--ok)">bulk −${Math.round(bulkRate(qty)*100)}%</b>` : `${fmt(p.price)} each`}</div></div><div class="qty"><button onclick="setQty(${p.id},${qty-1});render()">−</button><span>${qty}</span><button onclick="setQty(${p.id},${qty+1});render()">+</button></div><span style="font-weight:900;min-width:90px;text-align:right">${fmt(unitPrice(p,qty)*qty)}</span><button class="btn sm ghost" title="Remove" onclick="removeFromCart(${p.id});render()">✕</button></div>`).join('')
       : `<div class="empty">Your cart is empty.<a class="btn ink neo" href="#shop/all">Shop the crafts</a></div>`}
       ${rel.length ? `<div class="sec" style="padding-top:26px"><h2 style="font-size:15px">You may also like</h2><span class="label muted">scroll →</span></div><div class="strip">${rel.map(card).join('')}</div>` : ''}
     </div>
@@ -236,7 +236,7 @@ S.artist = (key='priya') => { const m = MAKERS[key]||Object.values(MAKERS)[0]; i
           <h1 class="display" style="font-size:clamp(28px,3vw,50px)">${esc(m.shop)}</h1>
           <span class="mono" style="font-size:13px">${esc(m.craft)} · ${esc(m.place)} · since ${m.since} · ${work.length} listing${work.length===1?'':'s'}</span>
           <div class="box" style="padding:14px;font-size:15px;line-height:1.6">“${esc(m.en)}”</div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn acc neo" href="javascript:void(0)" onclick="openEnquiry('${key}')">Request a bulk quote</a></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn acc neo" href="javascript:void(0)" onclick="openQuote('${key}')">Get a bulk quote</a></div>
         </div>
       </div>
       <div class="sec"><h2>Work</h2><span class="label muted">${work.length} pieces</span></div>
@@ -281,6 +281,57 @@ async function buyerAuth(f, action){ const d=Object.fromEntries(new FormData(f))
   }catch(e){ toast(e.message) } return false; }
 async function otpRequest(f){ const phone=new FormData(f).get('phone'); try{ const r=await api('/auth/otp/request',{method:'POST',body:{phone}}); state.otpPhone=phone; state.devCode=r.devCode||''; render(); }catch(e){ toast(e.message) } return false; }
 async function otpVerify(f){ const code=new FormData(f).get('code'); try{ const data=await api('/auth/otp/verify',{method:'POST',body:{phone:state.otpPhone, code}}); await afterLogin(data); state.otpPhone=''; if(data.needsProfile){ toast('Welcome! Seller onboarding comes in the next build step'); location.hash='#account'; } else { location.hash='#seller'; } }catch(e){ toast(e.message) } return false; }
-async function openEnquiry(makerSlug){ if(!loggedIn()){ toast('Sign in to request a quote'); location.hash='#login'; return; } const m=MAKERS[makerSlug]; const first=P.find(p=>p.mk===makerSlug); if(!first) return;
-  const qty = prompt(`How many pieces of “${first.n}” do you need from ${m.n}?`, '50'); if(!qty) return;
-  try{ await api('/enquiries',{method:'POST',body:{productId:first.id, quantity:Number(qty)||1, message:'Bulk quote request from the maker page'}}); toast(`Quote request sent to ${m.n}`); }catch(e){ toast(e.message) } }
+/* ── bulk quotation: an instant quote from the tier rule, add to cart at that price, or ask the maker for a custom one ── */
+const quote = { mk:'', id:0, qty:50 };
+function openQuote(makerSlug, productId){
+  const m=MAKERS[makerSlug]; const work=P.filter(p=>p.mk===makerSlug); if(!m||!work.length){ toast('No pieces to quote yet'); return; }
+  const p = byId(productId) || work[0];
+  quote.mk=makerSlug; quote.id=p.id; quote.qty = quote.qty>=1 ? quote.qty : 50;
+  document.getElementById('modal').innerHTML = `<div style="position:relative;padding:clamp(18px,3vw,32px)">
+    <button class="btn sm ghost" style="position:absolute;right:10px;top:10px" onclick="closeProduct()" title="Close">✕</button>
+    <span class="label muted">Bulk quotation · थोक भाव</span>
+    <h2 class="display" style="font-size:clamp(22px,2.4vw,30px);margin:6px 0 14px">From ${esc(m.shop||m.n)}</h2>
+    <div class="field"><span class="label muted">Piece</span><select id="qProd" onchange="quoteUpdate()">${work.map(w=>`<option value="${w.id}" ${w.id===p.id?'selected':''}>${esc(w.n)} · ${fmt(w.price)}</option>`).join('')}</select></div>
+    <div class="field"><span class="label muted">How many pieces · कितने</span><input id="qQty" type="number" min="1" step="1" value="${quote.qty}" inputmode="numeric" oninput="quoteUpdate()"></div>
+    <div id="qCard">${quoteCard(p, quote.qty)}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
+      <button class="btn acc lg neo" id="qAdd" onclick="quoteAddToCart()">Add to cart · ${fmt(unitPrice(p,quote.qty)*quote.qty)}</button>
+      <button class="btn neo" onclick="quoteAsk()">Ask ${esc((m.n||'the maker').split(' ')[0])} for a custom quote</button>
+    </div>
+    <details style="margin-top:10px"><summary class="label muted" style="cursor:pointer">Your target price per piece (optional)</summary><input id="qTarget" placeholder="₹ per piece" inputmode="numeric" style="margin-top:8px"></details>
+    <div class="mono muted" style="font-size:11px;line-height:1.5;margin-top:12px">Bulk prices: 10+ pieces −5% · 25+ −10% · 50+ −15% · 100+ −20%. Bulk orders ship free. The maker confirms the lead time after you order.</div>
+  </div>`;
+  document.getElementById('mbg').classList.add('on'); document.getElementById('mbg').scrollTop=0; document.body.classList.add('lock');
+}
+function quoteCard(p, qty){
+  const rate=bulkRate(qty), unit=unitPrice(p,qty), total=unit*qty;
+  return `<div class="box" style="padding:14px 16px;margin-top:6px">
+    <div class="line"><span class="muted">Unit price</span><span>${rate?`<s class="muted">${fmt(p.price)}</s> `:''}<b>${fmt(unit)}</b>${rate?` <span class="label" style="color:var(--ok)">−${Math.round(rate*100)}%</span>`:''}</span></div>
+    <div class="line"><span class="muted">Quantity</span><span>${qty} × ${esc(p.n)}</span></div>
+    <div class="line"><span class="muted">Shipping</span><span>${shipping(total)?fmt(shipping(total)):'Free'}</span></div>
+    <div class="line"><span class="muted">Lead time</span><span>${bulkLead(qty)}</span></div>
+    <div class="line" style="font:900 18px 'Archivo'"><span>Total</span><span>${fmt(total+shipping(total))}</span></div>
+    ${qty<10?`<div class="mono muted" style="font-size:11px;margin-top:6px">Order 10 or more pieces for bulk pricing.</div>`:''}
+  </div>`;
+}
+function quoteUpdate(){
+  quote.id = Number(document.getElementById('qProd')?.value)||quote.id;
+  quote.qty = Math.max(1, Math.floor(Number(document.getElementById('qQty')?.value)||1));
+  const p=byId(quote.id); if(!p) return;
+  document.getElementById('qCard').innerHTML = quoteCard(p, quote.qty);
+  document.getElementById('qAdd').textContent = `Add to cart · ${fmt(unitPrice(p,quote.qty)*quote.qty)}`;
+}
+function quoteAddToCart(){
+  quoteUpdate(); const p=byId(quote.id); if(!p) return;
+  const c=cart.find(x=>x.id===quote.id); if(c) c.qty=quote.qty; else cart.push({id:quote.id, qty:quote.qty});
+  db.set('ks-cart',cart); paintBar(); syncCart();
+  if(loggedIn()) api('/enquiries',{method:'POST',body:{productId:quote.id, quantity:quote.qty, message:`Bulk order at the instant quote: ${quote.qty} × ${fmt(unitPrice(p,quote.qty))}`}}).catch(()=>{});   // the maker sees it in their enquiries too
+  closeProduct(); toast(`${quote.qty} pieces in your cart at ${fmt(unitPrice(p,quote.qty))} each`); location.hash='#cart'; if(location.hash==='#cart') render();
+}
+async function quoteAsk(){
+  quoteUpdate(); const p=byId(quote.id), m=MAKERS[quote.mk]; if(!p||!m) return;
+  if(!loggedIn()){ toast('Sign in to send the maker a request'); closeProduct(); location.hash='#login'; return; }
+  const target = Number(document.getElementById('qTarget')?.value)||null;
+  try{ await api('/enquiries',{method:'POST',body:{productId:quote.id, quantity:quote.qty, targetPrice:target, message:`Custom quote request for ${quote.qty} × ${p.n}${target?` at a target of ${fmt(target)} per piece`:''} (instant quote was ${fmt(unitPrice(p,quote.qty))})`}});
+    closeProduct(); toast(`Sent to ${m.n} — you'll get a custom quote`); }catch(e){ toast(e.message); }
+}

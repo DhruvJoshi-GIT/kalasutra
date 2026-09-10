@@ -15,7 +15,12 @@ const allP = () => P;
 const byId = id => P.find(p=>p.id===Number(id));
 
 const cartCount = () => cart.reduce((a,c)=>a+c.qty,0);
-const cartSub = () => cart.reduce((a,c)=>a+(byId(c.id)?.price||0)*c.qty,0);
+/* bulk pricing — one rule shared by the cart, demo-mode orders and the server (backend/app/services/orders.py keeps the same table) */
+const BULK_TIERS = [[100,0.20],[50,0.15],[25,0.10],[10,0.05]];   // [minimum pieces, discount]
+const bulkRate = q => (BULK_TIERS.find(([min])=>q>=min)||[0,0])[1];
+const unitPrice = (p,q) => Math.round(p.price*(1-bulkRate(q)));
+const bulkLead = q => q>=100?'about 6 weeks':q>=50?'about 4 weeks':q>=25?'about 3 weeks':q>=10?'about 2 weeks':'3–5 days';
+const cartSub = () => cart.reduce((a,c)=>{ const p=byId(c.id); return a+(p?unitPrice(p,c.qty)*c.qty:0); },0);
 const shipping = sub => sub===0?0:(sub>=999?0:79);
 function addToCart(id,qty=1){ const c=cart.find(x=>x.id===id); if(c) c.qty+=qty; else cart.push({id,qty}); db.set('ks-cart',cart); paintBar(); syncCart(); toast('Added to cart'); }
 function setQty(id,q){ const c=cart.find(x=>x.id===id); if(!c) return; c.qty=Math.max(0,q); if(c.qty===0) cart=cart.filter(x=>x.id!==id); db.set('ks-cart',cart); paintBar(); syncCart(); }

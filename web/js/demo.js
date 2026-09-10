@@ -48,7 +48,7 @@ async function demoApi(path, method, body){
   if(p==='/orders'){ need(); if(method==='POST'){
       const addr=d.addrs.find(a=>a.id===Number(body.addressId)), pay=d.pays.find(a=>a.id===Number(body.paymentMethodId));
       if(!addr||!pay) throw new Error('Choose an address and a payment method');
-      const items=(body.items||[]).map(i=>{ const pr=byId(i.id); return pr ? {id:pr.id, n:pr.n, qty:i.qty, price:pr.price} : null; }).filter(Boolean);
+      const items=(body.items||[]).map(i=>{ const pr=byId(i.id); return pr ? {id:pr.id, n:pr.n, qty:i.qty, price:unitPrice(pr,i.qty)} : null; }).filter(Boolean);
       if(!items.length) throw new Error('Your cart is empty');
       const subtotal=items.reduce((s,i)=>s+i.price*i.qty,0), shipping=subtotal>=999?0:79;
       const o={no:orderNo(), date:new Date().toISOString(), status:'PENDING', paymentStatus:'PAID', items, subtotal, shipping, total:subtotal+shipping, addr, pay};

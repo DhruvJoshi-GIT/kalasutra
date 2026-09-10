@@ -22,6 +22,7 @@ function productHtml(p){
         <div class="qty"><button onclick="mQty=Math.max(1,mQty-1);document.getElementById('mq').textContent=mQty">−</button><span id="mq">${mQty}</span><button onclick="mQty=Math.min(20,mQty+1);document.getElementById('mq').textContent=mQty">+</button></div>
         <button class="btn ink lg neo" id="mAdd" onclick="addToCart(${p.id},mQty);this.textContent='Added ✓ · view cart';this.onclick=()=>{closeProduct();location.hash='#cart'}">${inCart?`In cart (${inCart.qty}) · add more`:'Add to cart'}</button>
         <button class="btn acc lg neo" onclick="addToCart(${p.id},mQty);closeProduct();location.hash='#cart'">Buy now →</button>
+        <button class="btn neo" onclick="openQuote('${p.mk}',${p.id})" title="Tiered price for 10 or more pieces">Bulk quote</button>
         <button class="btn neo" data-wl="${p.id}" onclick="toggleWish(${p.id});this.textContent=wish.includes(${p.id})?'♥ Saved':'♡ Wishlist'">${wish.includes(p.id)?'♥ Saved':'♡ Wishlist'}</button>
       </div>
     </div>
