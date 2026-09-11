@@ -144,7 +144,7 @@ S.login = (tab) => { if(tab==='seller'||tab==='buyer') state.tab=tab; const sell
     ${authBox('', true)}`}
   </div>
   <div style="position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;gap:clamp(16px,2vw,48px);padding:clamp(24px,3vw,80px);background:repeating-linear-gradient(135deg,transparent 0 18px,color-mix(in srgb,var(--fg) 6%,transparent) 18px 20px)">
-    <span class="label">Indian handicraft · direct from the maker</span>
+    <span class="label">Indian handicraft · maker to market</span>
     <svg viewBox="0 0 600 320" style="width:100%;max-width:min(100%,1300px);margin:0 auto;flex:1 1 auto;min-height:0;max-height:min(40vh,640px)" fill="none" stroke="var(--fg)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
       <path d="M60 280h480"/><path d="M120 280V120h360v160"/><path d="M120 120l-20-40h400l-20 40"/>
       <g stroke-width="2">${[150,180,210,240,270,300,330,360,390,420,450].map(x=>`<path d="M${x} 130v140"/>`).join('')}</g>
